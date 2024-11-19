@@ -115,3 +115,8 @@ VALUES
 (1, 1, 2),
 (1, 2, 1),
 (2, 3, 2);
+
+insert into user_review(user_id, order_prod_id, comment, rating)
+VALUES
+(1, 1, 'good product', 5),
+(2, 2, null, 3);
