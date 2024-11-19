@@ -140,3 +140,13 @@ create table order_prod(
     foreign key (product_item_id) references product_item(product_item_id)
 );
 
+create table user_review(
+    user_review_id int AUTO_INCREMENT primary key,
+    user_id int,
+    order_prod_id int,
+    comment varchar(5000),
+    rating int,
+    foreign key (user_id) references user(user_id),
+    foreign key (order_prod_id) references order_prod(order_prod_id)
+);
+
