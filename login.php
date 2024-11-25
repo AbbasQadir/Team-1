@@ -2,33 +2,41 @@
 session_start();
 
 if (isset($_POST['submitted'])) {
-    if (!isset($_POST['username'], $_POST['password'])) {
-        exit('Please fill both the username and password fields!');
+    // Check if username and password fields are set
+    if (empty($_POST['username']) || empty($_POST['password'])) {
+        exit('<p style="color:red">Please fill both the username and password fields!</p>');
     }
 
-    require_once("PHPHOST.php");
+    // Include PHPHost.php for database connection
+    try {
+        require_once(__DIR__ . '/PHPHost.php');  // Corrected file name to PHPHost.php
+    } catch (Exception $ex) {
+        echo "<p style='color:red'>Failed to include PHPHost.php: " . htmlspecialchars($ex->getMessage()) . "</p>";
+        exit;
+    }
 
     try {
-        $stmt = $db->prepare('SELECT uid, password FROM users WHERE username = ?');
-        $stmt->execute(array($_POST['username']));
+        // Query to fetch user data from the database, selecting the 'user_id' and 'password' fields
+        $stmt = $db->prepare('SELECT user_id, password FROM users WHERE username = ?');
+        $stmt->execute([$_POST['username']]);
 
         if ($stmt->rowCount() > 0) {  
             $row = $stmt->fetch();
 
+            // Verify the password
             if (password_verify($_POST['password'], $row['password'])) {
                 $_SESSION['user'] = htmlspecialchars($_POST['username']); 
-                $_SESSION['uid'] = $row['uid']; 
-                header("Location: loggedin.php"); 
+                $_SESSION['uid'] = $row['user_id'];  // Storing the 'user_id' in the session as 'uid'
+                header("Location: index.php");  // Redirect to the index page after successful login
                 exit(); 
             } else {
-                echo "<p style='color:red'>Error logging in, password does not match </p>";
+                echo "<p style='color:red'>Error logging in: Password does not match</p>";
             }
         } else {
-            echo "<p style='color:red'>Error logging in, Username not found </p>";
+            echo "<p style='color:red'>Error logging in: Username not found</p>";
         }
     } catch (PDOException $ex) {
-        echo "Failed to connect to the database.<br>";
-        echo $ex->getMessage();
+        echo "<p style='color:red'>A database error occurred: " . htmlspecialchars($ex->getMessage()) . "</p>";
         exit;
     }
 }
@@ -57,7 +65,6 @@ if (isset($_POST['submitted'])) {
             <input type="submit" value="Login">
             <input type="hidden" name="submitted" value="TRUE">
             <p>Not a member? <a href="register.php">Register</a></p>
-            <p>View Projects without an account <a href="project.php">Projects</a></p>
         </form>
     </div>
 </body>

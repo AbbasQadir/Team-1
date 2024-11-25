@@ -1,41 +1,63 @@
 <?php
 session_start();
 
-function sanitizeInput($input) {
-    return $GLOBALS['db']->quote($input);
-}
-
+// Function to sanitize output for HTML display
 function sanitizeOutput($input) {
     return htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
 }
 
+try {
+    // Include PHPHost.php using an absolute path
+    require_once(__DIR__ . '/PHPHost.php'); // Adjust this path if necessary
+} catch (Exception $ex) {
+    echo "Failed to include PHPHost.php: " . $ex->getMessage();
+    exit;
+}
+
+// Check if form is submitted
 if (isset($_POST['submitted'])) {
-    require_once('PHPHOST.php');
-
-    $username = isset($_POST['username']) ? sanitizeInput($_POST['username']) : false;
+    // Sanitize inputs
+    $username = isset($_POST['username']) ? trim($_POST['username']) : false;
     $password = isset($_POST['password']) ? password_hash($_POST['password'], PASSWORD_DEFAULT) : false;
+    $first_name = isset($_POST['first_name']) ? trim($_POST['first_name']) : false;
+    $last_name = isset($_POST['last_name']) ? trim($_POST['last_name']) : false;
+    $number = isset($_POST['number']) ? trim($_POST['number']) : false;
+    $email = isset($_POST['email']) ? trim($_POST['email']) : false;
 
-    if (!$username) {
-        echo "Username is required!";
+    if (!$username || !$password || !$first_name || !$last_name || !$email) {
+        echo "All fields are required!";
         exit;
-    }
-    if (!$password) {
-        exit("Password is required!");
     }
 
     try {
-        $stat = $db->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
-        $stat->execute(array($username, $password));
-        $_SESSION["user"] = $username;
+        // Check if the user already exists
+        $checkQuery = $db->prepare("SELECT * FROM `users` WHERE username = ?");
+        $checkQuery->execute([$username]);
+        $existingUser = $checkQuery->fetch();
 
-        header("Location: loggedin.php"); 
-        exit(); 
+        if ($existingUser) {
+            // If user exists, update their details
+            $updateQuery = $db->prepare("UPDATE `users` SET password = ?, first_name = ?, last_name = ?, number = ?, email = ? WHERE username = ?");
+            $updateQuery->execute([$password, $first_name, $last_name, $number, $email, $username]);
+            echo "User details updated successfully!";
+        } else {
+            // If user does not exist, insert a new record
+            $insertQuery = $db->prepare("INSERT INTO `users` (username, password, first_name, last_name, number, email) VALUES (?, ?, ?, ?, ?, ?)");
+            $insertQuery->execute([$username, $password, $first_name, $last_name, $number, $email]);
+            echo "New user registered successfully!";
+        }
+
+        // Set session and redirect
+        $_SESSION["user"] = $username;
+        header("Location: index.php");
+        exit();
     } catch (PDOException $ex) {
         echo "Sorry, a database error occurred! <br>";
-        echo "Error details: <em>" . $ex->getMessage() . "</em>";
+        echo "Error details: <em>" . sanitizeOutput($ex->getMessage()) . "</em>";
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -63,7 +85,9 @@ if (isset($_POST['submitted'])) {
         }
 
         input[type="text"],
-        input[type="password"] {
+        input[type="password"],
+        input[type="email"],
+        input[type="number"] {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
@@ -85,6 +109,7 @@ if (isset($_POST['submitted'])) {
         input[type="submit"]:hover,
         input[type="reset"]:hover {
             background-color: #333;
+            color: #fff;
         }
 
         .form-container p {
@@ -110,13 +135,21 @@ if (isset($_POST['submitted'])) {
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required /><br>
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required /><br><br>
+            <input type="password" id="password" name="password" required /><br>
+            <label for="first_name">First Name:</label>
+            <input type="text" id="first_name" name="first_name" required /><br>
+            <label for="last_name">Last Name:</label>
+            <input type="text" id="last_name" name="last_name" /><br>
+            <label for="number">Phone Number:</label>
+            <input type="number" id="number" name="number" /><br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required /><br><br>
 
-            <input type="submit" value="Register" /> 
+            <input type="submit" value="Register or Update" />
             <input type="reset" value="Clear"/>
             <input type="hidden" name="submitted" value="true"/>
             <p>Already a member? <a href="login.php">Log in</a></p>
-        </form>  
+        </form>
     </div>
 </body>
 </html>

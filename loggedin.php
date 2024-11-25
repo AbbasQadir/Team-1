@@ -57,7 +57,7 @@ $username = $_SESSION["user"];
     <div class="container">
         <h1>Welcome, <?php echo htmlspecialchars($username); ?>!</h1>
         <p>You are now logged in.</p>
-        <p><a href="Userprojects.php">View Projects</a></p>
+        <p><a href="index.php">View Projects</a></p>
         <p>Click <a href="login.php">here</a> to logout.</p>
     </div>
 </body>
