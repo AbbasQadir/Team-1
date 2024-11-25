@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta nam="viewport" content="width=device-width", initial-scaale="1.0">
+        <title>Previous Orders</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <header>
+            <h1>Previous Orders</h1>
+            <nav>
+                <a href="home.php">Home</a>
+                <a href="Categories.php">Home</a>
+                <a href="home.php">Home</a>
+                <a href="home.php">Home</a>
+                <a href="home.php">Home</a>
+            </nav>
+            <div class="search_bar">
+                <input type="text" id="searchInput" placeholder="What are you looking for today?">
+                <button onclick="search()">
+                    <img src="search.png" alt="Search Icon">
+                </button>
+            </div>
+        </header>
+        <main>
+            <section class="order-container">
+                <div class="order-card">
+                    <h2>Order #1234</h2>
+                    <p>Date: 2024-11-20</p>
+                    <p>Total: £150</p>
+                    <a href="order_details.html?order_id=1234" class="details">View Order</a> 
+                </div>
+                <div class="order-card">
+                    <h2>Order #1235</h2>
+                    <p>Date: 2024-11-26</p>
+                    <p>Total: £50</p>
+                    <a href="order_details.html?order_id=1235" class="details">View Order</a> 
+                </div>
+                <div class="order-card">
+                    <h2>Order #1236</h2>
+                    <p>Date: 2024-11-29</p>
+                    <p>Total: £15</p>
+                    <a href="order_details.html?order_id=1236" class="details">View Order</a> 
+                </div>
+            </section>
+        </main>
+    </body>
+</html>
