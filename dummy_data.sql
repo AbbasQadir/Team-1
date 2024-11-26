@@ -1,9 +1,9 @@
 USE mind_and_motion;
-insert into user (number, email)
+insert into users (username, first_name, last_name, number, email, password)
 VALUES
-(07888888888, 'josh@gmail.com' ),
-(07899999999, 'marie@gmail.com'),
-(07891111111, 'ali@gmail.fr');
+('josh360', 'Josh', 'Moore', '07888888888', 'josh@gmail.com', 'password1' ),
+('marie_345', 'Marie', 'Lepen', '07899999999', 'marie@gmail.com', 'password2'),
+('test', 'ali', 'ali', '07891111111', 'ali@gmail.fr', 'password3');
 
 insert into country (country_name)
 VALUES
@@ -41,7 +41,7 @@ VALUES
 ('SW1A 1BB', 'High street', '136 high street', 'flat 4', 'London', 2, 'Great london'),
 ('57323', 'Rue de la republique', 'building 3', '475 rue de la republique', 'Paris', 1, 'Provence');
 
-insert into user_address (address_id, user_id)
+insert into users_address (address_id, user_id)
 VALUES
 (1, 1),
 (2, 2),
@@ -110,13 +110,13 @@ VALUES
 (1, 1, 2, 1, 3, 69.95, '2024-11-12 10:00:00'),
 (2, 2, 1, 2, 2, 29.95, '2024-11-12 11:24:00');
 
-insert into order_prod( orders_id, product_item_id, quantity)
+insert into order_prod( orders_id, product_item_id, quantity, orders_prod_price)
 VALUES
-(1, 1, 2),
-(1, 2, 1),
-(2, 3, 2);
+(1, 1, 2, 59.98),
+(1, 2, 1, 18.99),
+(2, 3, 2, 27.98);
 
-insert into user_review(user_id, order_prod_id, comment, rating)
+insert into users_review(user_id, order_prod_id, comment, rating)
 VALUES
 (1, 1, 'good product', 5),
 (2, 2, null, 3);
