@@ -3,10 +3,14 @@ CREATE DATABASE mind_and_motion;
 USE mind_and_motion;
 
 -- Create tables
-create table user (
+create table users (
     user_id int AUTO_INCREMENT primary key,
+    username varchar(222) not null,
+    first_name varchar(222) not null,
+    last_name varchar(222),
     number int,
-    email varchar(222) not null
+    email varchar(222) not null,
+    password varchar(222) not null
 );
 
 create table country(
@@ -26,18 +30,18 @@ create table address(
     foreign key (country_id) references country(country_id)
 );
 
-create table user_address (
-    user_address_id int AUTO_INCREMENT primary key,
+create table users_address (
+    users_address_id int AUTO_INCREMENT primary key,
     address_id int ,
     user_id int,
     foreign key (address_id) references address(address_id),
-    foreign key (user_id) references user(user_id)
+    foreign key (user_id) references users(user_id)
 );
 
 create table cart (
     cart_id int AUTO_INCREMENT primary key,
     user_id int,
-    foreign key (user_id) references user(user_id)
+    foreign key (user_id) references users(user_id)
 );
 
 create table product_category (
@@ -101,7 +105,7 @@ create table payment_method(
     type_id int,
     user_id int,
     foreign key (type_id) references payment_type(type_id),
-    foreign key (user_id) references user(user_id)
+    foreign key (user_id) references users(user_id)
 );
 
 create table shipping_method(
@@ -124,7 +128,7 @@ create table orders(
     payment_method_id int,
     order_price float,
     order_date datetime,
-    foreign key (user_id) references user(user_id),
+    foreign key (user_id) references users(user_id),
     foreign key (address_id) references address(address_id),
     foreign key (shipping_method_id) references shipping_method(shipping_method_id),
     foreign key (order_status_id) references order_status(order_status_id),
@@ -136,17 +140,19 @@ create table order_prod(
     orders_id int,
     product_item_id int,
     quantity int,
+    orders_prod_price int,
     foreign key (orders_id) references orders(orders_id),
     foreign key (product_item_id) references product_item(product_item_id)
 );
 
-create table user_review(
-    user_review_id int AUTO_INCREMENT primary key,
+create table users_review(
+    users_review_id int AUTO_INCREMENT primary key,
     user_id int,
     order_prod_id int,
     comment varchar(5000),
     rating int,
-    foreign key (user_id) references user(user_id),
+    foreign key (user_id) references users(user_id),
     foreign key (order_prod_id) references order_prod(order_prod_id)
 );
+
 
