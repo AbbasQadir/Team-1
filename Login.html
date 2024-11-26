@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <title>Mind & Motion</title>
+    <style>
+  
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        a {
+            text-decoration: none;
+            color: black;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 25px;
+            background: linear-gradient(90deg, #2d4a57, #3c6e71);
+            color: white;
+        }
+
+        .logo img {
+            width: 100px;
+        }
+
+        h2 {
+            flex-grow: 1;
+            text-align: center;
+            margin: 0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: white;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+
+        nav li {
+            margin: 0 15px;
+        }
+
+        nav a {
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            overflow: hidden;
+            height: 35px;
+            padding: 0 10px;
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            flex-grow: 1;
+            font-size: 14px;
+            padding: 5px;
+        }
+
+        .search-bar ion-icon {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .signup-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .signup-form-container {
+            width: 100%;
+        }
+
+        .signup-form-container form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .signup-form-container label {
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .signup-form-container input {
+            margin-bottom: 20px;
+            padding: 12px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        .signup-form-container input[type="submit"] {
+            background: #0A369D;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 12px;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .signup-form-container input[type="submit"]:hover {
+            background: #084298;
+            transform: translateY(-2px);
+        }
+
+        .signup-form-container p {
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .signup-form-container p a {
+            color: #0A369D;
+        }
+
+        footer {
+            background-color: #2d4a57;
+            padding: 20px 0;
+            text-align: center;
+            color: white;
+        }
+
+        footer h4 {
+            margin-bottom: 10px;
+        }
+
+        footer p {
+            margin: 5px 0;
+        }
+
+        footer a {
+            color: white;
+            margin: 0 10px;
+        }
+
+        footer ion-icon {
+            font-size: 30px;
+            transition: transform 0.3s;
+        }
+
+        footer ion-icon:hover {
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="logo">
+            <img src="mind and motion logo.png" alt="Mind & Motion Logo">
+        </div>
+        <h2>Elevate your lifestyle and well-being</h2>
+    </div>
+
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Product</a></li>
+            <li><a href="Login.html">Login</a></li>
+            <li><a href="signuppage1.html">Sign Up</a></li>
+        </ul>
+        <div class="search-bar">
+            <input type="text" placeholder="Search...">
+            <ion-icon name="search-outline"></ion-icon>
+        </div>
+    </nav>
+
+    <div class="signup-container">
+        <div class="signup-form-container">
+            <form action="#" method="post">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Email Address" required>
+                <label for="Password">Password</label>
+                <input type="password" id="Password" name="Password" placeholder="Password" required>
+                <input type="submit" value="Login">
+            </form>
+            <p>Dont have an account? <a href="signuppage1.html"> Signup</a></p>
+        </div>
+    </div>
+
+    <footer>
+        <div style="display: flex; justify-content: space-around; flex-wrap: wrap; text-align: left;">
+            <div style="flex: 1; min-width: 200px; margin: 10px;">
+                <h4 style="margin-bottom: 10px;">Contact Info:</h4>
+                <p style="margin: 5px 0;">Email: contact@mindandmotion.co.uk</p>
+                <p style="margin: 5px 0;">Phone: 01214397059</p>
+            </div>
+            <div style="flex: 1; min-width: 200px; margin: 10px; text-align: right;">
+                <h4 style="margin-bottom: 10px;">Find Us On Social Media:</h4>
+                <div style="display: inline-flex; gap: 10px;">
+                    <a href="#"><ion-icon name="logo-twitter" style="font-size: 30px; color: white;"></ion-icon></a>
+                    <a href="#"><ion-icon name="logo-instagram" style="font-size: 30px; color: white;"></ion-icon></a>
+                    <a href="#"><ion-icon name="logo-facebook" style="font-size: 30px; color: white;"></ion-icon></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
