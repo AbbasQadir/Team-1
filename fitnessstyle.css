@@ -1,0 +1,49 @@
+#fitnesstitle{
+    text-align: center;
+    padding-bottom: 35px;
+}
+#filter{
+    padding-left: 100px;
+}
+.products{
+    display: flex;
+    flex-wrap: wrap;
+    
+    gap: 100px;
+}
+
+.item1, .item2, .item3, .item4, .item5{
+    text-align: center;
+    padding-left: 100px;
+    
+}
+.item1 img{
+    height: 200px;
+    width: 200px;
+    justify-content: center;
+}
+
+.item2 img{
+    height: 200px;
+    width: 200px;
+    justify-content: center;
+}
+
+.item3 img{
+    height: 200px;
+    width: 200px;
+    justify-content: center;
+}
+
+
+.item4 img{
+    height: 200px;
+    width: 200px;
+    justify-content: center;
+}
+
+.item5 img{
+    height: 200px;
+    width: 200px;
+    justify-content: center;
+}
