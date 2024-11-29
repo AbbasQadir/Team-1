@@ -1,0 +1,427 @@
+/* General Reset */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Merriweather', serif;
+    background-color: #f5f5f5;
+    color: black;
+    font-size: 18px;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Blue Top Strip */
+.top-strip {
+    background-color: #2A4D69;
+    height: 10px;
+    width: 100%;
+}
+
+/* Navigation Section */
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f5f5f5;
+    height: 80px;
+    padding: 5px 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo img {
+    height: 200px;
+    width: auto;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: black;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #0256CE;
+}
+
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.basket img {
+    height: 30px;
+    width: auto;
+    cursor: pointer;
+}
+
+.basket:hover img {
+    filter: brightness(0) saturate(100%) invert(14%) sepia(91%) saturate(3978%) hue-rotate(205deg) brightness(95%) contrast(97%);
+}
+
+.basket span {
+    color: #000;
+    font-size: 1.2em;
+    margin-left: 5px;
+}
+
+/* Search Bar Styling */
+.search-bar {
+    display: flex; /* Enable flexbox for layout */
+    align-items: center; /* Vertically align input and icon */
+    gap: 10px; /* Add space between input and icon */
+    background-color: #f5f5f5; /* Set background to match page */
+    padding: 5px 10px; /* Add padding inside the search bar */
+    border: 1px solid #ccc; /* Add light border */
+    border-radius: 20px; /* Round the corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+}
+.search-bar input {
+    border: none; /* Remove border from input */
+    outline: none; /* Remove focus outline */
+    font-size: 0.9em; /* Set font size */
+    background: transparent; /* Set transparent background */
+    flex: 1; /* Allow input to take up remaining space */
+}
+.search-bar img {
+    width: 20px; /* Adjust search icon size */
+    height: 20px;
+    border-radius: 50%; /* Make icon circular */
+    background-color: #fff; /* Add white background for contrast */
+    padding: 5px; /* Add padding inside the icon */
+    cursor: pointer; /* Change cursor to pointer */
+}
+.search-bar img:hover {
+    background-color: #0256CE; /* Change background color on hover */
+    transform: scale(1.1); /* Enlarge icon on hover */
+}
+
+/* Hero Section */
+.hero {
+    background: url('images/heroimage.png') no-repeat center/cover;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    color: white;
+}
+
+.hero .hero-content {
+    z-index: 2;
+}
+
+.hero h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.hero .cta-button {
+    background-color: #0256CE;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.hero .cta-button:hover {
+    background-color: #2A4D69;
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+/* Section Headings */
+.section-heading {
+    font-size: 1.8em;
+    font-weight: bold;
+    text-align: center;
+    margin: 30px 0;
+    color: black;
+}
+
+/* Why Choose Us Section */
+.why-choose-us {
+    padding: 40px;
+    text-align: center;
+    background-color: #f5f5f5;
+}
+
+.features-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+}
+
+.feature {
+    text-align: center;
+}
+
+.feature img {
+    width: 50px;
+    margin-bottom: 10px;
+}
+
+/* Carousel Section */
+.carousel {
+    position: relative; /* Relative for proper child positioning */
+    margin: 20px auto; /* Center the carousel */
+    width: 100%; /* Full width */
+    max-width: 1400px; /* Limit maximum width */
+    height: 460px; /* Fixed height for carousel */
+    overflow: hidden; /* Hide overflowing content */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    background-color: #2A4D69; /* Fallback background */
+}
+
+/* Carousel Section */
+.carousel {
+    position: relative;
+    margin: 20px auto;
+    width: 100%;
+    max-width: 1400px;
+    height: 460px;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #2A4D69;
+}
+
+/* Carousel Section */
+.carousel {
+    position: relative;
+    margin: 20px auto;
+    width: 100%;
+    max-width: 1400px;
+    height: 500px; /* Adjusted height to ensure all images fit */
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #2A4D69; /* Fallback background */
+}
+
+/* Carousel Title */
+.carousel-title {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #2A4D69; /* Consistent with carousel background */
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 1.5em;
+    font-weight: bold;
+    z-index: 10; /* Ensure it appears above the carousel */
+    border-radius: 10px 10px 0 0;
+}
+
+/* Carousel Track */
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: 100%;
+}
+
+/* Carousel Items */
+.carousel-item {
+    flex: 0 0 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.carousel-item img {
+    max-height: 100%; /* Fit within carousel height */
+    max-width: 100%; /* Fit within carousel width */
+    object-fit: contain; /* Show the entire image, no cropping */
+    display: block;
+    border-radius: 10px; /* Match the carousel's border radius */
+}
+
+/* Navigation Arrows */
+.carousel-arrow {
+    position: absolute; /* Position relative to carousel */
+    top: 50%; /* Vertically center */
+    transform: translateY(-50%); /* Offset for perfect centering */
+    background: rgba(0, 0, 0, 0.8); /* Dark arrow background */
+    color: white; /* White arrow color */
+    font-size: 1.9em; /* Arrow size */
+    padding: 12px; /* Padding inside the button */
+    border-radius: 50%; /* Circular arrows */
+    cursor: pointer; /* Pointer cursor */
+    z-index: 10; /* Ensure it appears above carousel elements */
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth hover effects */
+}
+
+.carousel:hover .carousel-arrow {
+    opacity: 1; /* Show arrows on hover */
+}
+
+.carousel-arrow.left {
+    left: 20px; /* Position left arrow */
+}
+
+.carousel-arrow.right {
+    right: 20px; /* Position right arrow */
+}
+
+.carousel-arrow:hover {
+    background-color: #0256CE;
+}
+
+/* Pagination Dots */
+.pagination-dots {
+    display: flex; /* Align dots horizontally */
+    justify-content: center; /* Center dots */
+    align-items: center;
+    position: absolute; /* Positioned relative to carousel */
+    bottom: 20px; /* Positioned at the bottom */
+    width: 100%; /* Full width */
+    gap: 12px; /* Add space between dots */
+}
+
+.pagination-dots .dot {
+    width: 14px; /* Size of each dot */
+    height: 14px; /* Size of each dot */
+    background: #ccc; /* Default color */
+    border-radius: 50%; /* Circular dots */
+    cursor: pointer; /* Pointer cursor for interactivity */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth effects */
+}
+
+.pagination-dots .dot:hover {
+    transform: scale(1.2); /* Enlarge on hover */
+}
+
+.pagination-dots .dot.active {
+    background: #0256CE; /* Highlight active dot */
+}
+
+
+/* Product Container */
+.product-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap; /* Wrap items for smaller screens */
+    gap: 20px; /* Space between product cards */
+    margin: 20px auto;
+    max-width: 1200px; /* Limit the width */
+}
+
+/* Product Card */
+.product-card {
+    background-color: #e0e0e0; /* Light grey background */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 10px;
+    text-align: center; /* Center-align text */
+    width: calc(25% - 20px); /* Four items per row */
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: center; /* Center content horizontally */
+    gap: 10px;
+}
+
+/* Product Image */
+.product-card img {
+    width: 100%; /* Full width within the card */
+    height: 150px; /* Fixed height for uniformity */
+    object-fit: cover; /* Maintain aspect ratio and crop excess */
+    border-radius: 5px; /* Rounded corners */
+}
+
+/* Product Details */
+.product-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px; /* Space between text and button */
+}
+
+.product-details p {
+    margin: 0; /* Remove default margin */
+    font-size: 1em; /* Consistent font size */
+    color: black;
+}
+/* Styling for the "Was" price */
+.price-was {
+    color: #888; /* Grey color for old price */
+    text-decoration: line-through; /* Strikethrough for old price */
+    font-size: 0.9em; /* Slightly smaller font size */
+    margin-right: 5px; /* Space between Was and Now prices */
+}
+
+/* Styling for the "Now" price */
+.price-now {
+    color: #0256CE; /* Highlighted color for new price */
+    font-weight: bold; /* Make it bold for emphasis */
+    font-size: 1em; /* Keep it slightly larger */
+}
+
+
+/* Add to Basket Button */
+.add-to-basket {
+    background-color: #0256CE; /* Button background */
+    color: white; /* Button text */
+    font-size: 1em; /* Font size */
+    font-weight: bold; /* Bold text */
+    padding: 10px 15px; /* Inner padding */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.add-to-basket:hover {
+    background-color: #2A4D69; /* Darker blue on hover */
+    transform: scale(1.05); /* Slight enlargement on hover */
+}
+
+/* Footer Section */
+.footer {
+    background-color: #2A4D69;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+    font-weight: bold;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
