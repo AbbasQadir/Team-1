@@ -6,6 +6,7 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <title>Mind & Motion</title>
     <style>
+   
         * {
             margin: 0;
             padding: 0;
@@ -13,8 +14,9 @@
         }
 
         body {
-            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+            font-family: Arial, sans-serif;
             line-height: 1.6;
+            
         }
 
         a {
@@ -30,66 +32,39 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 20px 25px;
-            background: #0A369D;
+            padding: 20px ;
+            background: linear-gradient(90deg, #2d4a57, #3c6e71);
+            color: white;
         }
 
         .logo img {
             width: 100px;
-            height: auto;
         }
 
         h2 {
-            color: white;
-            text-align: center;
             flex-grow: 1;
+            text-align: center;
             margin: 0;
         }
 
-        .top-bar ul {
-            list-style: none;
-            display: flex;
-        }
-
-        .top-bar li {
-            margin: 0 5px;
-        }
-
-        .top-bar a {
-            color: white;
-        }
-
-        .top-bar a:hover {
-            color: black;
-        }
-
         nav {
-            background: white;
-            padding: 10px 20px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: white;
         }
 
         nav ul {
             list-style: none;
             display: flex;
-            margin: 0;
         }
 
         nav li {
             margin: 0 15px;
         }
 
-        nav a {
-            color: black;
-            font-size: 16px;
-        }
-
-        nav a:hover {
-            text-decoration: underline;
-        }
-
+ 
         .search-bar {
             display: flex;
             align-items: center;
@@ -102,41 +77,40 @@
 
         .search-bar input {
             border: none;
-            padding: 5px 10px;
             outline: none;
-            font-size: 14px;
             flex-grow: 1;
+            font-size: 14px;
+            padding: 5px;
         }
 
         .search-bar ion-icon {
             font-size: 20px;
-            color: #0A369D;
             cursor: pointer;
         }
 
         .signup-container {
             display: flex;
-            flex-wrap: wrap;
             max-width: 1000px;
-            width: 100%;
-            margin: 20px auto;
-            background: #fff;
+            margin: 40px auto;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .signup-image {
             flex: 1;
-            background: url('spic.png') no-repeat center center/cover;
+            background: url('fitness.png') no-repeat center/cover;
+            filter: grayscale(30%);
+            transition: filter 0.5s;
+        }
+
+        .signup-image:hover {
+            filter: none;
         }
 
         .signup-form-container {
             flex: 1;
             padding: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
         }
 
         .signup-form-container form {
@@ -164,84 +138,83 @@
             color: white;
             border: none;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: background 0.3s, transform 0.3s;
         }
 
         .signup-form-container input[type="submit"]:hover {
             background: #084298;
+            transform: scale(1.05);
         }
 
-        .signup-form-container p {
-            margin-bottom: 20px;
-            font-size: 16px;
-            color: #333;
-        }
-
-        .extra-content {
+        .more-details {
             margin: 40px auto;
-            max-width: 1000px;
             text-align: center;
+            max-width: 1000px;
+            
         }
 
-        .extra-content h3 {
+        .more-details h3 {
             margin-bottom: 20px;
             font-size: 24px;
             color: #0A369D;
         }
 
-        .benefits, .testimonials {
+        .benefits,.feedback {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
-            margin: 20px 0;
         }
 
-        .benefits div, .testimonials div {
+        .benefits div,.feedback div {
             flex: 1;
             margin: 10px;
             padding: 20px;
             border: 1px solid #ccc;
             border-radius: 8px;
             background: #f9f9f9;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .benefits div h4, .testimonials div h4 {
-            margin-bottom: 10px;
-            color: #333;
+        .benefits div:hover, .feedback div:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         footer {
-            color: black;
-            padding: 20px 0;
+            background-color: #2d4a57;
+            padding: 20px ;
             text-align: center;
+            color: white;
         }
 
-        footer ul {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            padding: 0;
+        footer h4 {
             margin-bottom: 10px;
         }
 
-        footer ul li {
+        footer p {
+            margin: 5px 0;
+        }
+
+        footer a {
+            color: white;
             margin: 0 10px;
         }
 
-        footer ul li a {
-            color: white;
+        footer ion-icon {
+            font-size: 30px;
+        }
+
+        footer ion-icon:hover {
+            transform: scale(1.2);
         }
     </style>
 </head>
 <body>
     <div class="top-bar">
         <div class="logo">
-            <img src="mind and motion logo.png" alt="logo">
+            <img src="mind and motion logo.png" alt="Mind & Motion Logo">
         </div>
-
         <h2>Elevate your lifestyle and well-being</h2>
-
-        
     </div>
 
     <nav>
@@ -249,11 +222,10 @@
             <li><a href="#">Home</a></li>
             <li><a href="#">About Us</a></li>
             <li><a href="#">Contact Us</a></li>
-            <li><a href="#">Product</a></li>
-            <li><a href="#">Login</a></li>
+            <li><a href="#">Products</a></li>
+            <li><a href="Login.html">Login</a></li>
             <li><a href="#">Sign Up</a></li>
         </ul>
-
         <div class="search-bar">
             <input type="text" placeholder="Search...">
             <ion-icon name="search-outline"></ion-icon>
@@ -261,19 +233,20 @@
     </nav>
 
     <div class="signup-container">
-        <div class="#"></div>
+        <div class="signup-image"></div>
         <div class="signup-form-container">
             <p>Join our community and get the latest updates directly in your inbox.</p>
             <form action="#" method="post">
                 <label for="first-name">First Name</label>
                 <input type="text" id="first-name" name="first-name" placeholder="First Name" required>
-    
                 <label for="last-name">Last Name</label>
                 <input type="text" id="last-name" name="last-name" placeholder="Last Name" required>
-    
                 <label for="email">Email Address</label>
                 <input type="email" id="email" name="email" placeholder="Email Address" required>
-    
+                <label for="Password">Password</label>
+                <input type="password" id="Password" name="Password" placeholder="Password" required>
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password" required>
                 <label for="gender">Gender</label>
                 <select id="gender" name="gender">
                     <option value="" disabled selected>Select Gender</option>
@@ -281,52 +254,60 @@
                     <option value="Male">Male</option>
                     <option value="Prefer not to say">Prefer not to say</option>
                 </select>
-    
                 <label for="date-of-birth">Date of Birth</label>
                 <input type="date" id="date-of-birth" name="date-of-birth" required>
-    
                 <input type="submit" value="Sign Up">
             </form>
+            <p>Already have an account? <a href="Login.html"> Login</a> </p>
         </div>
     </div>
 
-    <div class="extra-content">
-        <h3>Why Join Us?</h3>
+    <div class="more-details">
+        <h3>Why Choose Mind & Motion?</h3>
         <div class="benefits">
             <div>
-              <h4>Community Support</h4>
-              <p>Be part of a supportive community that helps you stay motivated.</p>
-                
+                <h4>Expert Knowledge in Wellness</h4>
+                <p>Access a curated selection of self-improvement books, fitness equipment, and tech for wellness from top experts.</p>
             </div>
             <div>
-                <h4>#</h4>
-                <p>#</p>
+                <h4>Boost Your Mental & Physical Health</h4>
+                <p>Explore mental health resources, nutritional supplements, and fitness books designed to enhance your well-being.</p>
             </div>
             <div>
-              <h4>#</h4>
-              <p>.</p>
+                <h4>Exclusive Products</h4>
+                <p>Shop for premium nutritional books, motivation books, and fitness tools that align with your health goals.</p>
             </div>
         </div>
 
-        <h3>Feedback</h3>
-        <div class="testimonials">
-            <div>
-                <h4>Jane Doe</h4>
-                <p>"Mind & Motion has completely transformed my fitness journey."</p>
-            </div>
+    <h3>Feedback from customers</h3>
+    <div class="feedback">
+        <div>
+            <h4>Jane Doe</h4>
+                <p>"The self-improvement books have been life-changing, and the fitness gear really helped me stay on track."</p>
+        </div>
             <div>
                 <h4>John Smith</h4>
-                <p>"Great community, "</p>
+                <p>"The mental health resources helped me understand myself better, and the nutritional supplements gave me a boost."</p>
             </div>
         </div>
     </div>
-    <footer>
-      <ul>
-        <li><a href="#"><ion-icon name="logo-instagram"></ion-icon></a></li>
-        <li><a href="#"><ion-icon name="logo-facebook"></ion-icon></a></li>
-        <li><a href="#"><ion-icon name="logo-twitter"></ion-icon></a></li>
-      </ul>
-      <p> &copy; 2024 Mind & Motion. All Rights Reserved</p>
+
+<footer>
+    <div style="display: flex; justify-content: space-around; flex-wrap: wrap; text-align: left;">
+        <div style="flex: 1; min-width: 200px; margin: 10px;">
+            <h4 style="margin-bottom: 10px;">Contact Info:</h4>
+                <p style="margin: 5px 0;">Email: contact@mindandmotion.co.uk</p>
+                <p style="margin: 5px 0;">Phone: 01214397059</p>
+    </div>
+        <div style="flex: 1; min-width: 200px; margin: 10px; text-align: right;">
+            <h4 style="margin-bottom: 10px;">Find Us On Social Media:</h4>
+                <div style="display: inline-flex; gap: 10px;">
+                <a href="#"><ion-icon name="logo-twitter" style="font-size: 30px; color: white;"></ion-icon></a>
+                <a href="#"><ion-icon name="logo-instagram" style="font-size: 30px; color: white;"></ion-icon></a>
+                <a href="#"><ion-icon name="logo-facebook" style="font-size: 30px; color: white;"></ion-icon></a>
+    </div>
+            </div>
+        </div>
     </footer>
 </body>
 </html>
