@@ -1,0 +1,29 @@
+#title{
+    text-align: center;
+}
+
+.products{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+    
+}
+
+.item{
+    width: 250px;
+    justify-content: center;
+    padding: 15px;
+
+
+}
+
+.item:hover{
+    transform: scale(1.10);
+}
+
+.item img{
+    width: 200px;
+    margin-bottom: 10px;
+}
