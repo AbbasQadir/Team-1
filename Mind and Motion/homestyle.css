@@ -190,32 +190,6 @@ body {
 
 /* Carousel Section */
 .carousel {
-    position: relative; /* Relative for proper child positioning */
-    margin: 20px auto; /* Center the carousel */
-    width: 100%; /* Full width */
-    max-width: 1400px; /* Limit maximum width */
-    height: 460px; /* Fixed height for carousel */
-    overflow: hidden; /* Hide overflowing content */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-    background-color: #2A4D69; /* Fallback background */
-}
-
-/* Carousel Section */
-.carousel {
-    position: relative;
-    margin: 20px auto;
-    width: 100%;
-    max-width: 1400px;
-    height: 460px;
-    overflow: hidden;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    background-color: #2A4D69;
-}
-
-/* Carousel Section */
-.carousel {
     position: relative;
     margin: 20px auto;
     width: 100%;
