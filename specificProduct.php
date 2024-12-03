@@ -33,12 +33,12 @@ session_start();
             $existingBasket = $checkBasket->fetch(PDO::FETCH_ASSOC);
 
             if ($existingBasket) {
-                // Update quantity if the product is already tehre
+                // fix quantity if the product is already tehre
                 $newQuantity = $existingBasket['quantity'] + $quantity;
                 $updateBasket = $db->prepare("UPDATE asad_basket SET quantity = :quantity WHERE user_id = :user_id AND product_id = :product_id");
                 $updateBasket->execute([':quantity' => $newQuantity, ':user_id' => $userId, ':product_id' => $productID]);
             } else {
-                // put new product into the basket
+                // put new product into  basket
                 $addToBasket = $db->prepare("INSERT INTO asad_basket (user_id, product_id, quantity) VALUES (:user_id, :product_id, :quantity)");
                 $addToBasket->execute([':user_id' => $userId, ':product_id' => $productID, ':quantity' => $quantity]);
             }
@@ -60,7 +60,7 @@ require_once("navbar.php");
         <h1 id="mainTitle"><?php echo htmlspecialchars($item["item_name"]); ?></h1>
         <h5 id="mainPrice">£<?php echo htmlspecialchars($item["item_price"]); ?></h5>
 
-        <!-- Add to Basket Form -->
+        
         <form method="POST">
             <label for="quantity">Quantity:</label>
             <input type="number" name="quantity" id="quantity" min="1" value="1" style="display:none;">
