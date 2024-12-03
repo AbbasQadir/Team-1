@@ -1,9 +1,6 @@
 <?php
 session_start();
 
-
-
-
 try {
     require_once(__DIR__ . '/PHPHost.php'); 
 } catch (Exception $ex) {
@@ -11,8 +8,10 @@ try {
     exit;
 }
 
+// check if user is logged in using the user id session .
 if (!isset($_SESSION['uid'])) {
-    echo "Please log in to view your basket.";
+    echo "<script>alert('Please log in to view your basket.');</script>";
+    echo "<script>window.location.href = 'login.php';</script>";
     exit;
 }
 
@@ -40,7 +39,7 @@ $stmt->bindParam(':user_id', $user_id);
 $stmt->execute();
 $basketItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// removing things from basket
+// rmeove  items from basket
 if (isset($_GET['remove'])) {
     $productId = $_GET['remove'];
     $removeQuery = "DELETE FROM asad_basket WHERE user_id = :user_id AND product_id = :product_id";
@@ -50,7 +49,7 @@ if (isset($_GET['remove'])) {
     exit;
 }
 
-// updating bsket
+// update basket
 if (isset($_POST['update_quantity']) && isset($_POST['product_id']) && isset($_POST['quantity'])) {
     $productId = $_POST['product_id'];
     $newQuantity = $_POST['quantity'];
@@ -62,11 +61,6 @@ if (isset($_POST['update_quantity']) && isset($_POST['product_id']) && isset($_P
     }
     header("Location: Basket.php");
     exit;
-
-
-
-
-
 }
 
 include 'navbar.php';
@@ -108,19 +102,19 @@ include 'navbar.php';
                             <td>£<?php echo number_format($item['item_price'], 2); ?></td>
                             <td>£<?php echo number_format($item['total_price'], 2); ?></td>
                             <td>
-                                <a href="Basket.php?remove=<?php echo $item['product_id']; ?>" class="remove-btn">Remove</a>
+                                <a href="Basket.php?remove=<?php echo $item['product_id']; ?>" class="main-btn">Remove</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
             <div>
-                <button type="submit" name="update_quantity" class="checkout-btn">Update Basket</button>
+                <button type="submit" name="update_quantity" class="main-btn">Update Basket</button>
             </div>
         </form>
 
         <div>
-            <a href="checkout.php" class="checkout-btn">Checkout</a>
+            <a href="checkout.php" class="main-btn">Checkout</a>
         </div>
 
     <?php else: ?>
@@ -128,7 +122,7 @@ include 'navbar.php';
     <?php endif; ?>
 
     <div>
-        <a href="previous_orders.php" class="previousorder-btn">Previous Orders</a>
+        <a href="previous_orders.php" class="main-btn">Previous Orders</a>
     </div>
 
     <style>
@@ -154,19 +148,29 @@ include 'navbar.php';
             width: 100px;
             height: auto;
         }
-        .checkout-btn, .remove-btn, .previousorder-btn {
-            background-color: #2a4d69;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .checkout-btn:hover, .remove-btn:hover, .previousorder-btn:hover {
-            background-color: #4c7b97;
-        }
-    </style>
+	.main-btn {
+    	background-color: #2a4d69;
+    	color: white;
+    	padding: 10px 20px;
+    	text-align: center;
+    	border: none;
+    	cursor: pointer;
+    	text-decoration: none; 
+    	display: inline-block;
+    	border-radius: 5px;/
+	}
+
+	.main-btn:hover {
+    	background-color: #4c7b97;
+    	color: white;
+    	text-decoration: none; 
+	}
+
+	.main-btn:focus {
+    	outline: 2px solid #2a4d69;
+	}
+
+   </style>
 
 </body>
 </html>
