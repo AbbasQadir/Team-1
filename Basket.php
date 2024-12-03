@@ -40,7 +40,7 @@ $stmt->bindParam(':user_id', $user_id);
 $stmt->execute();
 $basketItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Handle removing an item from the basket
+// removing things from basket
 if (isset($_GET['remove'])) {
     $productId = $_GET['remove'];
     $removeQuery = "DELETE FROM asad_basket WHERE user_id = :user_id AND product_id = :product_id";
@@ -50,7 +50,7 @@ if (isset($_GET['remove'])) {
     exit;
 }
 
-// Handle updating the quantity
+// updating bsket
 if (isset($_POST['update_quantity']) && isset($_POST['product_id']) && isset($_POST['quantity'])) {
     $productId = $_POST['product_id'];
     $newQuantity = $_POST['quantity'];
