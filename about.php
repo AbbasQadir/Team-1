@@ -6,7 +6,7 @@ include 'navbar.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - Mind and Motion</title>
+    <title>About us</title>
     <link href="about.css" rel="stylesheet">
 </head>
 
