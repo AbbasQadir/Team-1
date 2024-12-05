@@ -60,22 +60,35 @@ try {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Previous Orders</title>
-        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="sty.css">
     </head>
     <body>
         <main>
             <h2>Welcome, <?php echo htmlspecialchars($user['first_name']); ?>!</h2>
             <h3>Your Previous Orders:</h3>
             <?php if (count($orders) > 0): ?>
-                <?php foreach ($orders as $order): ?>
-                    <div class="order_card">
-                        <h2>Order <?php echo htmlspecialchars($order['orders_id']); ?></h2>
-                        <p>Date: <?php echo htmlspecialchars($order['order_date']); ?></p>
-                        <p>Total: £<?php echo htmlspecialchars($order['order_price']); ?></p>
-                        <p>Status: <?php echo htmlspecialchars($order['order_status']); ?></p>
-                        <a href="order_details.php?orders_id=<?php echo htmlspecialchars($order['orders_id']); ?>">View Details</a>
-                    </div>
-                <?php endforeach; ?>
+                <ul class="order-table">
+                    <li class="table-header">
+                        <div class="col col-1" data-label="order date">Order Date</div>
+                        <div class="col col-2" data-label="order ID">Order Number</div>
+                        <div class="col col-3" data-label="total">Total</div>
+                        <div class="col col-4" data-label="status">Status</div>
+                        <div class="col col-5" data-label="details">Details</div>
+                    </li>
+                    <tbody>
+                        <?php foreach ($orders as $order): ?>
+                            <li class="table-row">
+                                <div class="col col-1" data-label="order date"><?php echo htmlspecialchars($order['order_date']); ?></div>
+                                <div class="col col-2" data-label="order ID"><?php echo htmlspecialchars($order['orders_id']); ?></div>
+                                <div class="col col-3" data-label="total">£<?php echo htmlspecialchars($order['order_price']); ?></div>
+                                <div class="col col-4" data-label="status"><?php echo htmlspecialchars($order['order_status']); ?></div>
+                                <div class="col col-5" data-label="details">
+                                    <a href="order_details.php?orders_id=<?php echo htmlspecialchars($order['orders_id']); ?>" class="button-details"> View Details</a>
+                                </div>
+                            </li>
+                        <?php endforeach; ?>
+                    </tbody>
+                </ul> 
             <?php else: ?>
                 <p>You do not have any previous orders with us.</p>
             <?php endif; ?>
