@@ -1,0 +1,206 @@
+body {
+    font-family: 'lato', sans-serif;
+}
+main {
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+h2 {
+    font-size: 30px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+h3 {
+    font-size: 26px;
+    margin: 20px;
+    margin-left: 45px;
+    text-align: left;
+}
+
+.order-table {
+    li {
+        border-radius: 3px;
+        padding: 25px 30px;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 25px;
+    }
+    .table-header {
+        background-color: #446494;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+    .table-row {
+        background-color: #ffffff;
+        box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+    }
+    .col-1 {
+        flex-basis: 20%;
+        text-align: center;
+    }
+    .col-2 {
+        flex-basis: 20%;
+        text-align: center;
+    }
+    .col-3 {
+        flex-basis: 20%;
+        text-align: center;
+    }
+    .col-4 {
+        flex-basis: 20%;
+        text-align: center;
+    }
+    .col-5 {
+        flex-basis: 20%;
+        text-align: center;
+    }
+
+    @media all and (max-width: 767px) {
+        .table-header {
+            display: none;
+        }
+        .table-row{
+
+        }
+        li {
+            display: block;
+        }
+        .col {
+
+            flex-basis: 100%;
+
+        }
+        .col {
+            display: flex;
+            padding: 10px 0;
+            &:before {
+                color: #6C7A89;
+                padding-right: 10px;
+                content: attr(data-label);
+                flex-basis: 50%;
+                text-align: right;
+            }
+        }
+    }
+}
+.button-details {
+    background-color: #084298;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    text-decoration: none;
+
+}
+
+.button-details:hover {
+    background-color: #b8c5d4;
+    color: #084298;
+    box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+
+}
+
+.container {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.order-summary {
+    flex: 2;
+    margin-right: 20px;
+}
+
+.order-summary h2 {
+    margin-bottom: 20px;
+}
+
+.product-card {
+    display: flex;
+    background-color: #e8eaff;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.product-card img {
+    width: 150px;
+    height: auto;
+    object-fit: cover;
+}
+
+.product-details {
+    padding: 15px;
+    flex: 1;
+}
+
+.product-details h3 {
+    margin: 0;
+    font-size: 18px;
+    color: black;
+}
+
+.product-details p {
+    margin: 8px 0;
+    font-size: 14px;
+    color: black;
+}
+
+.payment {
+    flex: 1;
+    background-color: #e8eaff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.payment h2 {
+    margin-bottom: 20px;
+}
+
+.payment form {
+    display: flex;
+    flex-direction: column;
+}
+
+.payment label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.payment input,
+.payment select {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.btn {
+    background-color: #0A369D;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.btn:hover {
+    background-color: #0A369D;
+}
