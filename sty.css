@@ -1,7 +1,7 @@
-body {
+.body {
     font-family: 'lato', sans-serif;
 }
-main {
+.main {
     max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
@@ -128,7 +128,7 @@ h3 {
 
 .product-card {
     display: flex;
-    background-color: #e8eaff;
+    background-color: #08429830;
     margin-bottom: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -160,7 +160,7 @@ h3 {
 
 .payment {
     flex: 1;
-    background-color: #e8eaff;
+    background-color: #08429830;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -202,5 +202,85 @@ h3 {
 }
 
 .btn:hover {
-    background-color: #0A369D;
+   background-color: #b8c5d4;
+    color: #084298;
+    box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+}
+
+.order-info {
+	text-align:center;
+    background-color: #08429830;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+	margin:40px;
+}
+
+.order-info h3 {
+	text-align:center;
+    color: black;
+    font-size: 22px;
+}
+
+.order-info p {
+	text-align:center;
+    font-size: 16px;
+}
+
+.products-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.products-cards {
+    display: flex;
+    align-items: center;
+    background-color: #08429830;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 40px;
+}
+
+.products-cards img {
+    width: 150px;
+    height: auto;
+    object-fit: cover;
+}
+
+.details {
+    padding: 15px;
+    flex: 1;
+}
+
+.details h4 {
+    margin: 0 0 5px;
+    font-size: 18px;
+    color: black;
+}
+
+.details p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: black;
+}
+
+.back-button {
+    background-color: #084298;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+    
+    margin: 40px 40px 40px 40px; 
+}
+
+.back-button:hover {
+    background-color: #b8c5d4;
+    color: #084298;
+    box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
 }
