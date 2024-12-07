@@ -1,46 +1,7 @@
 <?php
-$host='localhost';
-$dbname = 'mind_and_motion';
-$username = 'root';
-$password =''; 
-
-$conn = new mysqli($host, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die('connection failed:' . $conn->connect_error);
-}
-$order_id = isset($_GET['order_id'])? intval($_GET['order_id']) : 0;
-
-if ($order_id === 0){
-    die("invalid order id");
-}
-
-$sql = "
-        SELECT 
-            order.order_date,
-            order_prod.quantity, 
-            order_prod.order_prod_price, 
-            product.product_image, 
-            product.product_name,
-            prod.product_id
-        FROM 
-            order_prod 
-        JOIN 
-            product_item ON order_prod.product_item_id = product_item.product_item_id
-        JOIN 
-            product ON product_item.product_id = product.product_id 
-        JOIN 
-            orders ON order_prod.orders_id = orders.orders_id 
-        WHERE 
-            order_prod.order_id = ?";
-
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i",$order_id);
-$stmt->execute();
-$result = $stmt-> get_result();
-?>
-<?php
 session_start();
+include 'navbar.php';
+
 
 if(!isset($_SESSION['user'])){
     header('Location:login.php');
@@ -69,6 +30,7 @@ try {
             orders.order_price,
             order_status.status,
             product.product_name,
+            product.product_image,
             product_item.price,
             order_prod.quantity
         from orders
@@ -100,28 +62,34 @@ $orderInfo = $orderDetails[0];
         <meta charset="UTF-8">
         <meta nam="viewport" content="width=device-width", initial-scale="1.0">
         <title>Order Details</title>
-        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="sty.css">
     </head>
-    <body>
-        <main>
-        <h2>Order Details</h2>
-            <section>
+    <div class="body">
+		<h2>Order Details</h2>
+        <div class="page">
+        
+            <section class="order-info">
                 <h3>Order <?php echo htmlspecialchars($orderInfo['order_id']); ?></h3>
                 <p>Date: <?php echo htmlspecialchars($orderInfo['order_date']); ?></p>
                 <p>Total Price: £<?php echo htmlspecialchars($orderInfo['order_price']); ?></p>
                 <p>Status: <?php echo htmlspecialchars($orderInfo['status']); ?></p>
-                    <h3>Products:</h3>
-                    <card>
-                        <?php foreach ($orderDetails as $product): ?>
-                            <li> 
-                                <p> <?php echo htmlspecialchars($product['product_name']); ?></p>
+            </section> 
+            <div class="product-list">
+                <h3>Products:</h3>
+                
+                   <?php foreach ($orderDetails as $product): ?>
+                        <div class = "products-cards"> 
+                        	
+                    		<img src="<?php echo htmlspecialchars($product['product_image']); ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>">
+                        	<div class="details">
+                                <h4> <?php echo htmlspecialchars($product['product_name']); ?></h4>
                                 <p>Quantity: <?php echo htmlspecialchars($product['quantity']); ?></p>
                                 <p>Price: £<?php echo htmlspecialchars($product['price']); ?></p>
-                            </li>
-                        <?php endforeach; ?>
-                    </card>
-                    <a href="previous_orders.php" class="button">Previous Orders</a>
-            </section>    
-        </main>
-    </body>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <a href="previous_orders.php" class="back-button">Previous Orders</a>  
+        	</div>   
+        </div>
+    </div>
 </html>
