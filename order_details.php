@@ -63,6 +63,7 @@ $orderInfo = $orderDetails[0];
         <meta nam="viewport" content="width=device-width", initial-scale="1.0">
         <title>Order Details</title>
         <link rel="stylesheet" href="sty.css">
+	<link rel="stylesheet" href="homestyle.css">
     </head>
     <div class="body">
 		<h2>Order Details</h2>
@@ -93,3 +94,4 @@ $orderInfo = $orderDetails[0];
         </div>
     </div>
 </html>
+<?php include 'footer.php'; ?>
