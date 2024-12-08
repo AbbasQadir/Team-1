@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+<script>src = "homescript.js"</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="homestyle.css">
     <title>Product Page</title>
 </head>
 <body>
@@ -62,7 +64,7 @@ require_once("navbar.php");
 
         
         <form method="POST">
-            <label for="quantity">Quantity:</label>
+            <label for="quantity" style="display:none;">Quantity:</label>
             <input type="number" name="quantity" id="quantity" min="1" value="1" style="display:none;">
             <button type="submit" id="addToBasket">Add to Basket</button>
         </form>
@@ -70,8 +72,16 @@ require_once("navbar.php");
 
     <div id="detailedInfoContainer">
         <h3 style="font-weight:bold;">Description</h3>
-        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illum obcaecati praesentium cumque harum reiciendis similique maxime suscipit molestiae iure tempora, est ipsam repudiandae hic porro. Ipsum sit quos nobis reiciendis?</p>
-        <p style="font-weight:bold;">Category</p>
+            <ul>
+            <?php 
+            $description = explode('-', $item["description"]);
+			foreach ($description as $description){
+            echo "<li>" . htmlspecialchars(trim($description)) . "</li>";
+            }
+      
+            ?>
+            </ul>
+         <p style="font-weight:bold;">Category</p>
         <p><?php echo htmlspecialchars($item["item_category"]); ?></p>
     </div>
 
@@ -131,10 +141,19 @@ require_once("navbar.php");
         #mainInfoContainer {
             background-color: rgb(216, 216, 216);
             height: 400px;
+            display: grid;
+            grid-template-columns: 350px auto;
+            grid-template-rows: 150px 40px 20px ;
+            gap: 20px;
         }
 
         #mainImage {
             display: inline;
+			grid-column-start: 1;
+            grid-column-end: 2;
+            grid-row-start: 1;
+            grid-row-end: 4;
+
             border-radius: 15px;
             margin-left: 50px;
             margin-top: 50px;
@@ -142,25 +161,28 @@ require_once("navbar.php");
         }
 
         #mainTitle {
-            display: inline;
-            margin-left: 50px;
-            position: relative;
-            bottom: 45px;
+            grid-column-start: 2;
+            grid-column-end: 4;
+			margin-top: 50px;
+
+			display: -webkit-box;
+            -webkit-line-clamp: 2; /* maximum number of lines  */
+            line-clamp: 2; 
+            -webkit-box-orient: vertical;
         }
 
         #mainPrice {
             display: inline;
-            position: relative;
-            top: 50px;
-            right: 135px;
+            grid-column-start: 2;
+            grid-column-end: 4;
         }
 
         #addToBasket {
             display: inline;
             background-color: #2a4d69;
-            position: relative;
-            top: 115px;
-            left: -170px;
+            grid-column-start: 2;
+            grid-column-end: 4;
+
             color: white;
             border: none;
             border-radius: 15px;
