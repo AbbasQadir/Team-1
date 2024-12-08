@@ -13,7 +13,7 @@ include 'navbar.php';
 <body>
     <section class="about-section">
         <div class="container">
-    <h1 id="title">Mind & Motion</h1>
+            <h1 id="title">Mind & Motion</h1>
             <img src="/images/lifting.jpg" alt="Lifestyle image" class="about-image">
             <p id="intro-text">
                 We are your one-stop shop for lifestyle, fitness, and self-improvement products. Our mission is to
@@ -34,7 +34,7 @@ include 'navbar.php';
                 <div>
                     <h3>Our Values</h3>
                     <ul>
-                        <li><strong>Quality:</strong> high quality products that make a difference.</li>
+                        <li><strong>Quality:</strong> High-quality products that make a difference.</li>
                         <li><strong>Customer-Centric:</strong> Excellent shopping experience.</li>
                         <li><strong>Wellness-Focused:</strong> Prioritizing mental, physical, and emotional health.</li>
                     </ul>
@@ -45,7 +45,7 @@ include 'navbar.php';
                         <li>Fitness Equipment</li>
                         <li>Self-Improvement Products</li>
                         <li>Health and Wellness Items</li>
-                        <li>Hobbies and Interests related products</li>
+                        <li>Hobbies and Interests-related products</li>
                     </ul>
                 </div>
                 <div>
@@ -59,5 +59,7 @@ include 'navbar.php';
             </div>
         </div>
     </section>
+
+    <?php include 'footer.php'; ?>
 </body>
 </html>
