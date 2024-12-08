@@ -89,7 +89,8 @@ $orderInfo = $orderDetails[0];
                             </div>
                         </div>
                     <?php endforeach; ?>
-                <a href="previous_orders.php" class="back-button">Previous Orders</a>  
+                <a href="previous_orders.php" class="back-button">Previous Orders</a> 
+		<br><br><be>
         	</div>   
         </div>
     </div>
