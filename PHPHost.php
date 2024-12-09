@@ -45,15 +45,29 @@ function fetchProducts($db, $requestedCategory){
 }
 
 function searchProducts($db, $query){
-if($query == ""){
-    echo "<script>window.location.href='productpage2.php?category=fitness';</script>";
+    // If the search query is empty, redirect the user to the fitness category page
+    if($query == ""){
+        echo "<script>window.location.href='productpage2.php?category=fitness';</script>";
+    }
+
+    // Prepare the SQL query to search for the query in three different fields: item name, description, and category
+    $sql = "SELECT * FROM products WHERE item_name LIKE ? OR description LIKE ? OR item_category LIKE ?";
+
+    // Prepare the query for execution
+    $result = $db->prepare($sql);
+
+    // Add "%" around the search query so we can match partial text (not just exact matches)
+    $searchTerm = "%$query%";
+
+    // Execute the query, using the search term for all three fields (name, description, and category)
+    $result->execute(array($searchTerm, $searchTerm, $searchTerm));
+
+    // Fetch all matching products and return them
+    $items = $result->fetchAll(PDO::FETCH_ASSOC);
+    
+    return $items;
 }
 
-$result = $db->prepare("SELECT * FROM products WHERE item_name LIKE ? ; ");
-$result->execute( array("%$query%"));
-$items = $result->fetchAll(PDO::FETCH_ASSOC);
-return $items;
-}
 
 
 ?>
