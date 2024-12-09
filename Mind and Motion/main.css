@@ -1,0 +1,65 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+    font-family: 'Merriweather', serif;
+    background-color: #f5f5f5;
+    color: black;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+
+/* Buttons */
+.btn {
+    background-color: #0256CE; /* Button background color */
+    color: white; /* Text color */
+    font-size: 1.1em; /* Text size */
+    font-weight: bold; /* Bold text */
+    padding: 10px 15px; /* Padding for inner spacing */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effects */
+}
+
+.btn:hover {
+    background-color: #2A4D69; /* Darker blue on hover */
+    transform: scale(1.05); /* Slight enlargement on hover */
+}
+
+
+
+a {
+    text-decoration: none;
+    color: black;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #0256CE;
+}
+
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.font-bold {
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        font-size: 16px;
+    }
+}
