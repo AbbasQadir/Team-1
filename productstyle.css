@@ -1,0 +1,125 @@
+body, h1, p, label {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: white;
+    color: black;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2.5rem;
+    color: black;
+}
+
+form {
+    display: flex;
+    justify-content: right;
+    margin: 20px 0;
+    gap: 10px;
+}
+
+form input {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 250px;
+}
+
+form button {
+    background-color: #084298;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+form button:hover {
+ 	background-color: #b8c5d4;
+    color: #084298;
+    box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+}
+
+/* Products container */
+.products {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: left;
+}
+
+/* Individual product item */
+.item {
+	position: relative;
+    background: white;
+    padding: 0;
+    width: 250px;
+	height: 380px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+
+}
+.item a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+.item:hover {
+    transform: scale(0.95);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.item img {
+    width: 250px; /* Ensures the image takes the full width of the card */
+    object-fit: cover; /* Ensures the image fills the space without distortion */
+	box-shadow: 0 5px 1px 0 rgba(0, 0, 0, 0.02);
+	margin-bottom:20px;
+}
+
+.product-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: black;  
+	text-decoration: none;
+}
+
+.product-price {
+    font-size: 1rem;
+    color: black;
+    font-weight: bold;
+	text-decoration: none;
+}
+@media (max-width: 768px) {
+    .products {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .item {
+        width: 90%;
+    }
+}
+.favorite-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 2.5rem;
+    color: #084298;
+    cursor: pointer;
+    z-index: 2;
+}
+.favorite-icon:hover {
+    color: #b8c5d4;
+}

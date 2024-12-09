@@ -1,0 +1,898 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+    font-family: 'Merriweather', serif;
+    background-color: #f5f5f5;
+    color: black;
+    font-size: 18px;
+    line-height: 1.6;
+
+/* Blue Top Strip */
+.top-strip {
+    background-color: #2A4D69;
+    height: 10px;
+    width: 100%;
+}
+
+/* Navigation Section */
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f5f5f5;
+    height: 80px;
+    padding: 5px 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+.logo img {
+    height: 200px;
+    width: auto;
+}
+
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: black;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #0256CE;
+}
+
+/* Dropdown */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+    z-index: 1000;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 10px 20px;
+    color: black;
+    text-decoration: none;
+}
+
+.dropdown-menu a:hover {
+    background-color: #f5f5f5;
+    color: #0256CE;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* Navigation Controls */
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.basket img {
+    height: 30px;
+    width: auto;
+    cursor: pointer;
+}
+
+.basket:hover img {
+    filter: brightness(0) saturate(100%) invert(14%) sepia(91%) saturate(3978%) hue-rotate(205deg) brightness(95%) contrast(97%);
+}
+
+.basket span {
+    color: #000;
+    font-size: 1.2em;
+    margin-left: 5px;
+}
+
+/* Search Bar */
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #f5f5f5;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar input {
+    border: none;
+    outline: none;
+    font-size: 0.9em;
+    background: transparent;
+    flex: 1;
+}
+
+.search-bar img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #fff;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.search-bar img:hover {
+    background-color: #0256CE;
+    transform: scale(1.1);
+}
+
+
+/* Hero Section */
+.hero {
+    background: url('images/heroimage.png') no-repeat center/cover;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    color: white;
+}
+
+.hero .hero-content {
+    z-index: 2;
+}
+
+.hero h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.hero .cta-button {
+    background-color: #0256CE;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.hero .cta-button:hover {
+    background-color: #2A4D69;
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+/* Section Headings */
+.section-heading {
+    font-size: 1.8em;
+    font-weight: bold;
+    text-align: center;
+    margin: 30px 0;
+    color: black;
+}
+
+.why-choose-us {
+    padding: 40px;
+    text-align: center;
+    background-color: #f5f5f5;
+}
+
+.why-choose-us h2 {
+    font-family: 'Merriweather', serif; /* Consistent with reviews and products */
+    font-size: 2.5em; /* Large title */
+    font-weight: bold;
+    color: #2A4D69; /* Deep blue for the title */
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.features-container {
+    display: flex; /* Arrange features horizontally */
+    justify-content: space-evenly; /* Even spacing between features */
+    align-items: center; /* Align items vertically */
+    gap: 50px; /* Add spacing between features */
+    max-width: 1200px; /* Constrain width */
+    margin: 0 auto; /* Center container */
+}
+
+.feature {
+    text-align: center; /* Center-align text and icons */
+    flex: 1; /* Equal space for each feature */
+    display: flex; /* Enable flexbox for vertical alignment */
+    flex-direction: column; /* Stack icon and text vertically */
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center-align everything horizontally */
+}
+
+.feature img {
+    width: 80px; /* Consistent icon size */
+    height: auto; /* Maintain aspect ratio */
+    margin-bottom: 10px; /* Add space between icon and text */
+}
+
+.feature p {
+    font-family: 'Merriweather', serif; /* Consistent font */
+    font-size: 1.2em; /* Slightly larger font size for readability */
+    color: black; /* Black text for professionalism */
+    margin: 0; /* Remove default margin */
+    line-height: 1.5; /* Improve readability */
+}
+
+
+
+/* Carousel Section */
+.carousel {
+    position: relative;
+    margin: 20px auto;
+    width: 100%;
+    max-width: 1400px;
+    height: 500px; /* Adjusted height to ensure all images fit */
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #2A4D69; /* Fallback background */
+}
+
+/* Carousel Title */
+.carousel-title {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #2A4D69; /* Consistent with carousel background */
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 1.5em;
+    font-weight: bold;
+    z-index: 10; /* Ensure it appears above the carousel */
+    border-radius: 10px 10px 0 0;
+}
+
+/* Carousel Track */
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: 100%;
+}
+
+/* Carousel Items */
+.carousel-item {
+    flex: 0 0 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.carousel-item img {
+    max-height: 100%; /* Fit within carousel height */
+    max-width: 100%; /* Fit within carousel width */
+    object-fit: contain; /* Show the entire image, no cropping */
+    display: block;
+    border-radius: 10px; /* Match the carousel's border radius */
+}
+
+/* Navigation Arrows */
+.carousel-arrow {
+    position: absolute; /* Position relative to carousel */
+    top: 50%; /* Vertically center */
+    transform: translateY(-50%); /* Offset for perfect centering */
+    background: rgba(0, 0, 0, 0.8); /* Dark arrow background */
+    color: white; /* White arrow color */
+    font-size: 1.9em; /* Arrow size */
+    padding: 12px; /* Padding inside the button */
+    border-radius: 50%; /* Circular arrows */
+    cursor: pointer; /* Pointer cursor */
+    z-index: 10; /* Ensure it appears above carousel elements */
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth hover effects */
+}
+
+.carousel:hover .carousel-arrow {
+    opacity: 1; /* Show arrows on hover */
+}
+
+.carousel-arrow.left {
+    left: 20px; /* Position left arrow */
+}
+
+.carousel-arrow.right {
+    right: 20px; /* Position right arrow */
+}
+
+.carousel-arrow:hover {
+    background-color: #0256CE;
+}
+
+/* Pagination Dots */
+.pagination-dots {
+    display: flex; /* Align dots horizontally */
+    justify-content: center; /* Center dots */
+    align-items: center;
+    position: absolute; /* Positioned relative to carousel */
+    bottom: 20px; /* Positioned at the bottom */
+    width: 100%; /* Full width */
+    gap: 12px; /* Add space between dots */
+}
+
+.pagination-dots .dot {
+    width: 14px; /* Size of each dot */
+    height: 14px; /* Size of each dot */
+    background: #ccc; /* Default color */
+    border-radius: 50%; /* Circular dots */
+    cursor: pointer; /* Pointer cursor for interactivity */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth effects */
+}
+
+.pagination-dots .dot:hover {
+    transform: scale(1.2); /* Enlarge on hover */
+}
+
+.pagination-dots .dot.active {
+    background: #0256CE; /* Highlight active dot */
+}
+
+
+/* Section Title */
+.section-title {
+    font-family: 'Merriweather', serif; /* Match font with reviews */
+    text-align: left; /* Align to the left */
+    margin-left: 0; /* Align directly above the first card */
+    margin-bottom: 20px; /* Add space below the title */
+    color: #2A4D69; /* Deep blue for consistency */
+    font-size: 2.5em; /* Larger font size for emphasis */
+    font-weight: bold;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Product Container */
+.product-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+/* Product Card */
+.product-card {
+    flex: 1 1 calc(33.33% - 20px);
+    max-width: 300px;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 450px; /* Enforce uniform height */
+    justify-content: space-between; /* Space elements evenly */
+}
+
+.product-card:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+/* Product Image */
+.product-card img {
+    width: 100%; /* Ensure the image spans the full width */
+    height: 250px; /* Keep a consistent height for all images */
+    object-fit: contain; /* Show the entire image, including the top part */
+    border-radius: 5px; /* Optional: Rounded corners */
+    margin-bottom: 10px; /* Add space below the image */
+    display: block; /* Prevent inline spacing issues */
+}
+
+/* Product Details */
+.product-details {
+    text-align: center;
+    margin-bottom: 10px; /* Add spacing from button */
+}
+
+.product-details p {
+    margin: 10px 0; /* Space between text elements */
+    font-size: 1em; /* Adjust text size */
+}
+
+.product-details p:first-of-type {
+    font-weight: bold; /* Make the item name bold */
+}
+
+.product-details .price-now {
+    font-weight: bold;
+    color: #0256CE;
+    font-size: 1.2em;
+}
+
+/* Button */
+.product-card button {
+    margin-top: auto; /* Push the button to the bottom */
+    padding: 10px 20px;
+    background-color: #0256CE;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.product-card button:hover {
+    background-color: #0041A3;
+}
+
+
+
+/* Styling for the "Now" price */
+.price-now {
+    color: #0256CE; /* Highlighted color for new price */
+    font-family: 'Merriweather', serif; /* Match font with reviews */
+    font-weight: bold; /* Bold text for emphasis */
+    font-size: 1.2em; /* Slightly larger font size */
+}
+/* Popular Products Section Alignment Fix */
+.popular-products {
+    padding: 30px 20px; /* Adjust padding for alignment */
+    margin-bottom: 0; /* Remove extra space below this section */
+}
+
+/* Customer Reviews Section Adjustment (if necessary) */
+.customer-reviews {
+    margin-top: 0; /* Ensure there's no margin above the reviews section */
+}
+
+
+/* Customer Reviews Section */
+.customer-reviews {
+    background-color: #f5f5f5; /* Light gray background for contrast */
+    padding: 50px 20px;
+    text-align: center;
+    border-top: 5px solid #2A4D69; /* Top border for visual separation */
+    border-bottom: 5px solid #0256CE; /* Bottom border for added style */
+}
+
+/* Section Title */
+.customer-reviews .section-title {
+    font-size: 2.5em;
+    color: #2A4D69; /* Deep blue for emphasis */
+    font-weight: bold;
+    margin-bottom: 40px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Review Container */
+.review-container {
+    display: flex;
+    justify-content: center; /* Center all review cards */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    gap: 40px; /* More consistent spacing between cards */
+    max-width: 1200px; /* Limit the section width */
+    margin: 0 auto; /* Center the entire container */
+    padding: 20px; /* Add padding around reviews */
+}
+/* Review Card */
+.review-card {
+    background: linear-gradient(145deg, #2A4D69, #0256CE); /* Gradient background */
+    border-radius: 15px; /* Smooth rounded corners */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Elegant shadow */
+    padding: 30px;
+    text-align: center;
+    color: white; /* White text for contrast */
+    width: 300px; /* Fixed width for consistency */
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+}
+
+
+.review-card:hover {
+    transform: translateY(-5px); /* Slight lift effect */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* More pronounced shadow */
+}
+
+/* Review Header */
+.review-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; /* Space between image and name */
+    margin-bottom: 20px;
+}
+
+/* Customer Image */
+.customer-image {
+    width: 100px; /* Uniform size for all customer images */
+    height: 100px;
+    border-radius: 50%; /* Circular image */
+    border: 3px solid white; /* White border for elegance */
+    object-fit: cover; /* Maintain aspect ratio and crop excess */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slight shadow for depth */
+}
+
+/* Customer Name */
+.review-header h3 {
+    font-size: 1.5em;
+    color: #fff; /* White name text */
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Customer Comment */
+.customer-comment {
+    font-size: 1.1em;
+    color: #e0e0e0; /* Light gray for readability */
+    line-height: 1.5;
+    margin: 0;
+    padding: 0 10px; /* Padding for better spacing */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .review-container {
+        flex-direction: column;
+        align-items: center; /* Center-align reviews */
+    }
+
+    .review-card {
+        width: 100%; /* Full width on small screens */
+        max-width: 400px; /* Limit max width */
+    }
+}
+
+
+
+/* Footer General Styles */
+.footer {
+    background-color: #2A4D69; /* Dark blue */
+    color: white; /* White text */
+    padding: 40px 20px;
+    font-size: 16px;
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; /* Space sections evenly */
+    align-items: flex-start; /* Align sections to the top */
+    gap: 20px; /* Add space between sections */
+    max-width: 1200px;
+    margin: 0 auto; /* Center the footer */
+}
+
+/* Branding Section */
+.footer-branding {
+    flex: 1 1 250px; /* Adjusted width for balance */
+    text-align: left;
+}
+
+.footer-branding h3 {
+    font-size: 20px; /* Emphasized branding name */
+    margin-bottom: 10px;
+    color: white; /* Consistent with text color */
+}
+
+.footer-branding p {
+    font-size: 14px;
+    color: white; /* White text for better readability */
+}
+
+/* Quick Links Section */
+.footer-links {
+    flex: 1 1 250px;
+    text-align: left;
+}
+
+.footer-links h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.footer-links ul {
+    list-style: none; /* Remove bullet points */
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links ul li {
+    margin-bottom: 10px; /* Space between links */
+}
+
+.footer-links ul li a {
+    color: white; /* White links */
+    text-decoration: none;
+    font-weight: 500; /* Slightly bold text */
+    transition: color 0.3s ease; /* Smooth color transition */
+}
+
+.footer-links ul li a:hover {
+ font-weight: bold; /* Makes the text bold */
+  text-decoration: underline; /* Adds an underline to the text */
+}
+
+/* Social Media Section */
+.footer-social {
+    flex: 1 1 250px;
+    text-align: center;
+}
+
+.footer-social h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.social-media-icons {
+    display: flex;
+    justify-content: center; /* Center-align icons horizontally */
+    align-items: center; /* Align icons vertically */
+    gap: 15px; /* Add spacing between icons */
+}
+
+.social-media-icons a img {
+    width: 50px; /* Uniform icon size */
+    height: 50px;
+    object-fit: contain; /* Maintain proportions */
+    transition: transform 0.3s ease, opacity 0.3s ease; /* Smooth hover effects */
+}
+
+.social-media-icons a:hover img {
+    transform: scale(1.1); /* Slight zoom effect */
+    opacity: 0.8; /* Subtle opacity change on hover */
+}
+
+/* Contact Section */
+.footer-contact {
+    flex: 1 1 250px;
+    text-align: left;
+}
+
+.footer-contact h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.footer-contact p {
+    margin: 5px 0;
+    color: white; /* White text */
+}
+
+.footer-contact a { 
+    text-decoration: underline; /* Adds underline */
+    font-weight: bold; /* Makes text bold */
+    color: white; /* Set color to white to override default blue */
+}
+
+.footer-contact a:hover {
+    text-decoration: underline; /* Keeps underline on hover */
+    color: white; /* Keep white on hover for consistency */
+}
+
+
+
+/* Footer Bottom Section */
+.footer-bottom {
+    margin-top: 30px; /* Space above the bottom section */
+    text-align: center; /* Center-align text */
+    font-size: 14px; /* Smaller font for footer bottom */
+    border-top: 1px solid white; /* Subtle border */
+    padding-top: 10px; /* Space above content */
+    color: white; /* White text */
+}
+
+.footer-bottom p {
+    margin: 5px 0; /* Spacing between lines */
+}
+
+.footer-bottom a {
+    font-weight: bold; /* Makes the text bold */
+    text-decoration: underline; /* Adds an underline to the text */
+    color: inherit;; /* Light yellow for links */
+}
+
+.footer-bottom a:hover {
+    text-decoration: underline; /* Underline effect on hover */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column;
+        align-items: center; /* Center-align all sections */
+        text-align: center; /* Center text */
+    }
+
+    .footer-links,
+    .footer-social,
+    .footer-contact,
+    .footer-branding {
+        margin-bottom: 20px; /* Space between sections */
+    }
+
+    .social-media-icons a img {
+        width: 40px; /* Adjusted size for smaller screens */
+        height: 40px;
+    }
+}
+
+
+/* Hamburger Menu */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.hamburger-menu span {
+    height: 3px;
+    width: 25px;
+    background: black;
+    margin: 4px 0;
+    transition: 0.4s;
+}
+
+/* Mobile Menu */
+.mobile-menu {
+    display: none;
+    flex-direction: column;
+    align-items: center; /* Center the content */
+    background: #f5f5f5;
+    position: absolute;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+}
+
+.mobile-menu a {
+    padding: 10px 20px;
+    text-decoration: none;
+    color: black;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: color 0.3s ease;
+    text-align: center; /* Center the text */
+}
+
+.mobile-menu a:hover {
+    color: #0256CE;
+}
+
+.mobile-menu .dropdown-menu {
+    display: none;
+    flex-direction: column;
+    align-items: center; /* Center the dropdown items */
+}
+
+.mobile-menu .dropdown:hover .dropdown-menu {
+    display: flex;
+}
+
+.mobile-menu.active {
+    display: flex;
+}
+
+/* Media Query for Mobile View */
+@media (max-width: 809px) {
+    .nav-links, .nav-controls {
+        display: none;
+    }
+    .hamburger-menu {
+        display: flex;
+    }
+}
+/* Hamburger Menu */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.hamburger-menu span {
+    height: 3px;
+    width: 25px;
+    background: black;
+    margin: 4px 0;
+    transition: 0.4s;
+}
+
+/* Mobile Menu */
+.mobile-menu {
+    display: none;
+    flex-direction: column;
+    align-items: center; /* Center the content */
+    background: #f5f5f5;
+    position: absolute;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+}
+
+.mobile-menu a {
+    padding: 10px 20px;
+    text-decoration: none;
+    color: black;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: color 0.3s ease;
+    text-align: center; /* Center the text */
+}
+
+.mobile-menu a:hover {
+    color: #0256CE;
+}
+
+.mobile-menu .dropdown-menu {
+    display: none;
+    flex-direction: column;
+    align-items: center; /* Center the dropdown items */
+}
+
+.mobile-menu .dropdown:hover .dropdown-menu {
+    display: flex;
+}
+
+.mobile-menu.active {
+    display: flex;
+}
+
+/* Media Query for Mobile View */
+@media (max-width: 809px) {
+    .nav-links, .nav-controls {
+        display: none;
+    }
+    .hamburger-menu {
+        display: flex;
+    }
+}
+
+@media (min-width: 810px) {
+    .mobile-menu {
+        display: none;
+    }
+}
+
+}
