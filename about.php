@@ -7,7 +7,7 @@ include 'navbar.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About us</title>
-    <link href="about.css" rel="stylesheet">
+    <link href="public/assets/css/about.css" rel="stylesheet">
 </head>
 
 <body>
