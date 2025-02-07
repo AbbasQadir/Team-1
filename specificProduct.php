@@ -5,6 +5,7 @@
 <script>src = "homescript.js"</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="homestyle.css">
+<link rel="stylesheet" href="main.css">
     <title>Product Page</title>
 </head>
 <body>
@@ -18,10 +19,11 @@ session_start();
     $productID = $_GET["id"];
 
     // Fetch product details
-    $result = $db->prepare("SELECT * FROM products WHERE product_id=:id");
-    $result->bindParam(":id", $productID);
-    $result->execute();
-    $item = $result->fetch(PDO::FETCH_ASSOC);
+    $item = getDBResult($db, "SELECT * FROM product WHERE product_id=:productID", ":productID", $productID)[0];
+
+  if(!file_exists($item["product_image"])){
+  	$item["product_image"] = "images/missingImage.png";
+  }
 
     
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -57,10 +59,10 @@ require_once("navbar.php");
     ?>
 
     <div id="mainInfoContainer"> 
-        <img src="<?php echo htmlspecialchars($item["image"]); ?>" id="mainImage" width="250px">
+        <img src="<?php echo htmlspecialchars($item["product_image"]); ?>" id="mainImage" width="250px">
         
-        <h1 id="mainTitle"><?php echo htmlspecialchars($item["item_name"]); ?></h1>
-        <h5 id="mainPrice">£<?php echo htmlspecialchars($item["item_price"]); ?></h5>
+        <h1 id="mainTitle"><?php echo htmlspecialchars($item["product_name"]); ?></h1>
+        <h5 id="mainPrice">£<?php echo htmlspecialchars(getProductPrice($db, $productID)); ?></h5>
 
         
         <form method="POST">
@@ -74,48 +76,61 @@ require_once("navbar.php");
         <h3 style="font-weight:bold;">Description</h3>
             <ul>
             <?php 
-            $description = explode('-', $item["description"]);
+            $description = explode('-', $item["product_discription"]);
 			foreach ($description as $description){
             echo "<li>" . htmlspecialchars(trim($description)) . "</li>";
             }
+
       
             ?>
             </ul>
-         <p style="font-weight:bold;">Category</p>
-        <p><?php echo htmlspecialchars($item["item_category"]); ?></p>
+            <br>
+         <h3 style="font-weight:bold;">Category</h3> 
+         <p><?php echo htmlspecialchars(getCatagoryFromId($db, $item["product_category_id"])); ?></p>
     </div>
 
+           <?php 
+            
+            $simmilarResults = searchProducts($db, getCatagoryFromId($db, $item["product_category_id"]));
+			//var_dump($simmilarResults);
+            
+            ?> 
+            
     <div id="similarProductsContainer">
         <h1 id="similarProductsHeader">Similar Products</h1>
 
-        <a href="">
+            
+            
+        <a href="/specificProduct.php?id=<?php echo $simmilarResults[0]['product_id'] ?>">
             <div class="similarProductItem">
-                <img class="similarProductImg" src="images/book.jpg">
-                <p class="similarProductTitle">Title</p>
-                <p class="similarProductPrice">price</p>
+                <img class="similarProductImg" src="<?php echo $simmilarResults[0]['image'] ?>">
+                <p class="similarProductTitle"><?php echo $simmilarResults[0]["item_name"] ?></p>
+                <p class="similarProductPrice">£<?php echo $simmilarResults[0]['item_price'] ?></p>
             </div>
         </a>
         
-        <a href="">
+        <a href="/specificProduct.php?id=<?php echo $simmilarResults[1]['product_id'] ?>">
             <div class="similarProductItem">
-                <img class="similarProductImg" src="/images/book.jpg">
-                <p class="similarProductTitle">Title</p>
-                <p class="similarProductPrice">price</p>
+                <img class="similarProductImg" src="<?php echo $simmilarResults[1]['image'] ?>">
+                <p class="similarProductTitle"><?php echo $simmilarResults[1]["item_name"] ?></p>
+                <p class="similarProductPrice">£<?php echo $simmilarResults[1]['item_price'] ?></p>
             </div>
         </a>
 
-        <a href="">
+        <a href="/specificProduct.php?id=<?php echo $simmilarResults[2]['product_id'] ?>">
             <div class="similarProductItem">
-                <img class="similarProductImg" src="/images/book.jpg">
-                <p class="similarProductTitle">Title</p>
-                <p class="similarProductPrice">price</p>
+                <img class="similarProductImg" src="<?php echo $simmilarResults[2]['image'] ?>">
+                <p class="similarProductTitle"><?php echo $simmilarResults[2]["item_name"] ?></p>
+                <p class="similarProductPrice">£<?php echo $simmilarResults[2]['item_price'] ?></p>
             </div>
         </a>
     </div>
+            
+            <?php include 'footer.php'; ?>
 
     <style>
         body {
-            margin-bottom: 550px;
+            margin-bottom: 0px;
         }
 
         a {
@@ -172,6 +187,7 @@ require_once("navbar.php");
         }
 
         #mainPrice {
+			font-size: 25px;
             display: inline;
             grid-column-start: 2;
             grid-column-end: 4;
@@ -179,9 +195,10 @@ require_once("navbar.php");
 
         #addToBasket {
             display: inline;
-            background-color: #2a4d69;
+            background-color: #084298;
             grid-column-start: 2;
             grid-column-end: 4;
+			cursor: pointer;
 
             color: white;
             border: none;
@@ -208,6 +225,7 @@ require_once("navbar.php");
             padding-bottom: 25px;
             display: inline-block;
             border-radius: 25px;
+        	
         }
 
         .similarProductImg {
@@ -215,6 +233,7 @@ require_once("navbar.php");
             margin-top: 20px;
             margin-left: 5%;
             width: 90%;
+        	height:550px;
         }
 
         .similarProductTitle {
