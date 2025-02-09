@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind & Motion</title>
+    <style>
+   
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+
+        h2 {
+            flex-grow: 1;
+            text-align: center;
+            margin: 0;
+        }  
+
+        .add-container {
+            display: flex;
+            max-width: 1000px;
+            margin: 40px auto;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+
+        .add-form-container {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .add-form-container form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .add-form-container label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .add-form-container input,
+        .add-form-container select {
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        .add-form-container input[type="submit"] {
+            background: #0A369D;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .add-form-container input[type="submit"]:hover {
+            background: #084298;
+            transform: scale(1.05);
+        }
+
+        .custum-file-upload .icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .custum-file-upload .icon svg {
+            height: 80px;
+            fill: rgba(75, 85, 99, 1);
+         }
+
+        .custum-file-upload .text {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        }
+
+        .custum-file-upload .text span {
+        font-weight: 400;
+        color: rgba(75, 85, 99, 1);
+        }
+
+        .custum-file-upload input {
+        display: none;
+        }
+
+        
+
+    </style>
+</head>
+<body>
+    
+
+    
+
+    <div class="signup-container">
+        <div class="signup-form-container">
+            <form action="#" method="post">
+                <label for="name">Name of product</label>
+                <input type="text" id="name" name="name" placeholder="Name" required>
+                <label for="description">Description of Product</label>
+                <input type="text" id="description" name="description" placeholder="Description" required>
+                
+                <label for="price">Price of Product</label>
+                <input type="text" id="Price" name="Price" placeholder="Price" required>
+                <label for="quantity">Quantity of Product</label>
+                <input type="text" id="Quantity" name="Quantity" placeholder="Quantity" required>
+
+                <label for="Category "> Category of product </label>
+                <select id="Category" name="Category">
+                    <option value="" disabled selected>Select Gender</option>
+                    <option value="Books">Books</option>
+                    <option value="supplements">Supplements</option>
+                    <option value="Gym wear">Gym wear</option>
+                    <option value="Fitness equipments ">Fitness equipments </option>
+                    <option value="Technology ">Technology</option>
+                </select>
+                <input type="submit" value="Add the product ">
+                <input type="submit" value="Go to index ">
+            </form>
+        </div>
+    </div>
+
+    
+
+   
+</body>
+</html>
