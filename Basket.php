@@ -20,18 +20,22 @@ $user_id = $_SESSION['uid'];
 // get basket from user that is logged in 
 $query = "
     SELECT 
-        p.item_name, 
-        p.image, 
+        p.product_name, 
+        p.product_image, 
+        pi.price, 
         b.quantity, 
-        p.item_price, 
-        (b.quantity * p.item_price) AS total_price,
+        (b.quantity * pi.price) AS total_price,
         b.product_id
     FROM 
         asad_basket b 
     JOIN 
-        products p 
+        product p 
     ON 
         b.product_id = p.product_id 
+    JOIN
+        product_item pi
+    ON
+        b.product_id = pi.product_id
     WHERE 
         b.user_id = :user_id
 ";
@@ -40,7 +44,7 @@ $stmt->bindParam(':user_id', $user_id);
 $stmt->execute();
 $basketItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// basket item rmoval
+// basket item removal
 if (isset($_GET['remove'])) {
     $productId = $_GET['remove'];
     $removeQuery = "DELETE FROM asad_basket WHERE user_id = :user_id AND product_id = :product_id";
@@ -50,7 +54,7 @@ if (isset($_GET['remove'])) {
     exit;
 }
 
-// quanitity uodater
+// quantity updater
 if (isset($_POST['update_quantity']) && isset($_POST['quantity'])) {
     foreach ($_POST['quantity'] as $productId => $newQuantity) {
         if ($newQuantity > 0) {
@@ -76,7 +80,7 @@ include 'navbar.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Basket</title>
-	<link rel="stylesheet" href="homestyle.css">
+    <link rel="stylesheet" href="homestyle.css">
 </head>
 <body>
 
@@ -98,14 +102,14 @@ include 'navbar.php';
             <tbody>
                 <?php foreach ($basketItems as $item): ?>
                     <tr class="basket-row">
-                        <td class="basket-cell"><?php echo htmlspecialchars($item['item_name']); ?></td>
+                        <td class="basket-cell"><?php echo htmlspecialchars($item['product_name']); ?></td>
                         <td class="basket-cell">
-                            <img src="<?php echo htmlspecialchars($item['image']); ?>" alt="<?php echo htmlspecialchars($item['item_name']); ?>" class="basket-image">
+                            <img src="<?php echo htmlspecialchars($item['product_image']); ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>" class="basket-image">
                         </td>
                         <td class="basket-cell">
                             <input type="number" name="quantity[<?php echo $item['product_id']; ?>]" value="<?php echo $item['quantity']; ?>" min="1" required class="basket-quantity">
                         </td>
-                        <td class="basket-cell">&pound;<?php echo number_format($item['item_price'], 2); ?></td>
+                        <td class="basket-cell">&pound;<?php echo number_format($item['price'], 2); ?></td>
                         <td class="basket-cell">&pound;<?php echo number_format($item['total_price'], 2); ?></td>
                         <td class="basket-cell">
                             <a href="Basket.php?remove=<?php echo $item['product_id']; ?>" class="basket-remove-btn">Remove</a>
@@ -133,8 +137,8 @@ include 'navbar.php';
 
 <style>
     body{
-		margin:0;
-	}
+        margin:0;
+    }
     .basket-title {
         margin-top: 20px;
         text-align: center;
@@ -164,7 +168,7 @@ include 'navbar.php';
     }
     .basket-remove-btn, .basket-checkout-btn, .basket-previous-orders-btn {
         font-family: 'Merriweather', serif;
-    	background-color: #084298;
+        background-color: #084298;
         color: white;
         border: none;
         padding: 15px;
@@ -183,9 +187,9 @@ include 'navbar.php';
         box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
         text-decoration: none;
     }
-	.basket-update-btn{
-    	font-family: 'Merriweather', serif;
-    	background-color: #084298;
+    .basket-update-btn{
+        font-family: 'Merriweather', serif;
+        background-color: #084298;
         color: white;
         border: none;
         padding: 18px;
@@ -197,14 +201,9 @@ include 'navbar.php';
         margin-left: 10px;
         display: inline-block;
         text-align: center;
-    	margin-bottom:10px;
+        margin-bottom:10px;
     }
-	
-
 </style>
-
-
-
 
 </body>
 </html>

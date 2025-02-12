@@ -19,11 +19,10 @@ session_start();
     $productID = $_GET["id"];
 
     // Fetch product details
-    $item = getDBResult($db, "SELECT * FROM product WHERE product_id=:productID", ":productID", $productID)[0];
-
-  if(!file_exists($item["product_image"])){
-  	$item["product_image"] = "images/missingImage.png";
-  }
+    $result = $db->prepare("SELECT * FROM product WHERE product_id=:id");
+    $result->bindParam(":id", $productID);
+    $result->execute();
+    $item = $result->fetch(PDO::FETCH_ASSOC);
 
     
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -59,11 +58,10 @@ require_once("navbar.php");
     ?>
 
     <div id="mainInfoContainer"> 
-        <img src="<?php echo htmlspecialchars($item["product_image"]); ?>" id="mainImage" width="250px">
+        <img src="<?php echo htmlspecialchars($item["image"]); ?>" id="mainImage" width="250px">
         
-        <h1 id="mainTitle"><?php echo htmlspecialchars($item["product_name"]); ?></h1>
-        <h5 id="mainPrice">£<?php echo htmlspecialchars(getProductPrice($db, $productID)); ?></h5>
-    	
+        <h1 id="mainTitle"><?php echo htmlspecialchars($item["item_name"]); ?></h1>
+        <h5 id="mainPrice">£<?php echo htmlspecialchars($item["item_price"]); ?></h5>
 
         
         <form method="POST">
@@ -71,23 +69,13 @@ require_once("navbar.php");
             <input type="number" name="quantity" id="quantity" min="1" value="1" style="display:none;">
             <button type="submit" id="addToBasket">Add to Basket</button>
         </form>
-            
-            <?php
-
-            
-            if($_SESSION['admin'] == "admin"){
-            	//echo "logged in as admin";
-            }
-            
-            ?> 
-             
     </div>
 
     <div id="detailedInfoContainer">
         <h3 style="font-weight:bold;">Description</h3>
             <ul>
             <?php 
-            $description = explode('-', $item["product_discription"]);
+            $description = explode('-', $item["description"]);
 			foreach ($description as $description){
             echo "<li>" . htmlspecialchars(trim($description)) . "</li>";
             }
@@ -97,12 +85,12 @@ require_once("navbar.php");
             </ul>
             <br>
          <h3 style="font-weight:bold;">Category</h3> 
-         <p><?php echo htmlspecialchars(getCatagoryFromId($db, $item["product_category_id"])); ?></p>
+         <p><?php echo htmlspecialchars($item["item_category"]); ?></p>
     </div>
 
            <?php 
             
-            $simmilarResults = searchProducts($db, getCatagoryFromId($db, $item["product_category_id"]));
+            $simmilarResults = searchProducts($db, $item["item_category"]);
 			//var_dump($simmilarResults);
             
             ?> 
@@ -114,9 +102,9 @@ require_once("navbar.php");
             
         <a href="/specificProduct.php?id=<?php echo $simmilarResults[0]['product_id'] ?>">
             <div class="similarProductItem">
-                <img class="similarProductImg" src="<?php echo $simmilarResults[0]['product_image'] ?>">
-                <p class="similarProductTitle"><?php echo $simmilarResults[0]["product_name"] ?></p>
-                <p class="similarProductPrice">£<?php echo $simmilarResults[0]['price'] ?></p>
+                <img class="similarProductImg" src="<?php echo $simmilarResults[0]['image'] ?>">
+                <p class="similarProductTitle"><?php echo $simmilarResults[0]["item_name"] ?></p>
+                <p class="similarProductPrice">£<?php echo $simmilarResults[0]['item_price'] ?></p>
             </div>
         </a>
         

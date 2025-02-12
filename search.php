@@ -34,14 +34,19 @@ if (empty($items)) {
     // If there are results, display them
     echo "<div class='products'>";
     foreach ($items as $item) {
+        
+        if(!file_exists($item["product_image"])){
+            $item["product_image"] = "images/missingImage.png";
+        }
+        
         ?>
         <a href="specificProduct.php?id=<?php echo $item["product_id"]; ?>">
             <div class="search-card">
-                <img src="<?php echo $item["image"]; ?>" alt="product">
+                <img src="<?php echo $item["product_image"]; ?>" alt="product">
                
-                <a href="specificProduct.php?id=<?php echo $item["product_id"]; ?>" class="product-name"><?php echo $item["item_name"]; ?></a>
+                <a href="specificProduct.php?id=<?php echo $item["product_id"]; ?>" class="product-name"><?php echo $item["product_name"]; ?></a>
                 <br><br>
-                <a href="specificProduct.php?id=<?php echo $item["product_id"]; ?>" class="product-price">£<?php echo number_format($item["item_price"], 2); ?></a>
+                <a href="specificProduct.php?id=<?php echo $item["product_id"]; ?>" class="product-price">£<?php echo getProductPrice($db, $item["product_id"]); ?></a>
             </div>
         </a>
         <?php

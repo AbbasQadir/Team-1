@@ -28,7 +28,7 @@ $product3 = fetchProduct($db, "Technology", "Smart Scales with 16 Measurement Mo
     <title>Mind & Motion</title>
     <!-- External Stylesheets -->
     <link rel="stylesheet" href="homestyle.css">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css"
     <!-- External JavaScript -->
     <script src="js/bootstrap.bundle.min.js" defer></script>
 </head>

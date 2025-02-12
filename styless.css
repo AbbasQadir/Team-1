@@ -34,7 +34,10 @@
         background: white;
         padding: 0;
         width: 250px;
-        height: 400px;
+        /* height: 400px; */
+    	height:auto;
+    	min-height: 400px; 
+    
         text-align: center;
         transition: transform 0.2s, box-shadow 0.2s;
         box-shadow: 0 5px 15px #08429846;
@@ -133,7 +136,7 @@
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         z-index: 1;
         border: 1px solid #084298;
-        margin-top: 5px;
+        /* margin-top: 5px; */
     }
 
 
