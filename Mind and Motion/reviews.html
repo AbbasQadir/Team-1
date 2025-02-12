@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews - Mind and Motion</title>
+    <link rel="stylesheet" href="style.css"> <!-- Additional styles -->
+    <script defer src="script.js"></script>
+</head>
+<body>
+
+    <!-- Alert for Not Logged-In Users -->
+<div class="alert" id="alertBox" style="display: none;">
+    <p><strong>Login Required:</strong> You must <a href="login.html">log in</a> to submit a review.</p>
+    <button class="close-btn btn" onclick="closeAlert()">✖</button>
+</div>
+
+
+    <!-- Review Form Container -->
+    <div id="reviewContent" class="container">
+        <div class="leftSide">
+            <form id="reviewForm">
+                <p>User name: <span id="displayUsername"></span></p>
+
+
+                <!-- Product Selection -->
+                <div class="form-group">
+                    <label for="ProductId">Product Name:</label>
+                    <select name="Product_id" id="ProductId" onchange="updateProductImage()" required>
+                        <option value="1" data-image="placeholder1.jpg">Product 1</option>
+                        <option value="2" data-image="placeholder2.jpg">Product 2</option>
+                        <option value="3" data-image="placeholder3.jpg">Product 3</option>
+                    </select>
+                </div>
+
+                <!-- Star Rating -->
+                <div class="form-group">
+                    <label>Rating:</label>
+                    <div class="star-rating">
+                        <input type="radio" name="Rating" value="5" id="star5"><label for="star5">★</label>
+                        <input type="radio" name="Rating" value="4" id="star4"><label for="star4">★</label>
+                        <input type="radio" name="Rating" value="3" id="star3"><label for="star3">★</label>
+                        <input type="radio" name="Rating" value="2" id="star2"><label for="star2">★</label>
+                        <input type="radio" name="Rating" value="1" id="star1"><label for="star1">★</label>
+                    </div>
+                </div>
+
+                <!-- Review Input (Limited to 500 Characters) -->
+                <div class="form-group">
+                    <label for="desc-txtArea">Review:</label>
+                    <textarea id="desc-txtArea" placeholder="Write your review here..." rows="3" name="Review_text" maxlength="500" required></textarea>
+                    <p id="charCount">0/500</p>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn">Submit Review</button>
+            </form>
+        </div>
+
+        <!-- Product Image Display -->
+        <div class="rightSide">
+            <img src="placeholder1.jpg" alt="Selected Product Image" id="reviewSelectedProduct-image" loading="lazy" onclick="enlargeImage()">
+        </div>
+    </div>
+
+    <!-- Display Recent Reviews -->
+    <div id="recentReviews">
+        <h2 class="text-center">Recent Reviews</h2>
+        <ul id="reviewsList"></ul>
+    </div>
+
+</body>
+</html>
