@@ -1,0 +1,150 @@
+
+.container {
+    max-width: 900px;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* Left Side Form */
+.leftSide {
+    flex: 1;
+    padding-right: 30px;
+    min-width: 350px;
+}
+
+/* Form Inputs */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+textarea {
+    resize: none;
+    height: 120px;
+}
+
+/* Star Rating */
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: start;
+    font-size: 2rem;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    cursor: pointer;
+    color: #ccc;
+    transition: color 0.2s ease;
+}
+
+.star-rating input:checked ~ label {
+    color: #0256CE;
+}
+
+/* Image Section */
+.rightSide {
+    display: flex;
+    align-items: center;
+}
+
+.rightSide img {
+    max-width: 250px;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: transform 0.3s;
+    object-fit: cover;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rightSide img:hover {
+    transform: scale(1.1);
+}
+
+/* Recent Reviews */
+#recentReviews {
+    width: 100%;
+    max-width: 900px;
+    margin-top: 30px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+#reviewsList {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+/* Button Styling from main.css */
+.btn {
+    background-color: #0256CE;
+    color: white;
+    font-size: 1.1em;
+    font-weight: bold;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 15px;
+}
+/* Center and Limit Button Width */
+.btn {
+    display: block;
+    width: 200px; /* Adjust to make it visually balanced */
+    margin: 15px auto; /* Center the button */
+}
+
+.btn:hover {
+    background-color: #2A4D69;
+    transform: scale(1.05);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .leftSide {
+        padding-right: 0;
+    }
+
+    .rightSide img {
+        max-width: 200px;
+    }
+}
