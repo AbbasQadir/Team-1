@@ -29,16 +29,26 @@ document.addEventListener("DOMContentLoaded", function() {
         }, 2000);
     });
 });
+const productImages = {
+    "Product 1": "placeholder1.jpg",
+    "Product 2": "placeholder2.jpg",
+    "Product 3": "placeholder3.jpg"
+};
 
 // Update product image
 function updateProductImage() {
-    const productDropdown = document.getElementById('ProductId');
-    const selectedOption = productDropdown.options[productDropdown.selectedIndex];
-    const newImageUrl = selectedOption.getAttribute('data-image');
+    const inputElement = document.getElementById('ProductId');
+    const inputValue = inputElement.value.trim().toLowerCase();
     const imageElement = document.getElementById('reviewSelectedProduct-image');
 
-    if (imageElement.src !== newImageUrl) {
-        imageElement.src = newImageUrl;
+    const matchedProduct = Object.keys(productImages).find(product =>
+        product.toLowerCase().includes(inputValue) // Matches even partial input
+    );
+
+    if (matchedProduct) {
+        imageElement.src = productImages[matchedProduct]; // Update image source
+    } else {
+        imageElement.src = "placeholder.jpg"; // Default image if no match found
     }
 }
 
@@ -66,3 +76,9 @@ function loadSavedReview() {
 function loadRecentReviews() {
     document.getElementById("reviewsList").innerHTML = "<li>No reviews yet. Be the first to leave one!</li>";
 }
+$(document).ready(function() {
+    $('#ProductId').select2({
+        placeholder: "Select or Type a Product",
+        allowClear: true
+    });
+});
