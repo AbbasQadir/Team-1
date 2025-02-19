@@ -1,0 +1,777 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+    color: black;
+    font-size: 18px;
+    line-height: 1.6;
+}
+/* Blue Top Strip */
+.top-strip {
+    background-color: #2A4D69;
+    height: 10px;
+    width: 100%;
+}
+
+/* Navigation Section */
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f5f5f5;
+    height: 80px;
+    padding: 5px 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo img {
+    height: 200px;
+    width: auto;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: black;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #0256CE;
+}
+
+/* Dropdown */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+    z-index: 1000;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 10px 20px;
+    color: black;
+    text-decoration: none;
+}
+
+.dropdown-menu a:hover {
+    background-color: #f5f5f5;
+    color: #0256CE;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* Navigation Controls */
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.basket img {
+    height: 30px;
+    width: auto;
+    cursor: pointer;
+}
+
+.basket:hover img {
+    filter: brightness(0) saturate(100%) invert(14%) sepia(91%) saturate(3978%) hue-rotate(205deg) brightness(95%) contrast(97%);
+}
+
+.basket span {
+    color: #000;
+    font-size: 1.2em;
+    margin-left: 5px;
+}
+
+/* Search Bar */
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #f5f5f5;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar input {
+    border: none;
+    outline: none;
+    font-size: 0.9em;
+    background: transparent;
+    flex: 1;
+}
+
+.search-bar img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #fff;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.search-bar img:hover {
+    background-color: #0256CE;
+    transform: scale(1.1);
+}
+
+/* Hero Section */
+.hero {
+    background: url('images/heroimage.png') no-repeat center/cover;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    color: white;
+}
+
+.hero .hero-content {
+    z-index: 2;
+}
+
+.hero h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.hero .cta-button {
+    background-color: #0256CE;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.hero .cta-button:hover {
+    background-color: #2A4D69;
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+/* Section Headings */
+.section-heading {
+    font-size: 1.8em;
+    font-weight: bold;
+    text-align: center;
+    margin: 30px 0;
+    color: black;
+}
+
+.why-choose-us {
+    padding: 40px;
+    text-align: center;
+    background-color: #f5f5f5;
+}
+
+.why-choose-us h2 {
+    font-family: 'Merriweather', serif; /* Consistent with reviews and products */
+    font-size: 2.5em; /* Large title */
+    font-weight: bold;
+    color: #2A4D69; /* Deep blue for the title */
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.features-container {
+    display: flex; 
+    justify-content: space-evenly; 
+    align-items: center; 
+    gap: 50px; 
+    max-width: 1200px; 
+    margin: 0 auto; 
+}
+
+.feature {
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.feature img {
+    width: 80px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.feature p {
+    font-family: 'Merriweather', serif;
+    font-size: 1.2em;
+    color: black;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.carousel {
+    position: relative;
+    margin: 20px auto;
+    width: 100%;
+    max-width: 1400px;
+    height: 500px;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #2A4D69;
+}
+
+.carousel-title {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #2A4D69;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 1.5em;
+    font-weight: bold;
+    z-index: 10;
+    border-radius: 10px 10px 0 0;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: 100%;
+}
+
+.carousel-item {
+    flex: 0 0 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.carousel-item img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    display: block;
+    border-radius: 10px;
+}
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 1.9em;
+    padding: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.carousel:hover .carousel-arrow {
+    opacity: 1;
+}
+
+.carousel-arrow.left {
+    left: 20px;
+}
+
+.carousel-arrow.right {
+    right: 20px;
+}
+
+.carousel-arrow:hover {
+    background-color: #0256CE;
+}
+
+.pagination-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    gap: 12px;
+}
+
+.pagination-dots .dot {
+    width: 14px;
+    height: 14px;
+    background: #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.pagination-dots .dot:hover {
+    transform: scale(1.2);
+}
+
+.pagination-dots .dot.active {
+    background: #0256CE;
+}
+
+.section-title {
+    font-family: 'Merriweather', serif;
+    text-align: left;
+    margin-left: 0;
+    margin-bottom: 20px;
+    color: #2A4D69;
+    font-size: 2.5em;
+    font-weight: bold;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.product-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+.product-card {
+    flex: 1 1 calc(33.33% - 20px);
+    max-width: 300px;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 450px;
+    justify-content: space-between;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.product-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: contain;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.product-details {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.product-details p {
+    margin: 10px 0;
+    font-size: 1em;
+}
+
+.product-details p:first-of-type {
+    font-weight: bold;
+}
+
+.product-details .price-now {
+    font-weight: bold;
+    color: #0256CE;
+    font-size: 1.2em;
+}
+
+.product-card button {
+    margin-top: auto;
+    padding: 10px 20px;
+    background-color: #0256CE;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.product-card button:hover {
+    background-color: #0041A3;
+}
+
+.price-now {
+    color: #0256CE;
+    font-family: 'Merriweather', serif;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.popular-products {
+    padding: 30px 20px;
+    margin-bottom: 0;
+}
+
+.customer-reviews {
+    margin-top: 0;
+}
+
+.customer-reviews {
+    background-color: #f5f5f5;
+    padding: 50px 20px;
+    text-align: center;
+    border-top: 5px solid #2A4D69;
+    border-bottom: 5px solid #0256CE;
+}
+
+.customer-reviews .section-title {
+    font-size: 2.5em;
+    color: #2A4D69;
+    font-weight: bold;
+    margin-bottom: 40px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.review-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.review-card {
+    background: linear-gradient(145deg, #2A4D69, #0256CE);
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    text-align: center;
+    color: white;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.review-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.customer-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid white;
+    object-fit: cover;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.review-header h3 {
+    font-size: 1.5em;
+    color: #fff;
+    font-weight: bold;
+    margin: 0;
+}
+
+.customer-comment {
+    font-size: 1.1em;
+    color: #e0e0e0;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0 10px;
+}
+
+@media (max-width: 768px) {
+    .review-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .review-card {
+        width: 100%;
+        max-width: 400px;
+    }
+}
+
+/* Footer Styles */
+.footer {
+    background-color: #2A4D69;
+    color: white;
+    padding: 40px 20px;
+    font-size: 16px;
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-branding {
+    flex: 1 1 250px;
+    text-align: left;
+}
+
+.footer-branding h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.footer-branding p {
+    font-size: 14px;
+    color: white;
+}
+
+.footer-links {
+    flex: 1 1 250px;
+    text-align: left;
+}
+
+.footer-links h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.footer-links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links ul li {
+    margin-bottom: 10px;
+}
+
+.footer-links ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.footer-links ul li a:hover {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.footer-social {
+    flex: 1 1 250px;
+    text-align: center;
+}
+
+.footer-social h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.footer-contact {
+    flex: 1 1 250px;
+    text-align: left;
+}
+
+.footer-contact h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.footer-contact p {
+    margin: 5px 0;
+    color: white;
+}
+
+.footer-contact a { 
+    text-decoration: underline;
+    font-weight: bold;
+    color: white;
+}
+
+.footer-contact a:hover {
+    text-decoration: underline;
+    color: white;
+}
+
+.footer-bottom {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 14px;
+    border-top: 1px solid white;
+    padding-top: 10px;
+    color: white;
+}
+
+.footer-bottom p {
+    margin: 5px 0;
+}
+
+.footer-bottom a {
+    font-weight: bold;
+    text-decoration: underline;
+    color: inherit;
+}
+
+.footer-bottom a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Footer */
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .footer-links,
+    .footer-social,
+    .footer-contact,
+    .footer-branding {
+        margin-bottom: 20px;
+    }
+}
+
+/* New Social Icons Styles (From Uiverse.io by david-mohseni) */
+.wrapper {
+  display: inline-flex;
+  list-style: none;
+  height: 120px;
+  width: 100%;
+  padding-top: 40px;
+  font-family: "Poppins", sans-serif;
+  justify-content: center;
+}
+
+.wrapper .icon {
+  position: relative;
+  background: #fff;
+  border-radius: 50%;
+  margin: 10px;
+  width: 50px;
+  height: 50px;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.wrapper .tooltip {
+  position: absolute;
+  top: 0;
+  font-size: 14px;
+  background: #fff;
+  color: #fff;
+  padding: 5px 8px;
+  border-radius: 5px;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.wrapper .tooltip::before {
+  position: absolute;
+  content: "";
+  height: 8px;
+  width: 8px;
+  background: #fff;
+  bottom: -3px;
+  left: 50%;
+  transform: translate(-50%) rotate(45deg);
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.wrapper .icon:hover .tooltip {
+  top: -45px;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.wrapper .icon:hover span,
+.wrapper .icon:hover .tooltip {
+  text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);
+}
+
+.wrapper .facebook:hover,
+.wrapper .facebook:hover .tooltip,
+.wrapper .facebook:hover .tooltip::before {
+  background: #1877f2;
+  color: #fff;
+}
+
+.wrapper .twitter:hover,
+.wrapper .twitter:hover .tooltip,
+.wrapper .twitter:hover .tooltip::before {
+  background: #1da1f2;
+  color: #fff;
+}
+
+.wrapper .instagram:hover,
+.wrapper .instagram:hover .tooltip,
+.wrapper .instagram:hover .tooltip::before {
+  background: #e4405f;
+  color: #fff;
+}
