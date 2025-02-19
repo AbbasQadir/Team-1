@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     try {
     $stmt->execute($data);
-    echo "Contact Sent Sucessfully";
+    echo "<script type='text/javascript'>alert('contact sent successfully');</script>";
 	} catch (PDOException $e) {
     die("Error inserting record: " . $e->getMessage());
 	}
