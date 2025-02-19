@@ -4,7 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reviews - Mind and Motion</title>
-    <link rel="stylesheet" href="reviews.css"> <!-- Additional styles -->
+    <link rel="stylesheet" href="reviews.css"> 
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- Select2 CSS & JS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script defer src="reviews.js"></script>
 </head>
 <body>
@@ -20,13 +26,13 @@
     <div id="reviewContent" class="container">
         <div class="leftSide">
             <form id="reviewForm">
-                <p>User name: <span id="displayUsername"></span></p>
+                <input type="hidden" id="userId" name="userId" value="">
 
 
                 <!-- Product Selection -->
                 <div class="form-group">
                     <label for="ProductId">Product Name:</label>
-                    <select name="Product_id" id="ProductId" onchange="updateProductImage()" required>
+                    <select id="Product_id" id="ProductId" onchange="updateProductImage()" required>
                         <option value="1" data-image="placeholder1.jpg">Product 1</option>
                         <option value="2" data-image="placeholder2.jpg">Product 2</option>
                         <option value="3" data-image="placeholder3.jpg">Product 3</option>
