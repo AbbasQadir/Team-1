@@ -1,10 +1,62 @@
+<?php
+session_start(); 
+
+include 'sidebar.php';
+include 'PHPHost.php';
+
+
+$sqlOrders = "SELECT COUNT(*) AS total_orders FROM orders";
+$resultOrders = $db->query($sqlOrders);
+$totalOrders = $resultOrders->fetch(PDO::FETCH_ASSOC)['total_orders'];
+
+$sqlRevenue = "SELECT SUM(order_price) AS total_revenue FROM orders";
+$resultRevenue = $db->query($sqlRevenue);
+$totalRevenue = $resultRevenue->fetch(PDO::FETCH_ASSOC)['total_revenue'];
+
+
+$sqlCustomers = "SELECT COUNT(DISTINCT user_id) AS new_customers FROM orders WHERE order_date >= CURDATE() - INTERVAL 12 MONTH";
+$resultCustomers = $db->query($sqlCustomers);
+$newCustomers = $resultCustomers->fetch(PDO::FETCH_ASSOC)['new_customers'];
+
+
+$sqlProductsSold = "SELECT SUM(quantity) AS total_products_sold FROM order_prod";
+$resultProductsSold = $db->query($sqlProductsSold);
+$totalProductsSold = $resultProductsSold->fetch(PDO::FETCH_ASSOC)['total_products_sold'] ?? 0;
+
+
+$currentAdminId = $_SESSION['admin_id'] ?? null; 
+$currentAdmin = 'Guest'; 
+
+if ($currentAdminId) {
+    $sqlAdmin = "SELECT username FROM admins WHERE id = :admin_id"; 
+    $stmtAdmin = $db->prepare($sqlAdmin);
+    $stmtAdmin->bindParam(':admin_id', $currentAdminId);
+    $stmtAdmin->execute();
+    $adminData = $stmtAdmin->fetch(PDO::FETCH_ASSOC);
+    
+    if ($adminData) {
+        $currentAdmin = htmlspecialchars($adminData['username']); 
+    }
+}
+
+
+$previousTotalOrders = 0;   
+$previousTotalRevenue = 0;  
+$previousNewCustomers = 0; 
+$previousProductsSold = 0; 
+
+$ordersChange = ($previousTotalOrders === 0 && $totalOrders > 0) ? 100 : ($previousTotalOrders ? (($totalOrders - $previousTotalOrders) / $previousTotalOrders) * 100 : 0);
+$revenueChange = ($previousTotalRevenue === 0 && $totalRevenue > 0) ? 100 : ($previousTotalRevenue ? (($totalRevenue - $previousTotalRevenue) / $previousTotalRevenue) * 100 : 0);
+$customersChange = ($previousNewCustomers === 0 && $newCustomers > 0) ? 100 : ($previousNewCustomers ? (($newCustomers - $previousNewCustomers) / $previousNewCustomers) * 100 : 0);
+$productsChange = ($previousProductsSold === 0 && $totalProductsSold > 0) ? 100 : ($previousProductsSold ? (($totalProductsSold - $previousProductsSold) / $previousProductsSold) * 100 : 0);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="admin-dashboard-dark.css">
+    <link rel="stylesheet" href="admin-dashboard.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
@@ -16,9 +68,8 @@
         <main class="main-content">
             <div class="welcome-section">
                 <h1>Dashboard Overview</h1>
-                <p>Welcome back, Admin</p>
+                <p>Welcome back, <?php echo $currentAdmin; ?></p>
             </div>
-
             <div class="dashboard-stats">
                 <div class="metric-card">
                     <div class="metric-icon">
@@ -26,8 +77,10 @@
                     </div>
                     <div class="metric-info">
                         <h3>Total Orders</h3>
-                        <p class="metric-value">34,567</p>
-                        <span class="trend positive">+12.5% <i class="fas fa-chevron-up"></i></span>
+                        <p class="metric-value"><?php echo number_format($totalOrders); ?></p>
+                        <span class="trend <?php echo $ordersChange > 0 ? 'positive' : ($ordersChange < 0 ? 'negative' : 'neutral'); ?>">
+                            <?php echo number_format($ordersChange, 1) . '% <i class="fas fa-chevron-' . ($ordersChange > 0 ? 'up' : ($ordersChange < 0 ? 'down' : '')) . '"></i>'; ?>
+                        </span>
                     </div>
                 </div>
 
@@ -37,8 +90,10 @@
                     </div>
                     <div class="metric-info">
                         <h3>Revenue</h3>
-                        <p class="metric-value">$74,567</p>
-                        <span class="trend positive">+8.2% <i class="fas fa-chevron-up"></i></span>
+                        <p class="metric-value">$<?php echo number_format($totalRevenue); ?></p>
+                        <span class="trend <?php echo $revenueChange > 0 ? 'positive' : ($revenueChange < 0 ? 'negative' : 'neutral'); ?>">
+                            <?php echo number_format($revenueChange, 1) . '% <i class="fas fa-chevron-' . ($revenueChange > 0 ? 'up' : ($revenueChange < 0 ? 'down' : '')) . '"></i>'; ?>
+                        </span>
                     </div>
                 </div>
 
@@ -48,8 +103,10 @@
                     </div>
                     <div class="metric-info">
                         <h3>New Customers</h3>
-                        <p class="metric-value">1,234</p>
-                        <span class="trend positive">+5.7% <i class="fas fa-chevron-up"></i></span>
+                        <p class="metric-value"><?php echo number_format($newCustomers); ?></p>
+                        <span class="trend <?php echo $customersChange > 0 ? 'positive' : ($customersChange < 0 ? 'negative' : 'neutral'); ?>">
+                            <?php echo number_format($customersChange, 1) . '% <i class="fas fa-chevron-' . ($customersChange > 0 ? 'up' : ($customersChange < 0 ? 'down' : '')) . '"></i>'; ?>
+                        </span>
                     </div>
                 </div>
 
@@ -59,8 +116,10 @@
                     </div>
                     <div class="metric-info">
                         <h3>Products Sold</h3>
-                        <p class="metric-value">45,678</p>
-                        <span class="trend negative">-2.3% <i class="fas fa-chevron-down"></i></span>
+                        <p class="metric-value"><?php echo number_format($totalProductsSold); ?></p>
+                        <span class="trend <?php echo $productsChange > 0 ? 'positive' : ($productsChange < 0 ? 'negative' : 'neutral'); ?>">
+                            <?php echo number_format($productsChange, 1) . '% <i class="fas fa-chevron-' . ($productsChange > 0 ? 'up' : ($productsChange < 0 ? 'down' : '')) . '"></i>'; ?>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -164,7 +223,7 @@
             }
         });
 
-        // Category Chart
+        
         var categoryCtx = document.getElementById('categoryChart').getContext('2d');
         var categoryChart = new Chart(categoryCtx, {
             type: 'doughnut',
