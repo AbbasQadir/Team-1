@@ -1,8 +1,15 @@
 <?php
+include 'navbar.php';
 session_start(); // Start the session to track logged-in users
+require_once("PHPHost.php");
 
 // Check if the user is logged in
 $is_logged_in = isset($_SESSION['user_id']);
+
+$query = "SELECT product_id, product_name, product_image FROM product";
+$stmt = $db->prepare($query);
+$stmt->execute();
+$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -25,15 +32,6 @@ $is_logged_in = isset($_SESSION['user_id']);
 </head>
 <body>
 
-<!-- Alert for Not Logged-In Users -->
-<?php if (!$is_logged_in): ?>
-<div class="alert" id="alertBox">
-    <p><strong>Login Required:</strong> You must <a href="login.php">log in</a> to submit a review.</p>
-    <button class="close-btn btn" onclick="closeAlert()">✖</button>
-</div>
-<?php endif; ?>
-
-<!-- Review Form -->
 <div id="reviewContent" class="container">
     <div class="leftSide">
         <form id="reviewForm" action="submit_review.php" method="POST">
@@ -43,9 +41,11 @@ $is_logged_in = isset($_SESSION['user_id']);
             <div class="form-group">
                 <label for="ProductId">Product Name:</label>
                 <select id="ProductId" name="Product_id" onchange="updateProductImage()" required>
-                    <option value="1" data-image="placeholder1.jpg">Product 1</option>
-                    <option value="2" data-image="placeholder2.jpg">Product 2</option>
-                    <option value="3" data-image="placeholder3.jpg">Product 3</option>
+                <?php foreach ($products as $product): ?>
+                        <option value="<?php echo htmlspecialchars($product['product_id']); ?>" 
+                                data-image="<?php echo htmlspecialchars($product['product_image']); ?>">
+                            <?php echo htmlspecialchars($product['product_name']); ?>
+                        </option>
                 </select>
             </div>
 
@@ -121,41 +121,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-// Product images stored in an object 
-const productImages = {
-    "Product 1": "placeholder1.jpg",
-    "Product 2": "placeholder2.jpg",
-    "Product 3": "placeholder3.jpg"
-};
-
-function updateProductImage() {
-    const inputElement = document.getElementById('ProductId');
-    const inputValue = inputElement.value.trim().toLowerCase(); // Normalize input
-    const imageElement = document.getElementById('reviewSelectedProduct-image');
-
-    // Match input with predefined product images
-    const matchedProduct = Object.keys(productImages).find(product =>
-        product.toLowerCase().includes(inputValue) // Matches even partial input
-    );
-
-    if (matchedProduct) {
-        imageElement.src = productImages[matchedProduct]; // Update image source
-    } else {
-        imageElement.src = "placeholder.jpg"; // Default image if no match found
-    }
-}
-
-// Close alert
-function closeAlert() {
-    document.getElementById('alertBox').style.display = 'none';
-}
-
-// Enlarge image
-function enlargeImage() {
-    const image = document.getElementById("reviewSelectedProduct-image");
-    window.open(image.src, "_blank");
-}
-
 // Load saved review
 function loadSavedReview() {
     const savedReview = localStorage.getItem("savedReview");
@@ -179,4 +144,5 @@ $(document).ready(function() {
 </script>
 
 </body>
+include 'navbar.php';
 </html>
