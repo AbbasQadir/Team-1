@@ -399,7 +399,9 @@ require_once("navbar.php");
 
 document.getElementById("addToBasket").onclick = () => {
     var loginModal = new bootstrap.Modal(document.getElementById("loginModal"), { backdrop: "static" });
-            loginModal.show();
+             <?php if(!isset($_SESSION["uid"])) { ?>
+                loginModal.show();
+            <?php } ?>
 
             document.getElementById("cancelBtn").addEventListener("click", function () {
                 //window.history.back(); 
