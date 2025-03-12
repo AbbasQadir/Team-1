@@ -9,9 +9,62 @@ try {
 }
 
 // check if log in is there
+
 if (!isset($_SESSION['uid'])) {
-    echo "<script>alert('Please log in to view your basket.');</script>";
-    echo "<script>window.location.href = 'login.php';</script>";
+    ?>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login Required</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="homestyle.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    	
+    </head>
+    <body>
+
+        
+        <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style="color: black;">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="loginModalLabel">Login Required</h5>
+                        <button type="button" class="btn-close" id="closeBtn" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>You need to log in to view your basket.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="login.php" class="btn btn-primary">Log In</a>
+                        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var loginModal = new bootstrap.Modal(document.getElementById("loginModal"), { backdrop: "static" });
+                loginModal.show();
+
+                document.getElementById("cancelBtn").addEventListener("click", function () {
+                    window.history.back(); 
+                });
+            
+                document.getElementById("closeBtn").addEventListener("click", function () {
+                    window.history.back();
+                });
+            
+            
+            
+            });
+        </script>
+
+    </body>
+    </html>
+    <?php
     exit;
 }
 
@@ -136,75 +189,97 @@ include 'navbar.php';
 </div>
 
 <style>
-    body{
-        margin:0;
-    }
-    .basket-title {
-        margin-top: 20px;
-        text-align: center;
-    }
-    .basket-table {
-        width: 97%;
-        border-collapse: collapse;
-        margin: 20px auto;
-        background: white;
-    }
-    .basket-table, .basket-header, .basket-cell {
-        border: 1px solid #ddd;
-    }
-    .basket-header {
-        padding: 12px;
-        background-color: #f4f4f4;
-        text-align: center;
-    }
-    .basket-cell {
-        text-align: center;
-        padding: 12px;
-    }
-    .basket-image {
-        width: 150px;
-        height: auto;
-        object-fit: cover;
-    }
-    .basket-remove-btn, .basket-checkout-btn, .basket-previous-orders-btn {
-        font-family: 'Merriweather', serif;
-        background-color: #084298;
-        color: white;
-        border: none;
-        padding: 15px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        width: 200px;
-        text-decoration: none;
-        margin: 10px;
-        display: inline-block;
-        text-align: center;
-    }
-    .basket-remove-btn:hover, .basket-checkout-btn:hover, .basket-update-btn:hover, .basket-previous-orders-btn:hover {
-        background-color: #b8c5d4;
-        color: #084298;
-        box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
-        text-decoration: none;
-    }
-    .basket-update-btn{
-        font-family: 'Merriweather', serif;
-        background-color: #084298;
-        color: white;
-        border: none;
-        padding: 18px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        width: 200px;
-        text-decoration: none;
-        margin-left: 10px;
-        display: inline-block;
-        text-align: center;
-        margin-bottom:10px;
-    }
+    body {
+    margin: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Merriweather', serif;
+}
+
+.basket-title {
+    margin-top: 20px;
+    text-align: center;
+    color: var(--text-color);
+}
+
+.basket-table {
+    width: 97%;
+    border-collapse: collapse;
+    margin: 20px auto;
+    background: var(--card-bg);
+    color: var(--text-color);
+}
+
+.basket-table, .basket-header, .basket-cell {
+    border: 1px solid var(--border-color);
+}
+
+.basket-header {
+    padding: 12px;
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    text-align: center;
+    font-family: 'Merriweather', serif;
+}
+
+.basket-cell {
+    text-align: center;
+    padding: 12px;
+}
+
+.basket-image {
+    width: 150px;
+    height: auto;
+    object-fit: cover;
+}
+
+.basket-remove-btn, 
+.basket-checkout-btn, 
+.basket-previous-orders-btn {
+    font-family: 'Merriweather', serif;
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    border: none;
+    padding: 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 200px;
+    text-decoration: none;
+    margin: 10px;
+    display: inline-block;
+    text-align: center;
+    box-shadow: 0px 0px 9px 0px var(--shadow);
+}
+
+.basket-remove-btn:hover, 
+.basket-checkout-btn:hover, 
+.basket-update-btn:hover, 
+.basket-previous-orders-btn:hover {
+    background-color: var(--accent-hover);
+    color: var(--text-color);
+    box-shadow: 0px 0px 9px 0px var(--shadow);
+    text-decoration: none;
+}
+
+.basket-update-btn {
+    font-family: 'Merriweather', serif;
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    border: none;
+    padding: 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 200px;
+    text-decoration: none;
+    margin-left: 10px;
+    display: inline-block;
+    text-align: center;
+    margin-bottom: 10px;
+    box-shadow: 0px 0px 9px 0px var(--shadow);
+}
 </style>
 
-</body>
 </html>
 <?php include 'footer.php'; ?>
