@@ -1,43 +1,45 @@
 <?php
 session_start();
 
-
+$errorMsg = ""; // Variable to store error message
 
 if (isset($_POST['submitted'])) {
     if (empty($_POST['username']) || empty($_POST['password'])) {
-        exit('<p style="color:red">Please fill both the username and password fields!</p>');
-    }
-
-    try {
-        require_once(__DIR__ . '/PHPHost.php');  // Corrected file name to PHPHost.php
-    } catch (Exception $ex) {
-        echo "<p style='color:red'>Failed to include PHPHost.php: " . htmlspecialchars($ex->getMessage()) . "</p>";
-        exit;
-    }
-
-    try {
-        $stmt = $db->prepare('SELECT user_id, password FROM users WHERE username = ?');
-        $stmt->execute([$_POST['username']]);
-
-        if ($stmt->rowCount() > 0) {  
-            $row = $stmt->fetch();
-
-            if (password_verify($_POST['password'], $row['password'])) {
-                $_SESSION['user'] = htmlspecialchars($_POST['username']); 
-                $_SESSION['uid'] = $row['user_id'];  
-                header("Location: index.php");  
-                exit(); 
-            } else {
-                echo "<p style='color:red'>Error logging in: Password does not match</p>";
-            }
-        } else {
-            echo "<p style='color:red'>Error logging in: Username not found</p>";
+        $errorMsg = "Please fill both the username and password fields!";
+    } else {
+        try {
+            require_once(__DIR__ . '/PHPHost.php');  
+        } catch (Exception $ex) {
+            $errorMsg = "Failed to include PHPHost.php: " . htmlspecialchars($ex->getMessage());
         }
-    } catch (PDOException $ex) {
-        echo "<p style='color:red'>A database error occurred: " . htmlspecialchars($ex->getMessage()) . "</p>";
-        exit;
+
+        if (!$errorMsg) { // Continue only if there are no previous errors
+            try {
+                $stmt = $db->prepare('SELECT user_id, password FROM users WHERE username = ?');
+                $stmt->execute([$_POST['username']]);
+
+                if ($stmt->rowCount() > 0) {  
+                    $row = $stmt->fetch();
+
+                    if (password_verify($_POST['password'], $row['password'])) {
+                        $_SESSION['user'] = htmlspecialchars($_POST['username']); 
+                        $_SESSION['uid'] = $row['user_id'];  
+                        header("Location: index.php");  
+                        exit(); 
+                    } else {
+                        $errorMsg = "Error logging in: Password does not match";
+                    }
+                } else {
+                    $errorMsg = "Error logging in: Username not found";
+                }
+            } catch (PDOException $ex) {
+                $errorMsg = "A database error occurred: " . htmlspecialchars($ex->getMessage());
+            }
+        }
     }
 }
+
+// Include navbar
 include 'navbar.php';
 ?>
 
@@ -48,128 +50,244 @@ include 'navbar.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <title>Mind & Motion</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+   <style>
+   
+   :root {
+  --bg-color: #0d1b2a;
+  --text-color: #e0e1dd;
+  --secondary-text: #778da9;
+  --card-bg: #1b263b;
+  --icon-bg: #415a77;
+  --border-color: #415a77;
+  --shadow: rgba(0, 0, 0, 0.3);
+  --accent-color: #778da9;
+  --accent-hover: #a8b2c8;
+}
 
-        body {
-            font-family: 'Merriweather', serif;
-            line-height: 1.6;
-            scroll-behavior: smooth;
-        }
+[data-theme="light"] {
+  --bg-color: #e0e1dd;
+  --text-color: #1b263b;
+  --secondary-text: #415a77;
+  --card-bg: #f1f3f5;
+  --icon-bg: #a8b2c8;
+  --border-color: #a8b2c8;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --accent-color: #415a77;
+  --accent-hover: #778da9;
+}
 
-        h2 {
-            flex-grow: 1;
-            text-align: center;
-            margin: 0;
-        }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
 
-        .signup-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            max-width: 500px;
-            margin: 40px auto;
-            padding: 30px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-size: 18px;
+  line-height: 1.6;
+  transition: background 0.3s ease, color 0.3s ease;
+}
 
-        .signup-form-container {
-            width: 350px;
-        }
+h2 {
+  flex-grow: 1;
+  text-align: center;
+  margin: 0;
+  font-size: 2em;
+  font-weight: bold;
+  color: var(--text-color);
+  text-shadow: 2px 2px 5px var(--shadow);
+}
 
-        .signup-form-container form {
-            display: flex;
-            flex-direction: column;
-        }
+.signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  box-shadow: 0 4px 15px var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-        .signup-form-container label {
-            margin-bottom: 10px;
-            font-weight: bold;
-            font-size: 14px;
-        }
+.signup-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px var(--shadow);
+}
 
-        .signup-form-container input {
-            margin-bottom: 20px;
-            padding: 12px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 100%;
-        }
+.signup-form-container {
+  width: 350px;
+}
 
-        .signup-form-container input[type="submit"] {
-            background: #0A369D;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            padding: 12px;
-            transition: background 0.3s ease, transform 0.2s ease;
-        }
+.signup-form-container form {
+  display: flex;
+  flex-direction: column;
+}
 
-        .signup-form-container input[type="submit"]:hover {
-            background: #084298;
-            transform: translateY(-2px);
-        }
+.signup-form-container label {
+  margin-bottom: 10px;
+  font-weight: bold;
+  font-size: 16px;
+  color: var(--text-color);
+}
 
-        .signup-form-container p {
-            text-align: center;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
+.signup-form-container input {
+  margin-bottom: 20px;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  width: 100%;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
 
-        .signup-form-container p a {
-            color: #0A369D;
-            text-decoration: none;
-            font-weight: bold;
-        }
+.signup-form-container input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 8px var(--shadow);
+}
 
-        .admin-login {
-            text-align: center;
-            margin-top: 10px;
-        }
+.signup-form-container input[type="submit"] {
+  background: var(--icon-bg);
+  color: var(--text-color);
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 12px;
+  transition: background 0.3s ease, transform 0.2s ease;
+  border-radius: 5px;
+}
 
-        .admin-login a {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 14px;
-            background: #084298;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background 0.3s ease, transform 0.2s ease;
-        }
+.signup-form-container input[type="submit"]:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  color: var(--bg-color);
+}
 
-        .admin-login a:hover {
-            background: #0A369D;
-            transform: translateY(-2px);
-        }
-    </style>
+.signup-form-container p {
+  text-align: center;
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: var(--secondary-text);
+}
+
+.signup-form-container p a {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.signup-form-container p a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+.admin-login {
+  text-align: center;
+  margin-top: 20px;
+}
+span{
+    color: var(--text-color);
+    
+}
+.admin-login a {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 14px;
+  background: var(--icon-bg);
+  color: var(--text-color);
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.admin-login a:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  color: var(--bg-color);
+}
+
+   </style>
 </head>
 <body>
     <div class="signup-container">
         <div class="signup-form-container">
             <form action="login.php" method="post">
                 <label for="username">Username:</label>
-                <input type="text" id="username" name="username" size="15" maxlength="25" required>
+                <input type="text" id="username" name="username" size="15" maxlength="25" required placeholder="Enter your username">
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password" size="15" maxlength="25" required>
+                <input type="password" id="password" name="password" size="15" maxlength="25" required placeholder="Enter your password">
                 <input type="submit" value="Login">
                 <input type="hidden" name="submitted" value="TRUE">
-                <p>Not a member? <a href="register.php">Register</a></p>
+                <p>Not a member? <a href="register.php"><span>Register</span></a></p>
             </form>
             <div class="admin-login">
                 <a href="admin_log.php">Admin Login</a>
             </div>
         </div>
     </div>
+                
+                
+                
+                
+                
+                <!-- errir modal code -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel" style="color: black;">Login Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="errorMessage" style="color: black;" ><?php echo htmlspecialchars($errorMsg); ?></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- more js that will display modal if error exists-->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var errorMsg = "<?php echo addslashes($errorMsg); ?>";
+        if (errorMsg.trim() !== "") {
+            var errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
+            errorModal.show();
+        }
+    });
+</script>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
 </body>
                 <?php include 'footer.php'; ?>
 
