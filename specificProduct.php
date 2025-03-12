@@ -6,32 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="homestyle.css">
 <link rel="stylesheet" href="main.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <title>Product Page</title>
 </head>
 <body>
-
-<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content" style="color: black;">
-            <div class="modal-header">
-                <h5 class="modal-title" id="loginModalLabel">Login Required</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>You need to log in to add items to your basket.</p>
-            </div>
-            <div class="modal-footer">
-                <a href="login.php" class="btn btn-primary">Log In</a>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
 <?php 
 //session_start();
     
@@ -136,12 +113,7 @@
             
             
         } else {
-            echo "        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                var loginModal = new bootstrap.Modal(document.getElementById('loginModal'), { backdrop: 'static' });
-                loginModal.show();
-            });
-        </script>";
+            echo "<p>Please log in to add items to your basket.</p>";
         }
     }
 
@@ -490,7 +462,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     <style>
 #imageCarousel {
-    display: flex;
+    display: block;
     align-items: center;
     justify-content: center;
     position: relative;
@@ -503,11 +475,13 @@ document.addEventListener("DOMContentLoaded", function() {
 .product-image {
     display: none;
     width: 100%;
-    height: auto;
+    height: 400px;
     border-radius: 10px;
     transition: opacity 0.5s ease-in-out;
 
-    min-height: 500px;
+
+
+    
 }
 
 .product-image.active {
@@ -533,7 +507,7 @@ document.addEventListener("DOMContentLoaded", function() {
 #imageContainer {
     position: relative;
     width: 100%;
-    text-align: center;
+
 }
 
 
@@ -591,6 +565,7 @@ document.addEventListener("DOMContentLoaded", function() {
     margin-bottom: 10px;
 }
 
+
 /* User ID */
 .reviewUser {
     color: #333;
@@ -620,27 +595,112 @@ document.addEventListener("DOMContentLoaded", function() {
 }
 
 /* Responsive Design */
-@media (max-width: 1024px) {
+@media (min-width: 1000px) {
     .reviewPreview {
         width: 95%;
     }
+
+    form{        
+        width:250px;
+        height:50px;
+    }
+
+
+    #mainInfoDetails{
+        padding-left: 20px;
+    }
+
+    #addToBasket{
+        padding: 10px;
+        margin-top: 20px;
+        width: 200px;
+
+    }
+
+    #reviewLink{
+
+        width: 200px;
+    }
+
+    
+
+    .similarProductItem{
+        width: 30%;
+        margin-left: 3%;
+        height: 650px;
+    }
+
+    #imageCarousel {
+        margin: auto;
+        padding-top:50px;
+        padding-bottom:50px;
+    }
+
+    #mainTitle {
+        margin-top: 50px;
+    }
+
+    .product-image{
+        min-height: 500px;
+        margin-left: 20px;
+
+    }
+    
 }
 
-@media (min-width: 768px) {
+
+
+@media (max-width: 1000px) {
+
     .similarProductItem{
         width: 30%;
         margin-left: 2%;
     }
 
+    #colour-options{
+        text-align: center;
+        margin: auto;
+
+    }
+
+    #colour-options > table{
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #size-options{
+        height: auto;
+        text-align: center;
+        
+    }
+
+    
+
+    #size-option-table{
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    form{
+        width: 100%;
+    }
+
+    #addToBasket {
+        width: 80%;
+        margin-left: 10%;
+
+        height: 45px;
+
+    }
+
     #mainInfoContainer{
         grid-template-rows: auto ;
         gap: 10px;
+        padding-bottom: 100px;
     }
+
     
-}
-
-@media (max-width: 768px) {
-
 
     .similarProductItem{
         width: 90%;
@@ -649,43 +709,58 @@ document.addEventListener("DOMContentLoaded", function() {
 
     }
 
+    #mainInfoDetails{
+        grid-column-start: 1;
+        grid-column-end: 1;
+    }
+
     .product-image{
-        display: inline;
+        display: none;
+        padding: 0;
+
     }
 
     #mainTitle{
-        color: red;
-      
-        grid-column-start: 0;
-        grid-column-end: 1;
-        grid-row-start: 0;
-        grid-row-end: 1;
+        width: 100%;
+        
+        text-align: center;
+
+        padding: 20px;
+        font-size: 6vw;
+
+        margin-top: 25px;
+
+        height: auto;
+
+
     }
 
     #stockAvailable{
-        color: red;
-        grid-row-start: 1;
-        grid-row-end: 2;
+        width: 100%;
+        margin: auto;
+        text-align: center;
+  
+    }
+
+    #imageCarousel {
+        padding-bottom: 0px;
     }
 
 
     #mainPrice{
-        color: red;
-        grid-row-start: 1;
-        grid-row-end: 2;
+        width: 100%;
+        margin: auto;
+        text-align: center;
     }
 
 
-    #addToBasket{
-        color: red;
-        grid-row-start: 1;
-        grid-row-end: 2;
-    }
+    
 
     #reviewLink{
-        color: red;
-        grid-row-start: 1;
-        grid-row-end: 2;
+
+        width: 80%;
+        margin-left: 10%;
+        
     }
 
     #mainInfoContainer{
@@ -748,8 +823,8 @@ document.addEventListener("DOMContentLoaded", function() {
         #altImageContainer{
             grid-column-start: 1;
             grid-column-end: 2;
-            grid-row-start: 1;
-            grid-row-end: 10;
+          
+
 
             
             margin: auto;
@@ -760,7 +835,7 @@ document.addEventListener("DOMContentLoaded", function() {
         #altImageContainer > img {
             width: 80%;
             margin-left: 10%;
-            justify-content: center;
+
         }
 
         a:visited {
@@ -769,8 +844,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
         a:hover {
             color: inherit;
-        }grid-template-rows: auto ;
-        gap: 10px;
+        }
+
 
         .similarProductItem:hover {
             background-color: gray;
@@ -810,15 +885,7 @@ document.addEventListener("DOMContentLoaded", function() {
             width: 80%;
         }
 
-        #mainTitle {
-
-			margin-top: 50px;
-
-			display: -webkit-box;
-            -webkit-line-clamp: 2; /* maximum number of lines  */
-            line-clamp: 2; 
-            -webkit-box-orient: vertical;
-        }
+        
 
 		#stockAvailable{
 			
@@ -853,7 +920,7 @@ document.addEventListener("DOMContentLoaded", function() {
         #size-options{
             
 
-            height:50px;
+            height:80px;
 
 
         }
@@ -869,25 +936,19 @@ document.addEventListener("DOMContentLoaded", function() {
 
         }
 
-        form{
-            
-            
-            width:250px;
-            height:50px;
-        }
-
+     
         #addToBasket {
             
             background-color: #084298;
             
-            margin-top: 20px;
+            
 
 			cursor: pointer;
 
             color: white;
             border: none;
             border-radius: 15px;
-            padding: 10px;
+            
 
             
 
@@ -920,7 +981,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     #reviewLink {
 
-        width: 180px;
         display: block;
         text-decoration: none;
         font-size: 18px;
@@ -952,7 +1012,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .similarProductItem {
             background-color: var(--card-bg);
  
-       		height:auto;
+       		
             
             padding-bottom: 25px;
             display: inline-block;
@@ -965,7 +1025,7 @@ document.addEventListener("DOMContentLoaded", function() {
             margin-top: 20px;
             margin-left: 5%;
             width: 90%;
-        	max-height:500px;
+        	height:500px;
         	object-fit: contain;
         }
 
