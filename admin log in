@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Mind & Motion - Admin Login</title>
+    
+   
+    <style>
+  
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;;
+    }
+
+   
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+        background: white ;
+    }
+
+   
+    .form-container {
+        display: flex;
+        width: 80vw;
+        max-width: 1100px;
+        min-height: 600px;
+        margin: 40px auto;
+        border-radius: 15px;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        background: rgba(27, 38, 59, 0.9); 
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+  
+    .form-image {
+       flex: 1;
+        background: url('/Users/bidemielelu/Library/CloudStorage/OneDrive-Personal/Team project/Screenshot 2025-03-03 at 14.51.32.png') no-repeat center/cover;
+        opacity: 0.9;
+        transition: opacity 0.3s ease-in-out;
+        
+    }
+
+    .form-image:hover {
+        opacity: 1;
+    }
+
+    
+    .form-content {
+        flex: 1.2;
+        padding: 50px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #E0E1DD; 
+    }
+
+
+    h2 {
+        text-align: center;
+        font-size: 28px;
+        margin-bottom: 20px;
+        
+        color: #E0E1DD;
+        padding: 10px;
+        border-radius: 8px;
+       
+        text-transform: uppercase;
+    }
+
+   
+    form {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: rgba(224, 225, 221, 0.7); 
+}
+
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.2);
+    color: #E0E1DD;
+    font-size: 16px;
+    outline: none;
+}
+
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+   
+
+   
+    button {
+        background: #415A77; 
+        color: #E0E1DD; 
+        border: none;
+        padding: 12px;
+        font-size: 18px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.3s;
+        width: 100%;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+
+    button:hover {
+        background: #778DA9; 
+        color: #0D1B2A; 
+        transform: scale(1.05);
+    }
+
+   
+    p {
+        font-size: 14px;
+        text-align: center;
+        margin-top: 10px;
+        color: #FF4C29;
+    }
+
+
+    .success {
+        color: #28A745;
+    }
+
+   
+
+    </style>
+</head>
+<body>
+
+   
+    <div class="form-container">
+        
+   
+        <div class="form-image"></div>
+        
+        
+        <div class="form-content">
+            <h2>Admin Login</h2>
+            <form method="post">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Enter Username" required>
+                <br><br>
+            
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter Password" required>
+                <br><br>
+            
+                <button type="submit">Login</button>
+            </form>
+            
+               
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+
+
+// nada stye 
+
+
+
+
+
+body {
+    font-family: 'Merriweather', serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
+    background: linear-gradient(to bottom right, white, #0A369D);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+h2, h3 {
+    text-align: center;
+    color: black;
+    margin:40px;
+	font-family: 'Merriweather', serif;
+}
+
+form {
+    background: white;
+    padding: 20px 30px 30px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: left;
+    margin: 10px 40px 40px 40px;
+}
+
+label {
+    display: block;
+    margin: 10px;
+    font-weight: bold;
+    color: black;
+}
+
+input[type="text"],input[type="password"],input[type="number"],select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #084298;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #084298;
+    transform: scale(1.05);
+}
+
+p {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+	font-family: 'Merriweather', serif;
+}
+
+.success {
+    color: green;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+}-->
