@@ -7,6 +7,8 @@
 <link rel="stylesheet" href="homestyle.css">
 <link rel="stylesheet" href="main.css">
     <title>Product Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 <?php 
@@ -112,9 +114,7 @@
             
             
             
-        } else {
-            echo "<p>Please log in to add items to your basket.</p>";
-        }
+        } 
     }
 
 require_once("navbar.php");
@@ -242,7 +242,13 @@ require_once("navbar.php");
                 <input type="number" name="quantity" id="quantity" min="1" value="1" style="display:none;">
 
                 <?php if(isProductInStock($db, htmlspecialchars($productID) )){ ?>
-                    <button type="submit" id="addToBasket">Add to Basket</button>
+                    
+                    <?php if(isset($_SESSION["uid"])){ ?>
+                        <button type="submit" id="addToBasket">Add to Basket</button>
+                    <?php }else{ ?>
+                        <button type="button" id="addToBasket">Add to Basket</button>
+                    <?php } ?>
+
                 <?php }else{ ?>
                     <button type="button" id="addToBasketOutOfStock">Out of Stock</button>
                 <?php } ?>
@@ -363,12 +369,52 @@ require_once("navbar.php");
             </div>
         </a>
     </div>
-            
+    
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="color: black;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login Required</h5>
+                    <button type="button" class="btn-close" id="closeBtn" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>You need to log in to add items to your basket.</p>
+                </div>
+                <div class="modal-footer">
+                    <a href="login.php" class="btn btn-primary">Log In</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelBtn">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+       
+
 
             <?php include 'footer.php'; ?>
 
             <script>
+
+
+
+document.getElementById("addToBasket").onclick = () => {
+    var loginModal = new bootstrap.Modal(document.getElementById("loginModal"), { backdrop: "static" });
+            loginModal.show();
+
+            document.getElementById("cancelBtn").addEventListener("click", function () {
+                //window.history.back(); 
+            });
+        
+            document.getElementById("closeBtn").addEventListener("click", function () {
+                //window.history.back();
+            });
+}
+
+      
+
 document.addEventListener("DOMContentLoaded", function() {
+
+
     let images = document.querySelectorAll(".product-image");
     let currentIndex = 0;
     let totalImages = images.length;
