@@ -884,7 +884,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         }
 
-        a:visited {
+        #similarProductsContainer > a:visited {
             color: inherit;
         }
 
