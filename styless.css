@@ -31,7 +31,7 @@
     
     .item {
         position: relative;
-        background: white;
+        background: var(--card-bg);
         padding: 0;
         width: 250px;
         /* height: 400px; */
@@ -45,7 +45,7 @@
 
     .item a {
         text-decoration: none;
-        color: black;
+        color: var(--text-color);
     }
 
 
@@ -107,8 +107,8 @@
 
 
     .dropdown-button {
-        background-color: white;
-        color: black;
+        background-color: var(--card-bg);
+        color: var(--text-color);
         padding: 10px 15px;
         border: 1px solid #084298;
         cursor: pointer;
@@ -131,7 +131,7 @@
     .drop-content {
         display: none;
         position: absolute;
-        background-color: white;
+        background-color: var(--card-bg);
         min-width: 210px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         z-index: 1;
@@ -141,7 +141,7 @@
 
 
     .drop-content a {
-        color: black;
+        color: var(--text-color);
         padding: 10px 15px;
         text-decoration: none;
         display: block;
