@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Stock Management</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #E0E1DD;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .filter-form {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .filter-form input[type="text"],
+        .filter-form select {
+            padding: 8px;
+            width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            margin-right: 10px;
+        }
+
+        .filter-form button {
+            padding: 8px 15px;
+            background-color: #415A77;
+            color: #E0E1DD;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .filter-form button:hover {
+            background-color: #778DA9;
+            color: #0D1B2A;
+        }
+
+        .card-container {
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .card-row, .product-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr;
+            align-items: center;
+            padding: 15px;
+            width: 100%;
+        }
+
+        .card-row {
+            background: #1B263B;
+            color: #E0E1DD;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .product-row {
+            background: #ffffff;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-cell {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .low-stock {
+            color: orange;
+            font-weight: bold;
+        }
+
+        .out-of-stock {
+            color: red;
+            font-weight: bold;
+        }
+
+        .update-form {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .update-form input[type="number"] {
+            width: 120px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .update-form button {
+            padding: 8px 15px;
+            background-color: #415A77;
+            color: #E0E1DD;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .update-form button:hover {
+            background-color: #778DA9;
+            color: #0D1B2A;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Stock Management</h1>
+
+        <form class="filter-form">
+            <input type="text" name="search" placeholder="Search product name">
+            <select name="category">
+                <option value="">All Categories</option>
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+
+        <div class="card-container">
+            <div class="card-row">
+                <div class="card-cell">Product Name</div>
+                <div class="card-cell">Price</div>
+                <div class="card-cell">Quantity</div>
+                <div class="card-cell">Status</div>
+                <div class="card-cell">Manage Stock</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+# mind-and-motion
