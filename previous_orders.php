@@ -54,7 +54,6 @@ try {
     exit();
 }
 ?>
-<link rel="stylesheet" href="homestyle.css">
 <!DOCTYPE html>
 <html>
     <head>
@@ -62,8 +61,11 @@ try {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Previous Orders</title>
         <link rel="stylesheet" href="sty.css">
+		<link rel="stylesheet" href="homestyles.css">
+
     </head>
-    <div class="body">
+    <body>
+		
         <div class="main">
             <h2>Welcome, <?php echo htmlspecialchars($user['first_name']); ?>!</h2>
             <h3>Your Previous Orders:</h3>
@@ -89,11 +91,16 @@ try {
                             </li>
                         <?php endforeach; ?>
                     </tbody>
+                        <div class="return-button-container" style="margin: 20px 0">
+    <a href="return_select.php" class="button-details" >Return Items</a>
                 </ul> 
             <?php else: ?>
                 <p>You do not have any previous orders with us.</p>
             <?php endif; ?>
         </div>
-    </div>
+            
+</div>
+
+    </body>
 </html>
 <?php include 'footer.php'; ?>
