@@ -17,6 +17,17 @@ try {
     die("An error occurred while connecting to the database. Please try again later.");
 }
 
+function getNameFromVariationOptionID($db, $id){
+    $result = getDBResult($db, "SELECT * FROM variation_option WHERE variation_option_id=:value", ":value", $id);
+
+    if(isset($result[0]["variation_value"])){
+        return $result[0]["variation_value"];
+    }else{
+        return "";
+    }
+
+}
+
 function isProductInStock($db, $productID){
 
     $productQuantity = getDBResult($db, "SELECT quantity FROM product_item WHERE product_id=:productID", ":productID", $productID);
