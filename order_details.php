@@ -32,7 +32,9 @@ try {
             product.product_name,
             product.product_image,
             product_item.price,
-            order_prod.quantity
+            order_prod.quantity,
+            order_prod.Colour,
+            order_prod.Size
         from orders
         INNER JOIN order_status ON orders.order_status_id = order_status.order_status_id
         INNER JOIN order_prod ON orders.orders_id = order_prod.orders_id
@@ -86,6 +88,7 @@ $orderInfo = $orderDetails[0];
                     		<img src="<?php echo htmlspecialchars($product['product_image']); ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>">
                         	<div class="details">
                                 <h4> <?php echo htmlspecialchars($product['product_name']); ?></h4>
+                                <p><?php echo getNameFromVariationOptionID($db, $product["Colour"])." ".getNameFromVariationOptionID($db, $product["Size"]) ?></p>
                                 <p>Quantity: <?php echo htmlspecialchars($product['quantity']); ?></p>
                                 <p>Price: £<?php echo htmlspecialchars($product['price']); ?></p>
                             </div>
