@@ -169,11 +169,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $order_status_id = $statusRow ? $statusRow['order_status_id'] : 1;
 
 
-        // insert the new order intotable 
-        $insertOrderQuery = "INSERT INTO orders (user_id, address_id, order_status_id, shipping_method_id, payment_method_id, order_price, order_date) 
-                             VALUES (:user_id, :address_id, :order_status_id, :shipping_method_id, :payment_method_id, :order_price, NOW())";
+        $randomNumber = random_int(5000, 5000000);
+
+        // if there is  an order with that id already try again 
+
+        $count = getDBResult($db, "SELECT COUNT(*) FROM orders WHERE orders_id=:ordersID", ":ordersID", $randomNumber)[0];
+        var_dump($count["COUNT(*)"]);
+        
+        //while($count["COUNT(*)"] != 0 ){
+        //   $count = getDBResult($db, "SELECT COUNT(*) FROM orders WHERE orders_id=:ordersID", ":ordersID", $randomNumber)[0];
+        //}   
+
+
+        // insert the new order into table 
+        $insertOrderQuery = "INSERT INTO orders (orders_id, user_id, address_id, order_status_id, shipping_method_id, payment_method_id, order_price, order_date) 
+                             VALUES (:orders_id, :user_id, :address_id, :order_status_id, :shipping_method_id, :payment_method_id, :order_price, NOW())";
         $insertOrderStmt = $db->prepare($insertOrderQuery);
         $insertOrderStmt->execute([
+            'orders_id' => $randomNumber, 
             ':user_id' => $user_id,
             ':address_id' => $address_id,
             ':order_status_id' => $order_status_id,
