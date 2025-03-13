@@ -78,7 +78,9 @@ $query = "
         pi.price, 
         b.quantity, 
         (b.quantity * pi.price) AS total_price,
-        b.product_id
+        b.product_id,
+        b.Colour,
+        b.Size
     FROM 
         asad_basket b 
     JOIN 
@@ -155,7 +157,12 @@ include 'navbar.php';
             <tbody>
                 <?php foreach ($basketItems as $item): ?>
                     <tr class="basket-row">
-                        <td class="basket-cell"><?php echo htmlspecialchars($item['product_name']); ?></td>
+                        <td class="basket-cell">
+                 			<?php echo htmlspecialchars($item['product_name'])  ?>
+                            <br>
+                            <?php echo htmlspecialchars(getNameFromVariationOptionID($db, $item["Colour"]))  ?>
+                            <?php echo htmlspecialchars(getNameFromVariationOptionID($db, $item["Size"]))  ?>
+               	 		</td>
                         <td class="basket-cell">
                             <img src="<?php echo htmlspecialchars($item['product_image']); ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>" class="basket-image">
                         </td>
