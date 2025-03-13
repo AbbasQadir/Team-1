@@ -18,6 +18,8 @@ try {
         SELECT 
             b.product_id, 
             b.quantity, 
+            b.Size,
+            b.Colour,
             pi.price, 
             pi.product_item_id,  
             p.product_name,     
@@ -169,10 +171,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $order_status_id = $statusRow ? $statusRow['order_status_id'] : 1;
 
 
+    	//Generate random number for order ID
         $randomNumber = random_int(5000, 5000000);
 
         // if there is  an order with that id already try again 
-
         $count = getDBResult($db, "SELECT COUNT(*) FROM orders WHERE orders_id=:ordersID", ":ordersID", $randomNumber)[0];
         var_dump($count["COUNT(*)"]);
         
@@ -198,14 +200,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
         foreach ($basketItems as $item) {
-            $insertOrderProdQuery = "INSERT INTO order_prod (orders_id, product_item_id, quantity) 
-                                     VALUES (:order_id, :product_item_id, :quantity)";
+             $insertOrderProdQuery = "INSERT INTO order_prod (orders_id, product_item_id, Colour, Size, quantity) 
+                                     VALUES (:orders_id, :product_item_id, :colour, :Size, :quantity)";
             $insertOrderProdStmt = $db->prepare($insertOrderProdQuery);
+            
+
             $insertOrderProdStmt->execute([
-                ':order_id' => $order_id,
+                ':orders_id' => $order_id,
                 ':product_item_id' => $item['product_item_id'],
+                ':colour' => $item['Colour'],
+                ':Size' => $item['Size'],
                 ':quantity' => $item['quantity']
             ]);
+            
         
             //update stock
             $updateStockQuery = "UPDATE product_item 
@@ -225,8 +232,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $clearBasketStmt->execute([':user_id' => $user_id]);
 
         //payment success message
-       // echo "<script>alert('Payment was successful and your order has been placed as pending!');</script>";
-        //echo "<script>window.location.href = 'index.php';</script>"; //go index page
         echo "<script>window.location.href = '/orderConfirmation.php?orderID=".$order_id."';</script>";
         exit();
 
@@ -260,6 +265,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         alt="<?php echo htmlspecialchars($item['product_name']); ?>">
                     <div class="product-details">
                         <h3><?php echo htmlspecialchars($item['product_name']); ?></h3>
+            			<p><?php echo getNameFromVariationOptionID($db, $item["Colour"])." ".getNameFromVariationOptionID($db, $item["Size"]) ?></p>
                         <p>Quantity: <?php echo htmlspecialchars($item['quantity']); ?></p>
                         <p>Price: £<?php echo number_format($item['price'], 2); ?></p>
                         <p>Subtotal: £<?php echo number_format($item['quantity'] * $item['price'], 2); ?></p>
