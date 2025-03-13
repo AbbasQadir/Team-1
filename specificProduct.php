@@ -88,6 +88,12 @@
             $userId = $_SESSION['uid']; 
             $quantity = 1;  
 
+            //var_dump($_POST);
+
+            $colourOption = $_POST["colour"];
+            $sizeOption = $_POST["size"];
+
+
             // Check ifmproduct is already in basket or no
             $checkBasket = $db->prepare("SELECT quantity FROM asad_basket WHERE user_id = :user_id AND product_id = :product_id");
             $checkBasket->execute([':user_id' => $userId, ':product_id' => $productID]);
@@ -102,6 +108,9 @@
                     $updateBasket->execute([':quantity' => $newQuantity, ':user_id' => $userId, ':product_id' => $productID]);
                 } else {
                     // put new product into  basket
+
+                    
+
                     $addToBasket = $db->prepare("INSERT INTO asad_basket (user_id, product_id, quantity) VALUES (:user_id, :product_id, :quantity)");
                     $addToBasket->execute([':user_id' => $userId, ':product_id' => $productID, ':quantity' => $quantity]);
                 }    
@@ -240,6 +249,9 @@ require_once("navbar.php");
             <form method="POST" >
                 <label for="quantity" style="display:none;">Quantity:</label>
                 <input type="number" name="quantity" id="quantity" min="1" value="1" style="display:none;">
+
+                <input id="colourFormText" type="text" name="colour" id="quantity"   style="display:none;">
+                <input id="colourFormSize" type="text" name="size" id="quantity"  style="display:none;">
 
                 <?php if(isProductInStock($db, htmlspecialchars($productID) )){ ?>
                     
@@ -397,9 +409,11 @@ require_once("navbar.php");
 
 
 
-document.getElementById("addToBasket").onclick = () => {
+document.getElementById("addToBasket").onclick = (e) => {
     var loginModal = new bootstrap.Modal(document.getElementById("loginModal"), { backdrop: "static" });
-             <?php if(!isset($_SESSION["uid"])) { ?>
+            
+
+            <?php if(!isset($_SESSION["uid"])) { ?>
                 loginModal.show();
             <?php } ?>
 
@@ -435,7 +449,12 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 
+    let selectedSize = "none"
+    let selectedColour = "none"
+
     function sizeSelect(size){
+
+        var formSize = document.getElementById("colourFormSize")
 
         var XS = document.getElementById("size-option-XS")
         var S = document.getElementById("size-option-S")
@@ -443,28 +462,33 @@ document.addEventListener("DOMContentLoaded", function() {
         var L = document.getElementById("size-option-L")
         var XL = document.getElementById("size-option-XL")
 
-        if(XS =! null) {XS.style.backgroundColor = "var(--card-bg)" }
-        if(S =! null) { S.style.backgroundColor = "var(--card-bg)" }
-        if(M =! null) { M.style.backgroundColor = "var(--card-bg)" }
-        if(L =! null) { L.style.backgroundColor = "var(--card-bg)" }
-        if(XL =! null) { XL.style.backgroundColor = "var(--card-bg)" }
+        if(XS != null) {XS.style.backgroundColor = "var(--card-bg)" }
+        if(S != null) { S.style.backgroundColor = "var(--card-bg)" }
+        if(M != null) { M.style.backgroundColor = "var(--card-bg)" }
+        if(L != null) { L.style.backgroundColor = "var(--card-bg)" }
+        if(XL != null) { XL.style.backgroundColor = "var(--card-bg)" }
 
 
         switch(size){
             case "XS":
                 XS.style.backgroundColor = "var(--accent-color)"
+                formSize.value = "XS"
                 break;
             case "S":
                 S.style.backgroundColor = "var(--accent-color)"
+                formSize.value = "S"
                 break;
             case "M":
                 M.style.backgroundColor = "var(--accent-color)"
+                formSize.value = "M"
                 break;
             case "L":
                 L.style.backgroundColor = "var(--accent-color)"
+                formSize.value = "L"
                 break;
             case "XL":
                XL.style.backgroundColor = "var(--accent-color)"
+               formSize.value = "XL"
                 break;
         }
 
@@ -472,6 +496,8 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function selectColour(colour){
+
+        var formColour = document.getElementById("colourFormText")
 
         var redCircle = document.getElementById("colour-shape-red")
         var purpleCircle = document.getElementById("colour-shape-purple")
@@ -488,18 +514,23 @@ document.addEventListener("DOMContentLoaded", function() {
         switch(colour){
             case "red":
                 redCircle.style.borderWidth = "5px"
+                formColour.value = "red"
                 break;
             case "purple":
                 purpleCircle.style.borderWidth = "5px"
+                formColour.value = "purple"
                 break;
             case "green":
                 greenCircle.style.borderWidth = "5px"
+                formColour.value = "green"
                 break;
             case "blue":
                 blueCircle.style.borderWidth = "5px"
+                formColour.value = "blue"
                 break;
             case "yellow":
                 yellowCircle.style.borderWidth = "5px"
+                formColour.value = "yellow"
                 break;
         }
     }
@@ -890,7 +921,7 @@ document.addEventListener("DOMContentLoaded", function() {
             color: inherit;
         }
 
-        a:hover {
+        #similarProductsContainer > a:hover {
             color: inherit;
         }
 
