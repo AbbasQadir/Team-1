@@ -225,8 +225,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $clearBasketStmt->execute([':user_id' => $user_id]);
 
         //payment success message
-        echo "<script>alert('Payment was successful and your order has been placed as pending!');</script>";
-        echo "<script>window.location.href = 'index.php';</script>"; //go index page
+       // echo "<script>alert('Payment was successful and your order has been placed as pending!');</script>";
+        //echo "<script>window.location.href = 'index.php';</script>"; //go index page
+        echo "<script>window.location.href = '/orderConfirmation.php?orderID=".$order_id."';</script>";
         exit();
 
     } catch (PDOException $ex) {
