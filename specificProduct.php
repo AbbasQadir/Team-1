@@ -13,10 +13,11 @@
 <body>
 <?php 
 //session_start();
-    
-    
-    
     require_once("PHPHost.php");
+
+
+
+         
     
     $productID = $_GET["id"];
 
@@ -90,8 +91,7 @@
 
             //var_dump($_POST);
 
-            $colourOption = $_POST["colour"];
-            $sizeOption = $_POST["size"];
+            
 
 
             // Check ifmproduct is already in basket or no
@@ -109,10 +109,22 @@
                 } else {
                     // put new product into  basket
 
-                    
+                    $colourOption = $_POST["colour"];
+                    $sizeOption = $_POST["size"];
 
-                    $addToBasket = $db->prepare("INSERT INTO asad_basket (user_id, product_id, quantity) VALUES (:user_id, :product_id, :quantity)");
-                    $addToBasket->execute([':user_id' => $userId, ':product_id' => $productID, ':quantity' => $quantity]);
+                    var_dump($colourOption);
+
+                    if(isset($colourOption)){
+                        $colourVariationOptionId = getDBResult($db, "SELECT * FROM variation_option WHERE variation_value=:colour", ":colour", $sizeOption)[0]["variation_option_id"];
+                    }
+
+                    if(isset($sizeOption)){
+                        $sizeVariationOptionId = getDBResult($db, "SELECT * FROM variation_option WHERE variation_value=:size", ":size", $colourOption)[0]["variation_option_id"];
+                    }
+                    
+                    $addToBasket = $db->prepare("INSERT INTO asad_basket (user_id, product_id, colour, size, quantity) VALUES (:user_id, :product_id, :colour_variation_id, :size_variation_id, :quantity)");
+                    $addToBasket->execute([':user_id' => $userId, ':product_id' => $productID, ":colour_variation_id" => $colourVariationOptionId, ":size_variation_id" => $sizeVariationOptionId, ':quantity' => $quantity]);
+
                 }    
 
                 header("Location: Basket.php");
@@ -472,23 +484,23 @@ document.addEventListener("DOMContentLoaded", function() {
         switch(size){
             case "XS":
                 XS.style.backgroundColor = "var(--accent-color)"
-                formSize.value = "XS"
+                formSize.value = "extraSmall"
                 break;
             case "S":
                 S.style.backgroundColor = "var(--accent-color)"
-                formSize.value = "S"
+                formSize.value = "small"
                 break;
             case "M":
                 M.style.backgroundColor = "var(--accent-color)"
-                formSize.value = "M"
+                formSize.value = "medium"
                 break;
             case "L":
                 L.style.backgroundColor = "var(--accent-color)"
-                formSize.value = "L"
+                formSize.value = "large"
                 break;
             case "XL":
                XL.style.backgroundColor = "var(--accent-color)"
-               formSize.value = "XL"
+               formSize.value = "extraLarge"
                 break;
         }
 
