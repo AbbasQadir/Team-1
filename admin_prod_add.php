@@ -106,14 +106,18 @@ include 'sidebar.php';
 <html>
 <title>Product Management</title>
 <br>
-<h1 class="title">Product Manager</h1>
+<h1 class="title">Product Management</h1>
+<?php if (!empty($message)): ?>
+    <div class="message"><?php echo htmlspecialchars($message); ?></div>
+<?php endif; ?>
+
+<?php if (!empty($error)): ?>
+    <div class="error"><?php echo htmlspecialchars($error); ?></div>
+<?php endif; ?>
+
 <div class="signup-container">
     <div class="signup-form-container">
         <form method="POST" enctype="multipart/form-data">
-            <?php if (isset($message))
-                echo "<p style='color:green;'>$message</p>"; ?>
-            <?php if (isset($error))
-                echo "<p style='color:red;'>$error</p>"; ?>
 
             <label for="product_name">Name of Product</label>
             <input type="text" name="product_name" required>
@@ -136,7 +140,7 @@ include 'sidebar.php';
             <input type="file" name="product_image" id="product_image" required
                 onchange="displayFileNameCustom(this, 'upload-text-1')" style="display:none;">
 
-<br>
+            <br>
             <label class="custum-file-upload" for="product_image_2">
                 <div class="icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -151,7 +155,7 @@ include 'sidebar.php';
             <input type="file" name="product_image_2" id="product_image_2"
                 onchange="displayFileNameCustom(this, 'upload-text-2')" style="display:none;">
 
-<br>
+            <br>
             <label class="custum-file-upload" for="product_image_3">
                 <div class="icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -165,7 +169,7 @@ include 'sidebar.php';
             </label>
             <input type="file" name="product_image_3" id="product_image_3"
                 onchange="displayFileNameCustom(this, 'upload-text-3')" style="display:none;">
-<br>
+            <br>
             <label for="product_price">Price</label>
             <input type="number" name="product_price" required>
 
@@ -219,7 +223,7 @@ include 'sidebar.php';
 
     .signup-container {
         display: flex;
-        max-width: 600px;
+        max-width: 1000px;
         margin: 40px auto;
         border-radius: 10px;
         background: #f4f4f4;
@@ -239,7 +243,7 @@ include 'sidebar.php';
     .signup-form-container label {
         margin-bottom: 5px;
         font-weight: bold;
-        
+
     }
 
     .signup-form-container input,
@@ -298,6 +302,30 @@ include 'sidebar.php';
         background-color: #778DA9;
         color: #0D1B2A;
         box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+    }
+
+    .message {
+        margin: 0 auto;
+        max-width: 1000px;
+        text-align: center;
+        padding: 12px;
+        margin-bottom: 20px;
+        background-color: #b8dda8;
+        color: #0D1B2A;
+        border: 1px solid #b8dda8;
+        border-radius: 4px;
+    }
+
+    .error {
+        margin: 0 auto;
+        max-width: 1000px;
+        text-align: center;
+        padding: 12px;
+        margin-bottom: 20px;
+        background-color: #dda8a8;
+        color: #0D1B2A;
+        border: 1px solid #dda8a8;
+        border-radius: 4px;
     }
 </style>
 
