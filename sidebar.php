@@ -1,30 +1,34 @@
 <div id="sidebar-toggle">☰</div>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<!-- <link rel="stylesheet" href="admin-dashboard.css"> -->
+
+
+<!-- <button id="theme-toggle" class="theme-toggle">Switch to Light Mode</button> -->
 
 <div class="sidebar" id="sidebar">
-    <h2>Mind & Motion</h2>
+    <h5>Mind & Motion</h5>
     <ul>
         <li><a href="admin-dashboard.php">Dashboard</a></li>
         
         <div class="dropdown">
             <button onclick="toggleSubMenu(this)" class="drop-btn"> Product Management <span class="material-icons">keyboard_arrow_down</span></button>
             <ul class="sub-menu">
-                	<li><a href="admin_dash.php">Add Product</a></li>
-                	<li><a href="admin_dash1.php">Remove Product</a></li>
+                	<li><a href="admin_prod_add.php">Add Product</a></li>
+                	<li><a href="admin_prod_remove.php">Remove Product</a></li>
             </ul>
 
         </div>
 
-        <li><a href="#">Stock Management</a></li>
-        <li><a href="#">Order Management</a></li>
+        <li><a href="admin_stock.php">Stock Management</a></li>
+        <li><a href="ordermanagement.php">Order Management</a></li>
         <li><a href="customermanagement.php">Customer Management</a></li>
-        <li><a href="#">Messages and Support</a></li>
+        <li><a href="ContactUsFetch.php">Messages and Support</a></li>
         <li><a href="#">Settings</a></li>
     </ul>
     <div class="sidebar-bottom">
         <a href="index.php" class="sidebar-btn"> <span class="material-icons">home</span>Index</a>
             
-        <a href="admin_log.php" class="sidebar-btn">
+        <a href="adminlogout.php" class="sidebar-btn">
            	<span class="material-icons">logout</span> Logout</a>
 
     </div>
@@ -32,33 +36,49 @@
 
 <script>
     function toggleSubMenu(button) {
-		let subMenu = button.nextElementSibling;
-		subMenu.classList.toggle("show");
-		button.classList.toggle("rotate");
-	}    
-    	
-    document.addEventListener("DOMContentLoaded", function(){
+        let subMenu = button.nextElementSibling;
+        subMenu.classList.toggle("show");
+        button.classList.toggle("rotate");
+    }    
+
+    document.addEventListener("DOMContentLoaded", function () {
         const sidebar = document.getElementById("sidebar");
         const sidebarToggle = document.getElementById("sidebar-toggle");
 
-        sidebarToggle.addEventListener("click", function(){
-            if (sidebar.classList.contains("open")){
-                sidebar.classList.remove("open");
-                sidebarToggle.innerHTML = "☰";
-                document.body.classList.remove("shifted");
-                sidebarToggle.style.left = "10px";
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener("click", function () {
+                if (sidebar.classList.contains("open")) {
+                    sidebar.classList.remove("open");
+                    sidebarToggle.innerHTML = "☰";
+                    document.body.classList.remove("shifted");
+                    sidebarToggle.style.left = "10px";
+                } else {
+                    sidebar.classList.add("open");
+                    sidebarToggle.innerHTML = "✖";
+                    document.body.classList.add("shifted");
+                    sidebarToggle.style.left = "260px";
+                }
+            });
+        }
 
-            }
-            else {
-                sidebar.classList.add("open");
-                sidebarToggle.innerHTML  = "✖";
-                document.body.classList.add("shifted");
-                sidebarToggle.style.left = "260px";
-            }
-        })
-    });
         
+        /*const themeToggle = document.getElementById("theme-toggle");
+
+        if (themeToggle) {
+            const currentTheme = localStorage.getItem("theme") || "dark";
+            document.documentElement.setAttribute("data-theme", currentTheme);
+            themeToggle.textContent = currentTheme === "dark" ? "Light Mode" : "Dark Mode";
+
+            themeToggle.addEventListener("click", () => {
+                let theme = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+                document.documentElement.setAttribute("data-theme", theme);
+                localStorage.setItem("theme", theme);
+                themeToggle.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
+            });
+        }*/
+    });
 </script>
+
 
 <style>
     *{
@@ -110,11 +130,13 @@
         margin-left: 250px;
     }
     
-    .sidebar h2{
+    .sidebar h5{
         color: #E0E1DD;
         text-transform: uppercase;
         text-align: center;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
+    	font-size: 20px;
+    	font-weight: bold;
     }
     .sidebar ul li{
         padding: 15px;
