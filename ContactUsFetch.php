@@ -56,10 +56,12 @@ ob_end_flush();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Email Records</title>
+	<link rel="stylesheet" href="admin-dashboard.css">
+
     <style>
 		h2 { 
     		text-align: center; 
-    		color: white; 
+    		color: var(--text-color); 
 		}
 
         body { 
@@ -67,13 +69,13 @@ ob_end_flush();
             max-width: 80%;  /* Limits the width of the page */
             margin: auto;    /* Centers the page */
             padding: 20px;   /* Adds space around content */
-            background-color: #0D1B2A; /* Light gray background */
+            background-color: var(--bg-color);
         }
         table { 
             width: 100%; 
             border-collapse: collapse; 
             margin-top: 20px; 
-            background: white; /* White background for better readability */
+            background: var(--card-bg); 
             border: 2px solid #415A77;
         }
         th, td { 
@@ -86,7 +88,7 @@ ob_end_flush();
             color: white; 
         }
 		td { 
-    		border: 1px solid #007bff; 
+    		border: 1px solid var(--border-color); 
     		padding: 6px 8px; /* Reduce padding for a smaller text box area */
     		text-align: left; 
    		 	max-width: 150px; /* Limit the width of table cells */
@@ -95,7 +97,7 @@ ob_end_flush();
     		text-overflow: ellipsis; /* Add "..." when text is too long */
 		}
 
-        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:nth-child(even) { background-color: var(--nth-color); }
         .delete-btn { 
             background-color: #1B263B; 
             color: white; 
@@ -130,7 +132,7 @@ ob_end_flush();
             background-color: rgba(0,0,0,0.5); 
         }
         .modal-content {
-            background-color: white;
+            background-color: var(--card-bg);
             margin: 10% auto;
             padding: 20px;
             border-radius: 10px;
