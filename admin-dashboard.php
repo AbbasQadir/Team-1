@@ -6,6 +6,7 @@ if (!isset($_SESSION['admin_id'])) {
     header("Location: admin_log.php"); 
     exit();
 }
+
 include 'sidebar.php';
 
 
@@ -112,12 +113,12 @@ $recentOrders = $resultRecentOrders->fetchAll(PDO::FETCH_ASSOC);
                 <h1>Dashboard Overview</h1>
                 <p>Welcome back, <?php echo $currentAdmin; ?></p>
             </div>
-            <button id="theme-toggle" class="theme-toggle">Switch to Light Mode</button>
+           
 
                 <div class="dashboard-stats">
                 <div class="metric-card">
                     <div class="metric-icon">
-                        <i class="far fa-shopping-cart"></i>
+                        <i class="fa fa-shopping-cart"></i>
                     </div>
                     <div class="metric-info">
                         <h3>Total Orders</h3>
@@ -129,20 +130,20 @@ $recentOrders = $resultRecentOrders->fetchAll(PDO::FETCH_ASSOC);
                 </div>
                 <div class="metric-card">
                     <div class="metric-icon">
-                        <i class="far fa-chart-line"></i>
+                        <i class="fa fa-chart-line"></i>
                     </div>
                     <div class="metric-info">
                         <h3>Revenue</h3>
                         <p class="metric-value">£<?php echo number_format($totalRevenue); ?></p>
                         <span class="trend <?php echo $revenueChange > 0 ? 'positive' : ($revenueChange < 0 ? 'negative' : 'neutral'); ?>">
-                            <?php echo number_format($revenueChange, 1) . '% <i class="fas fa-chevron-' . ($revenueChange > 0 ? 'up' : ($revenueChange < 0 ? 'down' : '')) . '"></i>'; ?>
+                            <?php echo number_format($revenueChange, 1) . '% <i class="fa fa-chevron-' . ($revenueChange > 0 ? 'up' : ($revenueChange < 0 ? 'down' : '')) . '"></i>'; ?>
                         </span>
                     </div>
                 </div>
 
                 <div class="metric-card">
                     <div class="metric-icon">
-                        <i class="far fa-users"></i>
+                        <i class="fa fa-users"></i>
                     </div>
                     <div class="metric-info">
                         <h3>New Customers</h3>
@@ -155,7 +156,7 @@ $recentOrders = $resultRecentOrders->fetchAll(PDO::FETCH_ASSOC);
 
                 <div class="metric-card">
                     <div class="metric-icon">
-                        <i class="far fa-box"></i>
+                        <i class="fa fa-box"></i>
                     </div>
                     <div class="metric-info">
                         <h3>Products Sold</h3>
@@ -253,20 +254,20 @@ $recentOrders = $resultRecentOrders->fetchAll(PDO::FETCH_ASSOC);
                 plugins: { legend: { position: 'right' } }
             }
         });
-        
-        document.addEventListener("DOMContentLoaded", function () {
-  const themeToggle = document.getElementById("theme-toggle");
-  const currentTheme = localStorage.getItem("theme") || "dark";
+     
+  document.addEventListener("DOMContentLoaded", function () {
+  //const themeToggle = document.getElementById("theme-toggle");
+  //const currentTheme = localStorage.getItem("theme") || "dark";
 
-  document.documentElement.setAttribute("data-theme", currentTheme);
-  themeToggle.textContent = currentTheme === "dark" ? "Light Mode" : "Dark Mode";
+  //document.documentElement.setAttribute("data-theme", currentTheme);
+  //themeToggle.textContent = currentTheme === "dark" ? "Light Mode" : "Dark Mode";
 
-  themeToggle.addEventListener("click", () => {
-    let theme = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
-    themeToggle.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
-  });
+  //themeToggle.addEventListener("click", () => {
+   // let theme = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+   // document.documentElement.setAttribute("data-theme", theme);
+    //localStorage.setItem("theme", theme);
+    //themeToggle.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
+  //});
 });
 
     </script>
