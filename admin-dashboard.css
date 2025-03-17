@@ -6,6 +6,7 @@
   --icon-bg: #415a77;
   --border-color: #415a77;
   --shadow: rgba(0, 0, 0, 0.3);
+	--nth-color: #131c2d;
 }
 
 [data-theme="light"] {
@@ -16,6 +17,7 @@
   --icon-bg: #a8b2c8;
   --border-color: #a8b2c8;
   --shadow: rgba(0, 0, 0, 0.1);
+--nth-color: #ececee;
 }
 
 
@@ -30,7 +32,7 @@ body {
   background: var(--bg-color);
   color: var(--text-color);
   min-height: 100vh;
-  display: flex;
+
   flex-direction: column;
   transition: background 0.3s ease, color 0.3s ease;
 }
@@ -279,4 +281,39 @@ td {
   background: var(--secondary-text);
   color: var(--bg-color);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
