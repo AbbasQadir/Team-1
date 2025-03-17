@@ -117,10 +117,12 @@ $totalPages = ceil($totalRows / $limit);
 <head>
     <title>Customer Management</title>
     <link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="admin-dashboard.css">
+
     <style>
         body {
-            background-color: #0D1B2A;
-            color: white;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
@@ -162,7 +164,7 @@ $totalPages = ceil($totalRows / $limit);
             width: 100%;
             border-collapse: collapse;
             margin: 20px auto;
-            background-color: #0D1B2A;
+            background-color: var(--card-bg);
         }
         
         table th, table td {
