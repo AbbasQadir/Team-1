@@ -17,6 +17,17 @@ try {
     die("An error occurred while connecting to the database. Please try again later.");
 }
 
+function getVariationIDFromName($db, $name){
+    $result = getDBResult($db, "SELECT variation_option_id FROM variation_option WHERE variation_value=:value", ":value", $name);
+
+    if(isset($result[0]["variation_option_id"])){
+        return $result[0]["variation_option_id"];
+    }else{
+        return "";
+    }
+
+}
+
 function getNameFromVariationOptionID($db, $id){
     $result = getDBResult($db, "SELECT * FROM variation_option WHERE variation_option_id=:value", ":value", $id);
 
