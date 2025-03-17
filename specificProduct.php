@@ -56,23 +56,6 @@
 
     $reviews = getDBResult($db, "SELECT * FROM users_review WHERE order_prod_id=:productID", ":productID", $productID);
 
-    //$variationOptions =  getDBResult($db, "SELECT * FROM variation WHERE product_category_id=:categoryID", ":categoryID", $item["product_category_id"]);
-
-    
-    
-
-    //foreach($variationOptions as $option){
-        
-        //if($option["variation_name"] == "size"){
-        //    $sizeAvailable = true;
-        //}
-        
-        //if($option["variation_name"] == "colour"){
-        //    $colourAvaliable = true;
-        //}
-
-    //}
-
 
 
      session_start();
@@ -95,10 +78,12 @@
 
 
             // Check ifmproduct is already in basket or no
-            $checkBasket = $db->prepare("SELECT quantity FROM asad_basket WHERE user_id = :user_id AND product_id = :product_id");
+            $checkBasket = $db->prepare("SELECT quantity, Colour, Size FROM asad_basket WHERE user_id = :user_id AND product_id = :product_id");
             $checkBasket->execute([':user_id' => $userId, ':product_id' => $productID]);
             $existingBasket = $checkBasket->fetch(PDO::FETCH_ASSOC);
 
+            $colourOption = $_POST["colour"];
+            $sizeOption = $_POST["size"];
 
             if(isProductInStock($db, htmlspecialchars($productID) )){
                 if ($existingBasket) {
@@ -106,11 +91,27 @@
                     $newQuantity = $existingBasket['quantity'] + $quantity;
                     $updateBasket = $db->prepare("UPDATE asad_basket SET quantity = :quantity WHERE user_id = :user_id AND product_id = :product_id");
                     $updateBasket->execute([':quantity' => $newQuantity, ':user_id' => $userId, ':product_id' => $productID]);
+
+                    if($colourOption != ""){
+
+                        $colourVariationID = getVariationIDFromName($db, $colourOption);
+
+                        $updateBasket = $db->prepare("UPDATE asad_basket SET Colour = :newColour WHERE user_id = :user_id AND product_id = :product_id");
+                        $updateBasket->execute([':newColour' => $colourVariationID, ':user_id' => $userId, ':product_id' => $productID]);
+                    }
+
+                    if($sizeOption != ""){
+
+                        $sizeVariationID = getVariationIDFromName($db, $sizeOption);
+
+                        $updateBasket = $db->prepare("UPDATE asad_basket SET Size = :newSize WHERE user_id = :user_id AND product_id = :product_id");
+                        $updateBasket->execute([':newSize' => $sizeVariationID, ':user_id' => $userId, ':product_id' => $productID]);
+                    }
+
                 } else {
                     // put new product into  basket
 
-                    $colourOption = $_POST["colour"];
-                    $sizeOption = $_POST["size"];
+                    
 
                     var_dump($colourOption);
 
@@ -258,7 +259,7 @@ require_once("navbar.php");
             <?php } ?>    	
 
             
-            <form method="POST" >
+            <form method="POST" id="mainForm" >
                 <label for="quantity" style="display:none;">Quantity:</label>
                 <input type="number" name="quantity" id="quantity" min="1" value="1" style="display:none;">
 
@@ -266,13 +267,7 @@ require_once("navbar.php");
                 <input id="colourFormSize" type="text" name="size" id="quantity"  style="display:none;">
 
                 <?php if(isProductInStock($db, htmlspecialchars($productID) )){ ?>
-                    
-                    <?php if(isset($_SESSION["uid"])){ ?>
-                        <button type="submit" id="addToBasket">Add to Basket</button>
-                    <?php }else{ ?>
                         <button type="button" id="addToBasket">Add to Basket</button>
-                    <?php } ?>
-
                 <?php }else{ ?>
                     <button type="button" id="addToBasketOutOfStock">Out of Stock</button>
                 <?php } ?>
@@ -393,6 +388,24 @@ require_once("navbar.php");
             </div>
         </a>
     </div>
+
+    <div class="modal fade" id="variationModal" tabindex="-1" aria-labelledby="varationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="color: black;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Please Select a product configuration</h5>
+                    <button type="button" class="btn-close" id="closeBtn" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="vairationModal-subtitle">Please select a Size and/or colour to continue</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelBtn">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     
     <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -420,22 +433,72 @@ require_once("navbar.php");
             <script>
 
 
+var isLoggedIn = <?php if(isset($_SESSION["uid"])) { echo 'true'; } else { echo 'false'; } ?>
+
+var ColourRequired = <?php if($colourAvaliable == true) { echo 'true'; } else { echo 'false'; } ?>
+
+var SizeRequired = <?php if($sizeAvailable == true) { echo 'true'; } else { echo 'false'; } ?>
+
+
+function canSubmitFormVariation(){
+
+    var formSize = document.getElementById("colourFormSize")
+    var formColour = document.getElementById("colourFormText")
+
+    
+    if(ColourRequired && formColour.value == ""){
+        return false
+    }
+
+    if(SizeRequired && formSize.value == ""){
+        return false
+    }
+
+    return true
+
+}
+
 
 document.getElementById("addToBasket").onclick = (e) => {
+
+    
+
     var loginModal = new bootstrap.Modal(document.getElementById("loginModal"), { backdrop: "static" });
-            
+    var variationModal = new bootstrap.Modal(document.getElementById("variationModal"), { backdrop: "static" });
 
-            <?php if(!isset($_SESSION["uid"])) { ?>
-                loginModal.show();
-            <?php } ?>
-
-            document.getElementById("cancelBtn").addEventListener("click", function () {
-                //window.history.back(); 
-            });
+    if(isLoggedIn){
         
-            document.getElementById("closeBtn").addEventListener("click", function () {
-                //window.history.back();
-            });
+        if(canSubmitFormVariation() == false){
+
+            if(ColourRequired == false && SizeRequired == true){
+                document.getElementById("vairationModal-subtitle").innerHTML = "Please Select a size To continue"
+            }
+
+            if(ColourRequired == true && SizeRequired == false){
+                document.getElementById("vairationModal-subtitle").innerHTML = "Please Select a Colour To continue"
+            }
+
+            if(ColourRequired == true && SizeRequired == true){
+                document.getElementById("vairationModal-subtitle").innerHTML = "Please Select a size and colour To continue"
+            }           
+
+            variationModal.show();
+        }else{
+            document.getElementById("mainForm").submit()
+        }
+        
+    }else{
+        loginModal.show();
+    }
+
+
+    document.getElementById("cancelBtn").addEventListener("click", function () {
+                //window.history.back(); 
+    });
+        
+    document.getElementById("closeBtn").addEventListener("click", function () {
+       //window.history.back();
+    });
 }
 
       
