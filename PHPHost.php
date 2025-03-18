@@ -17,6 +17,28 @@ try {
     die("An error occurred while connecting to the database. Please try again later.");
 }
 
+function getSymbolLetterForSize($size){
+   
+    //var_dump($size);
+    switch($size){
+        case "extraSmall":
+            return "XS";
+            break;
+        case "small":
+            return "S";
+            break;
+        case "medium":
+          return "M";
+            break;
+        case "large":
+           return "L";
+            break;
+        case "extraLarge":
+           return "XL";
+            break;
+    }
+}
+
 function getVariationIDFromName($db, $name){
     $result = getDBResult($db, "SELECT variation_option_id FROM variation_option WHERE variation_value=:value", ":value", $name);
 
