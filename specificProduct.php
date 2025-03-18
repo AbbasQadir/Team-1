@@ -24,6 +24,7 @@
     // Fetch product details
     $item = getDBResult($db, "SELECT * FROM product WHERE product_id=:productID", ":productID", $productID)[0];
 
+    //get list of variations
     $productConfigs =  getDBResult($db, "SELECT * FROM product_configuration INNER JOIN variation_option ON product_configuration.variation_option_id = variation_option.variation_option_id WHERE product_item_id=:itemID", ":itemID", $productID);
     
     $AvailableConfigs;
@@ -31,25 +32,30 @@
     $sizeAvailable = false;
     $colourAvaliable = false;
 	$hasAltImages = false;
+    $shoeSizeAvailable = false;
+
+    $availableColours = array();
+    $availableSizes = array();
+    $availableShoeSizes = array();
 
 
     foreach($productConfigs as $config){
-        
-        if(isset($config["variation_value"])){
-            //var_dump($config["variation_value"]);
-            
-            $AvailableConfigs[$config["variation_value"]] = true;
-            
-           
-            $availableSizes = array("extraSmall", "small", "medium", "large", "extraLarge" );
-            if(in_array($config["variation_value"], $availableSizes)){
-                $sizeAvailable = true;
-            }
 
-            $availableColours = array("red", "green", "purple", "yellow");
-            if(in_array($config["variation_value"], $availableColours)) {
-                $colourAvaliable = true;
-            }
+        $AvailableConfigs[$config["variation_value"]] = true;
+
+        if($config["variation_type"] == "Size" || $config["variation_type"] == "ShoeSize"){
+            $availableSizes[] = $config["variation_value"];
+            $sizeAvailable = true;
+        }
+
+        if($config["variation_type"] == "ShoeSize"){
+            $availableShoeSizes[] = $config["variation_value"];
+            $shoeSizeAvailable = true;
+        }
+
+        if($config["variation_type"] == "Colour"){
+            $availableColours[] = $config["variation_value"];
+            $colourAvaliable = true;
         }
 
     }
@@ -61,82 +67,130 @@
      session_start();
     
 
-
+// if cant find picture show placeholder
   if(!file_exists($item["product_image"])){
   	$item["product_image"] = "images/missingImage.png";
   }
 
+
+    function updateQuantity($db, $quantity, $basketID){
+        $newQuantity = $quantity + 1;
+
+        $updateBasket = $db->prepare("UPDATE asad_basket SET quantity = :quantity WHERE basket_id=:basketID");
+        $updateBasket->execute([':basketID' => $basketID, ":quantity" => $newQuantity]);
     
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        if (isset($_SESSION['uid'])) { 
+    }
+
+    function addToBasket($db, $userId, $productID, $colourOption, $sizeOption){
+
+        $quantity = 1;
+
+        if(isProductInStock($db, htmlspecialchars($productID) )){
+           
+            if(!isset($colourOption)) { $colourOption = "";};
+            if(!isset($sizeOption)) { $sizeOption = "";};
+           
+            if($colourOption != "" && $sizeOption != ""){
+           
+                $addToBasket = $db->prepare("INSERT INTO asad_basket (user_id, product_id, colour, size, quantity) VALUES (:user_id, :product_id, :colour_variation_id, :size_variation_id, :quantity)");
+                $addToBasket->execute([':user_id' => $userId, ':product_id' => $productID, ":colour_variation_id" =>  $colourOption, ":size_variation_id" => $sizeOption, ':quantity' => $quantity]);
+           
+            }else if($colourOption != ""){
+
+                $addToBasket = $db->prepare("INSERT INTO asad_basket (user_id, product_id, colour, quantity) VALUES (:user_id, :product_id, :colour_variation_id, :quantity)");
+                $addToBasket->execute([':user_id' => $userId, ':product_id' => $productID, ":colour_variation_id" =>  $colourOption,  ':quantity' => $quantity]);
+            
+            }else if($sizeOption != ""){
+            
+                $addToBasket = $db->prepare("INSERT INTO asad_basket (user_id, product_id, size, quantity) VALUES (:user_id, :product_id, :size_variation_id, :quantity)");
+                $addToBasket->execute([':user_id' => $userId, ':product_id' => $productID, ":size_variation_id" => $sizeOption, ':quantity' => $quantity]);
+
+                
+            
+            }else{
+                $addToBasket = $db->prepare("INSERT INTO asad_basket (user_id, product_id, quantity) VALUES (:user_id, :product_id, :quantity)");
+                $addToBasket->execute([':user_id' => $userId, ':product_id' => $productID,  ':quantity' => $quantity]);
+            }
+           
+        }
+
+    }
+
+    function addOrUpdateVariation($db, $existingBasket, $productID , $colourOption, $sizeOption){
+        //go through the basket 
+
+        $alreadyExists = false;
+
+       foreach($existingBasket as $basketItem){
+
+           if(isset($colourOption)){
+               $colourVariationOptionName = getNameFromVariationOptionID($db, $basketItem["Colour"]);
+           }
+
+           if(isset($sizeOption)){
+               $sizeVariationOptionName = getNameFromVariationOptionID($db, $basketItem["Size"]);
+           }
+
+           if($basketItem["product_id"] == $productID){
+
+            
+                if($colourVariationOptionName == $colourOption &&  $sizeVariationOptionName == $sizeOption){
+                    updateQuantity($db, $basketItem["quantity"] , $basketItem["basket_id"]);
+                    $alreadyExists = true;
+                    break;
+                }
+
+            }
+
+        }
+
+        if(!$alreadyExists){
+            $colourOptionID = getVariationIDFromName($db, $colourOption);
+            $sizeOptionID = getVariationIDFromName($db, $sizeOption);
+            addToBasket($db, $_SESSION['uid'] , $productID, $colourOptionID, $sizeOptionID);
+        }
+
+   }
+    
+    if($_SERVER['REQUEST_METHOD'] === 'POST')  {
+
+        if (isset($_SESSION['uid'])) { // is user logged in
+
+            
+
             $userId = $_SESSION['uid']; 
             $quantity = 1;  
 
-            //var_dump($_POST);
-
             
-
-
-            // Check ifmproduct is already in basket or no
-            $checkBasket = $db->prepare("SELECT quantity, Colour, Size FROM asad_basket WHERE user_id = :user_id AND product_id = :product_id");
+            //get everything from the basket 
+            $checkBasket = $db->prepare("SELECT * FROM asad_basket WHERE user_id = :user_id AND product_id = :product_id");
             $checkBasket->execute([':user_id' => $userId, ':product_id' => $productID]);
-            $existingBasket = $checkBasket->fetch(PDO::FETCH_ASSOC);
+            $existingBasket = $checkBasket->fetchAll(PDO::FETCH_ASSOC);
 
+            //get the colour and size that the user submitted 
             $colourOption = $_POST["colour"];
             $sizeOption = $_POST["size"];
 
-            if(isProductInStock($db, htmlspecialchars($productID) )){
-                if ($existingBasket) {
-                    // fix quantity if the product is already tehre
-                    $newQuantity = $existingBasket['quantity'] + $quantity;
-                    $updateBasket = $db->prepare("UPDATE asad_basket SET quantity = :quantity WHERE user_id = :user_id AND product_id = :product_id");
-                    $updateBasket->execute([':quantity' => $newQuantity, ':user_id' => $userId, ':product_id' => $productID]);
 
-                    if($colourOption != ""){
+            //get the corrosponding IDs
+            $colourOptionID = getVariationIDFromName($db, $colourOption);
+            $sizeOptionID = getVariationIDFromName($db, $sizeOption);
 
-                        $colourVariationID = getVariationIDFromName($db, $colourOption);
-
-                        $updateBasket = $db->prepare("UPDATE asad_basket SET Colour = :newColour WHERE user_id = :user_id AND product_id = :product_id");
-                        $updateBasket->execute([':newColour' => $colourVariationID, ':user_id' => $userId, ':product_id' => $productID]);
-                    }
-
-                    if($sizeOption != ""){
-
-                        $sizeVariationID = getVariationIDFromName($db, $sizeOption);
-
-                        $updateBasket = $db->prepare("UPDATE asad_basket SET Size = :newSize WHERE user_id = :user_id AND product_id = :product_id");
-                        $updateBasket->execute([':newSize' => $sizeVariationID, ':user_id' => $userId, ':product_id' => $productID]);
-                    }
-
-                } else {
-                    // put new product into  basket
-
-                    
-
-                    var_dump($colourOption);
-
-                    if(isset($colourOption)){
-                        $colourVariationOptionId = getDBResult($db, "SELECT * FROM variation_option WHERE variation_value=:colour", ":colour", $sizeOption)[0]["variation_option_id"];
-                    }
-
-                    if(isset($sizeOption)){
-                        $sizeVariationOptionId = getDBResult($db, "SELECT * FROM variation_option WHERE variation_value=:size", ":size", $colourOption)[0]["variation_option_id"];
-                    }
-                    
-                    $addToBasket = $db->prepare("INSERT INTO asad_basket (user_id, product_id, colour, size, quantity) VALUES (:user_id, :product_id, :colour_variation_id, :size_variation_id, :quantity)");
-                    $addToBasket->execute([':user_id' => $userId, ':product_id' => $productID, ":colour_variation_id" => $colourVariationOptionId, ":size_variation_id" => $sizeVariationOptionId, ':quantity' => $quantity]);
-
-                }    
-
-                header("Location: Basket.php");
-                exit;
+            // if there is no current item in the basket with the current productID just call addToBasket
+            if(count($existingBasket) <= 0){
+                addToBasket($db, $userId , $productID, $colourOptionID, $sizeOptionID);
             }else{
-                echo "item not in stock";
+                addOrUpdateVariation($db, $existingBasket, $productID , $colourOption, $sizeOption);
             }
+
+           
             
-            
+                    
+           
             
         } 
+
+        header("Location: Basket.php");
     }
 
 require_once("navbar.php");
@@ -185,37 +239,13 @@ require_once("navbar.php");
                 <p>Colour:</p>
                 <table> 
                     <tr>
-                        <?php if(isset($AvailableConfigs["red"])){ ?>
-                            
-                            <td>
-                                <div onclick="selectColour('red')" id="colour-shape-red" class="colour-shape" style="background-color: red;"></div>
-                            </td>
-                        <?php } ?>
 
-                        <?php if(isset($AvailableConfigs["blue"])){ ?>
-                            <td>
-                                <div onclick="selectColour('blue')" class="colour-shape" id="colour-shape-blue" style="background-color: blue;"></div>
-                            </td>
-                        <?php } ?>
-                        
-                        <?php if(isset($AvailableConfigs["green"])){ ?>
-                            <td>
-                                <div onclick="selectColour('green')" class="colour-shape" id="colour-shape-green" style="background-color: green;"></div>
-                            </td>
-                        <?php } ?>
+                    <?php foreach($availableColours as $Colour) { ?>
+                        <td>
+                            <div onclick="selectColour('<?php echo $Colour ?>')" id="colour-shape-<?php echo $Colour ?>" class="colour-shape" style="background-color: <?php echo $Colour ?>;"></div>
+                        </td>
+                    <?php } ?>
 
-                        <?php if(isset($AvailableConfigs["purple"])){ ?>
-                            <td>
-                                <div onclick="selectColour('purple')" class="colour-shape" id="colour-shape-purple" style="background-color: purple;"></div>
-                            </td>
-                        <?php } ?>
-
-                        <?php if(isset($AvailableConfigs["yellow"])){ ?>
-                            <td>
-                                <div onclick="selectColour('yellow')"  class="colour-shape" id="colour-shape-yellow" style="background-color: yellow;"></div>
-                            </td>
-                        <?php } ?>
-                        
                     </tr>
                 </table>
          
@@ -228,28 +258,11 @@ require_once("navbar.php");
             <div id="size-options">
                 <p>Size:</p>
                 <table id="size-option-table">
-
                     <tr>
-                    <?php if(isset($AvailableConfigs["extraSmall"])){ ?>
-                        <td class="size-option">
-                            <div onclick="sizeSelect('XS')"  id="size-option-XS">XS</div>
-                        </td>
-                    <?php } ?>
 
-                    <?php if(isset($AvailableConfigs["small"])){ ?>
-                        <td onclick="sizeSelect('S')" class="size-option" id="size-option-S">S</td>
-                    <?php } ?>
-
-                    <?php if(isset($AvailableConfigs["medium"])){ ?>
-                        <td onclick="sizeSelect('M')" class="size-option" id="size-option-M">M</td>
-                    <?php } ?>
-
-                    <?php if(isset($AvailableConfigs["large"])){ ?>
-                        <td onclick="sizeSelect('L')" class="size-option" id="size-option-L">L</td>
-                    <?php } ?>
-
-                    <?php if(isset($AvailableConfigs["extraLarge"])){ ?>
-                        <td onclick="sizeSelect('XL')" class="size-option" id="size-option-XL">XL</td>
+                    <?php foreach($availableSizes as $Size) { ?>
+                        <?php $sizeVarName = str_replace(".","", $Size); ?>
+                            <td onclick="sizeSelect('<?php echo $Size ?>')" class="size-option" id="size-option-<?php echo $sizeVarName ?>"><?php echo getVaraitionShortName($Size, $productConfigs); ?></td>
                     <?php } ?>
 
                     </tr>
@@ -257,6 +270,8 @@ require_once("navbar.php");
                 </table>
             </div>
             <?php } ?>    	
+
+           
 
             
             <form method="POST" id="mainForm" >
@@ -348,7 +363,7 @@ require_once("navbar.php");
                 <p class="reviewText">"<?php echo htmlspecialchars($review["comment"]); ?>"</p>
                 <hr class="reviewSeparator">
             </div>
-        <?php } ?>
+        <?php } ?>basketItem
     <?php } ?>
 </div>
 
@@ -524,47 +539,51 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 
+<?php
+
+    function getVaraitionShortName($variationName ,  $productConfigs){
+        foreach($productConfigs as $config){
+            if($config["variation_value"] == $variationName && $config["variation_short_name"] != "" ){
+                return $config["variation_short_name"];
+            }
+        }
+
+        return $variationName;
+    }
+
+?>
+
+
     let selectedSize = "none"
     let selectedColour = "none"
 
+
+
     function sizeSelect(size){
+
+
+        
+        <?php foreach($availableSizes as $size) { ?>
+            <?php $sizeVarName = "size".str_replace(".","", $size); ?>
+            <?php $sizeIdName = str_replace(".","", $size); ?>
+            var <?php echo $sizeVarName ?> = document.getElementById("size-option-<?php echo $sizeIdName ?>")
+            if(<?php echo $sizeVarName ?> != null){ <?php echo $sizeVarName ?>.style.backgroundColor = "var(--card-bg)" }
+        <?php } ?>
 
         var formSize = document.getElementById("colourFormSize")
 
-        var XS = document.getElementById("size-option-XS")
-        var S = document.getElementById("size-option-S")
-        var M = document.getElementById("size-option-M")
-        var L = document.getElementById("size-option-L")
-        var XL = document.getElementById("size-option-XL")
-
-        if(XS != null) {XS.style.backgroundColor = "var(--card-bg)" }
-        if(S != null) { S.style.backgroundColor = "var(--card-bg)" }
-        if(M != null) { M.style.backgroundColor = "var(--card-bg)" }
-        if(L != null) { L.style.backgroundColor = "var(--card-bg)" }
-        if(XL != null) { XL.style.backgroundColor = "var(--card-bg)" }
-
 
         switch(size){
-            case "XS":
-                XS.style.backgroundColor = "var(--accent-color)"
-                formSize.value = "extraSmall"
-                break;
-            case "S":
-                S.style.backgroundColor = "var(--accent-color)"
-                formSize.value = "small"
-                break;
-            case "M":
-                M.style.backgroundColor = "var(--accent-color)"
-                formSize.value = "medium"
-                break;
-            case "L":
-                L.style.backgroundColor = "var(--accent-color)"
-                formSize.value = "large"
-                break;
-            case "XL":
-               XL.style.backgroundColor = "var(--accent-color)"
-               formSize.value = "extraLarge"
-                break;
+
+            <?php foreach($availableSizes as $size) { ?>
+                <?php $sizeVarName = "size".str_replace(".","", $size); ?>
+                case "<?php echo $size ?>":
+                    <?php echo $sizeVarName ?>.style.backgroundColor = "var(--accent-color)"
+                    formSize.value = "<?php echo $size ?>"
+                    break;
+
+            <?php } ?>
+
         }
 
         //alert(size)
@@ -572,41 +591,21 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function selectColour(colour){
 
+        <?php foreach($availableColours as $color) { ?>
+            var <?php echo $color ?>Circle = document.getElementById("colour-shape-<?php echo $color ?>")
+            if(<?php echo $color ?>Circle != null){ <?php echo $color ?>Circle.style.borderWidth = "0px" }
+        <?php } ?>
+
         var formColour = document.getElementById("colourFormText")
 
-        var redCircle = document.getElementById("colour-shape-red")
-        var purpleCircle = document.getElementById("colour-shape-purple")
-        var greenCircle = document.getElementById("colour-shape-green")
-        var blueCircle = document.getElementById("colour-shape-blue")
-        var yellowCircle = document.getElementById("colour-shape-yellow")
-
-        if(redCircle != null){ redCircle.style.borderWidth = "0px" }
-        if(purpleCircle != null){ purpleCircle.style.borderWidth = "0px" }
-        if(greenCircle != null){ greenCircle.style.borderWidth = "0px" }
-        if(blueCircle != null){ blueCircle.style.borderWidth = "0px" }
-        if(yellowCircle != null){ yellowCircle.style.borderWidth = "0px" }
-        
         switch(colour){
-            case "red":
-                redCircle.style.borderWidth = "5px"
-                formColour.value = "red"
-                break;
-            case "purple":
-                purpleCircle.style.borderWidth = "5px"
-                formColour.value = "purple"
-                break;
-            case "green":
-                greenCircle.style.borderWidth = "5px"
-                formColour.value = "green"
-                break;
-            case "blue":
-                blueCircle.style.borderWidth = "5px"
-                formColour.value = "blue"
-                break;
-            case "yellow":
-                yellowCircle.style.borderWidth = "5px"
-                formColour.value = "yellow"
-                break;
+
+            <?php foreach($availableColours as $color) { ?>
+                case "<?php echo $color ?>":
+                    <?php echo $color ?>Circle.style.borderWidth = "5px"
+                    formColour.value = "<?php echo $color ?>"
+                    break;
+            <?php } ?>
         }
     }
 
@@ -715,7 +714,7 @@ document.addEventListener("DOMContentLoaded", function() {
     justify-content: space-between;
     align-items: center;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 18px; <?php echo $color ?>
     margin-bottom: 10px;
 }
 
