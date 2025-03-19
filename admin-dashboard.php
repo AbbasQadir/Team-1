@@ -297,21 +297,32 @@ $recentOrders = $resultRecentOrders->fetchAll(PDO::FETCH_ASSOC);
             }
         });
 
-        var categoryCtx = document.getElementById('categoryChart').getContext('2d');
-        new Chart(categoryCtx, {
-            type: 'doughnut',
-            data: {
-                labels: categoryLabels,
-                datasets: [{
-                    data: categorySales,
-                    backgroundColor: ['#3498db', '#2ecc71', '#f1c40f', '#e74c3c', '#9b59b6']
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { position: 'right' } }
+      
+var total = categorySales.reduce((sum, value) => sum + value, 0);
+var categoryLabelsWithPercentages = categoryLabels.map((label, index) => {
+    const percentage = Math.round((categorySales[index] / total) * 100);
+    return `${label} (${percentage}%)`;
+});
+
+var categoryCtx = document.getElementById('categoryChart').getContext('2d');
+new Chart(categoryCtx, {
+    type: 'doughnut',
+    data: {
+        labels: categoryLabelsWithPercentages,
+        datasets: [{
+            data: categorySales,
+            backgroundColor: ['#3498db', '#2ecc71', '#f1c40f', '#e74c3c', '#9b59b6']
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { 
+            legend: { 
+                position: 'right' 
             }
-        });
+        }
+    }
+});
      
   document.addEventListener("DOMContentLoaded", function () {
   //const themeToggle = document.getElementById("theme-toggle");
@@ -327,7 +338,25 @@ $recentOrders = $resultRecentOrders->fetchAll(PDO::FETCH_ASSOC);
     //themeToggle.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
   //});
 });
-
+document.addEventListener("DOMContentLoaded", function() {
+  const tooltipContainers = document.querySelectorAll('.tooltip-container');
+  
+  tooltipContainers.forEach(container => {
+    const tooltip = container.querySelector('.tooltip');
+    const productList = tooltip.querySelector('ul');
+    const products = productList.querySelectorAll('li');
+    
+    
+    if (products.length > 3) {
+    
+      const scrollMessage = document.createElement('div');
+      scrollMessage.className = 'scroll-hint';
+      scrollMessage.textContent = 'Scroll to see more';
+      
+      tooltip.insertBefore(scrollMessage, productList);
+    }
+  });
+});
     </script>
     
 
