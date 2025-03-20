@@ -9,9 +9,62 @@ try {
 }
 
 // check if log in is there
+
 if (!isset($_SESSION['uid'])) {
-    echo "<script>alert('Please log in to view your basket.');</script>";
-    echo "<script>window.location.href = 'login.php';</script>";
+    ?>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login Required</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="homestyle.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    	
+    </head>
+    <body>
+
+        
+        <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style="color: black;">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="loginModalLabel">Login Required</h5>
+                        <button type="button" class="btn-close" id="closeBtn" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>You need to log in to view your basket.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="login.php" class="btn btn-primary">Log In</a>
+                        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var loginModal = new bootstrap.Modal(document.getElementById("loginModal"), { backdrop: "static" });
+                loginModal.show();
+
+                document.getElementById("cancelBtn").addEventListener("click", function () {
+                    window.history.back(); 
+                });
+            
+                document.getElementById("closeBtn").addEventListener("click", function () {
+                    window.history.back();
+                });
+            
+            
+            
+            });
+        </script>
+
+    </body>
+    </html>
+    <?php
     exit;
 }
 
@@ -23,12 +76,12 @@ $query = "
         p.product_name, 
         p.product_image, 
         pi.price, 
-        b.Colour,
-        b.Size,
         b.quantity, 
-        b.basket_id,
         (b.quantity * pi.price) AS total_price,
-        b.product_id
+        b.product_id,
+        b.basket_id,
+        b.Colour,
+        b.Size
     FROM 
         asad_basket b 
     JOIN 
@@ -58,16 +111,14 @@ if (isset($_GET['remove'])) {
 }
 
 // quantity updater
-if (isset($_POST['update_quantity']) && isset($_POST['quantity'])) {
-    foreach ($_POST['quantity'] as $productId => $newQuantity) {
-
-        $basketID = $_POST["basketID"];
+if (isset($_POST['update_quantity']) && isset($_POST['quantities'])) {
+    foreach ($_POST['quantities'] as $basketID => $newQuantity) { // Use basket_id as key
         if ($newQuantity > 0) {
-            $updateQuery = "UPDATE asad_basket SET quantity = :quantity WHERE basket_id=:basketID";
+            $updateQuery = "UPDATE asad_basket SET quantity = :quantity WHERE basket_id = :basketID";
             $updateStmt = $db->prepare($updateQuery);
             $updateStmt->execute([
                 ':quantity' => $newQuantity,
-                ':basketID' => $basketID
+                ':basketID' => $basketID,
             ]);
         }
     }
@@ -107,32 +158,30 @@ include 'navbar.php';
                 <?php foreach ($basketItems as $item): ?>
                     <tr class="basket-row">
                         <td class="basket-cell">
-                            <?php echo htmlspecialchars($item['product_name'])  ?>
+                 			<?php echo htmlspecialchars($item['product_name'])  ?>
                             <br>
+                            <div id='productVariationsContainer'>
 
-                            <input type="text" style="display:none;" value="<?php echo $item["basket_id"]?>" name="basketID"> 
-
-                            <div id="productVariationsContainer">
-
-                                <?php if(isset($item["Colour"])) { ?>
+                                <?php if(isset($item["Colour"]) ) { ?>
                                     <div id="productVariationsColourIcon" style="background-color: <?php echo htmlspecialchars(getNameFromVariationOptionID($db, $item["Colour"])); ?>;"></div>
-                                    <?php echo htmlspecialchars(getNameFromVariationOptionID($db, $item["Colour"]))  ?>
+                                    <?php echo htmlspecialchars(getNameFromVariationOptionID($db, $item["Colour"]))."<br>"  ?>
                                 <?php } ?>
 
+                               
+
                                 <?php if(isset($item["Size"])) { ?>
-                                    <div id="productVariationsSizeIcon"> <?php echo getSymbolLetterForSize(getNameFromVariationOptionID($db, $item["Size"])); ?> </div>
-                                    <?php echo "Size: ".htmlspecialchars(getNameFromVariationOptionID($db, $item["Size"]))  ?>
+                                    <!-- <div id="productVariationsSizeIcon"> <?php echo getSymbolLetterForSize(getNameFromVariationOptionID($db, $item["Size"])); ?> </div> -->
+                                    <?php echo "Size: ".htmlspecialchars(getShortNameFromVariationOptionID($db, $item["Size"]))  ?>
                                 <?php } ?>
 
                                 
                             </div>
-                            
-                        </td>
+               	 		</td>
                         <td class="basket-cell">
                             <img src="<?php echo htmlspecialchars($item['product_image']); ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>" class="basket-image">
                         </td>
                         <td class="basket-cell">
-                            <input type="number" name="quantity[<?php echo $item['product_id']; ?>]" value="<?php echo $item['quantity']; ?>" min="1" required class="basket-quantity">
+                            <input type="number" name="quantities[<?php echo $item['basket_id']; ?>]" value="<?php echo $item['quantity']; ?>" min="1" required class="basket-quantity">
                         </td>
                         <td class="basket-cell">&pound;<?php echo number_format($item['price'], 2); ?></td>
                         <td class="basket-cell">&pound;<?php echo number_format($item['total_price'], 2); ?></td>
@@ -161,8 +210,14 @@ include 'navbar.php';
 </div>
 
 <style>
+    body {
+    margin: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Merriweather', serif;
+}
 
-    #productVariationsColourIcon{
+#productVariationsColourIcon{
         display: inline-block;
         background-Color:red;
         width: 15px;
@@ -180,80 +235,98 @@ include 'navbar.php';
         color: gray;
         border-style: solid;
 
+		margin:0;
+		padding:0;
+
         font-size: 6px;
 
 
     }
 
-    body{
-        margin:0;
-    }
-    .basket-title {
-        margin-top: 20px;
-        text-align: center;
-    }
-    .basket-table {
-        width: 97%;
-        border-collapse: collapse;
-        margin: 20px auto;
-        background: white;
-    }
-    .basket-table, .basket-header, .basket-cell {
-        border: 1px solid #ddd;
-    }
-    .basket-header {
-        padding: 12px;
-        background-color: #f4f4f4;
-        text-align: center;
-    }
-    .basket-cell {
-        text-align: center;
-        padding: 12px;
-    }
-    .basket-image {
-        width: 150px;
-        height: auto;
-        object-fit: cover;
-    }
-    .basket-remove-btn, .basket-checkout-btn, .basket-previous-orders-btn {
-        font-family: 'Merriweather', serif;
-        background-color: #084298;
-        color: white;
-        border: none;
-        padding: 15px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        width: 200px;
-        text-decoration: none;
-        margin: 10px;
-        display: inline-block;
-        text-align: center;
-    }
-    .basket-remove-btn:hover, .basket-checkout-btn:hover, .basket-update-btn:hover, .basket-previous-orders-btn:hover {
-        background-color: #b8c5d4;
-        color: #084298;
-        box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
-        text-decoration: none;
-    }
-    .basket-update-btn{
-        font-family: 'Merriweather', serif;
-        background-color: #084298;
-        color: white;
-        border: none;
-        padding: 18px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        width: 200px;
-        text-decoration: none;
-        margin-left: 10px;
-        display: inline-block;
-        text-align: center;
-        margin-bottom:10px;
-    }
+.basket-title {
+    margin-top: 20px;
+    text-align: center;
+    color: var(--text-color);
+}
+
+.basket-table {
+    width: 97%;
+    border-collapse: collapse;
+    margin: 20px auto;
+    background: var(--card-bg);
+    color: var(--text-color);
+}
+
+.basket-table, .basket-header, .basket-cell {
+    border: 1px solid var(--border-color);
+}
+
+.basket-header {
+    padding: 12px;
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    text-align: center;
+    font-family: 'Merriweather', serif;
+}
+
+.basket-cell {
+    text-align: center;
+    padding: 12px;
+}
+
+.basket-image {
+    width: 150px;
+    height: auto;
+    object-fit: cover;
+}
+
+.basket-remove-btn, 
+.basket-checkout-btn, 
+.basket-previous-orders-btn {
+    font-family: 'Merriweather', serif;
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    border: none;
+    padding: 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 200px;
+    text-decoration: none;
+    margin: 10px;
+    display: inline-block;
+    text-align: center;
+    box-shadow: 0px 0px 9px 0px var(--shadow);
+}
+
+.basket-remove-btn:hover, 
+.basket-checkout-btn:hover, 
+.basket-update-btn:hover, 
+.basket-previous-orders-btn:hover {
+    background-color: var(--accent-hover);
+    color: var(--text-color);
+    box-shadow: 0px 0px 9px 0px var(--shadow);
+    text-decoration: none;
+}
+
+.basket-update-btn {
+    font-family: 'Merriweather', serif;
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    border: none;
+    padding: 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 200px;
+    text-decoration: none;
+    margin-left: 10px;
+    display: inline-block;
+    text-align: center;
+    margin-bottom: 10px;
+    box-shadow: 0px 0px 9px 0px var(--shadow);
+}
 </style>
 
-</body>
 </html>
 <?php include 'footer.php'; ?>
