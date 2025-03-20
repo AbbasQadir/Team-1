@@ -1,3 +1,31 @@
+<?php
+session_start();
+require_once("PHPHost.php");
+
+$productID = $_GET["id"];
+
+if (isset($_SESSION['uid'])) {
+    $userId = $_SESSION['uid'];
+    $purchaseQuery = "SELECT COUNT(*) FROM orders o 
+                      JOIN order_prod op ON o.orders_id = op.orders_id 
+                      WHERE o.user_id = :user_id AND op.product_item_id = :productID";
+    $stmt = $db->prepare($purchaseQuery);
+    $stmt->execute([':user_id' => $userId, ':productID' => $productID]);
+    $purchaseCount = $stmt->fetchColumn();
+
+    $reviewQuery = "SELECT COUNT(*) FROM users_review 
+                    WHERE user_id = :user_id AND order_prod_id = :productID";
+    $stmt2 = $db->prepare($reviewQuery);
+    $stmt2->execute([':user_id' => $userId, ':productID' => $productID]);
+    $reviewCount = $stmt2->fetchColumn();
+
+    $canReview = ($purchaseCount > 0);
+    $alreadyReviewed = ($reviewCount > 0);
+} else {
+    $canReview = false;
+    $alreadyReviewed = false;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,6 +45,43 @@
 
 
 
+    function sortVariationSizes($availableSizes){
+        sort($availableSizes);
+        $temp = array();
+
+        $extraSmallPosition = array_search("extraSmall", $availableSizes);
+        if ($extraSmallPosition !== false) {
+            $temp[] = $availableSizes[$extraSmallPosition];
+            array_splice($availableSizes,$extraSmallPosition, 1 );
+        }
+
+        $smallPosition = array_search("small", $availableSizes);
+        if ($smallPosition !== false) {
+            $temp[] = $availableSizes[$smallPosition];
+            array_splice($availableSizes,$smallPosition, 1 );
+        }
+
+        $mediumPosition = array_search("medium", $availableSizes);
+        if ($mediumPosition !== false) {
+            $temp[] = $availableSizes[$mediumPosition];
+            array_splice($availableSizes,$mediumPosition, 1 );
+        }
+
+        $largePosition = array_search("large", $availableSizes);
+        if ($largePosition !== false) {
+            $temp[] = $availableSizes[$largePosition];
+            array_splice($availableSizes,$largePosition, 1 );
+        }
+
+        $extraLargePosition = array_search("extraLarge", $availableSizes);
+        if ($extraLargePosition !== false) {
+            $temp[] = $availableSizes[$extraLargePosition];
+            array_splice($availableSizes,$extraLargePosition, 1 );
+        }
+
+        $output = array_merge($temp, $availableSizes);
+        return $output;
+    }
          
     
     $productID = $_GET["id"];
@@ -32,26 +97,22 @@
     $sizeAvailable = false;
     $colourAvaliable = false;
 	$hasAltImages = false;
-    $shoeSizeAvailable = false;
 
     $availableColours = array();
     $availableSizes = array();
-    $availableShoeSizes = array();
+
 
 
     foreach($productConfigs as $config){
 
         $AvailableConfigs[$config["variation_value"]] = true;
 
-        if($config["variation_type"] == "Size" || $config["variation_type"] == "ShoeSize"){
+        if($config["variation_type"] == "Size" ){
             $availableSizes[] = $config["variation_value"];
             $sizeAvailable = true;
         }
 
-        if($config["variation_type"] == "ShoeSize"){
-            $availableShoeSizes[] = $config["variation_value"];
-            $shoeSizeAvailable = true;
-        }
+
 
         if($config["variation_type"] == "Colour"){
             $availableColours[] = $config["variation_value"];
@@ -59,6 +120,8 @@
         }
 
     }
+
+    $availableSizes = sortVariationSizes($availableSizes);
 
     $reviews = getDBResult($db, "SELECT * FROM users_review WHERE order_prod_id=:productID", ":productID", $productID);
 
@@ -363,7 +426,7 @@ require_once("navbar.php");
                 <p class="reviewText">"<?php echo htmlspecialchars($review["comment"]); ?>"</p>
                 <hr class="reviewSeparator">
             </div>
-        <?php } ?>basketItem
+        <?php } ?>
     <?php } ?>
 </div>
 
@@ -389,10 +452,10 @@ require_once("navbar.php");
         
         <a href="/specificProduct.php?id=<?php echo $simmilarResults[1]['product_id'] ?>">
             <div class="similarProductItem">
-                <img class="similarProductImg" src="<?php echo $simmilarResults[1]['product_image'] ?>">
-                <p class="similarProductTitle"><?php echo $simmilarResults[1]["product_name"] ?></p>
-                <p class="similarProductPrice">£<?php echo getProductPrice($db, $simmilarResults[1]['product_id']) ?></p>
-            </div>
+                    <img class="similarProductImg" src="<?php echo $simmilarResults[1]['product_image'] ?>">
+                    <p class="similarProductTitle"><?php echo $simmilarResults[1]["product_name"] ?></p>
+                    <p class="similarProductPrice">£<?php echo getProductPrice($db, $simmilarResults[1]['product_id']) ?></p>
+                </div>
         </a>
 
         <a href="/specificProduct.php?id=<?php echo $simmilarResults[2]['product_id'] ?>">
@@ -578,7 +641,7 @@ document.addEventListener("DOMContentLoaded", function() {
             <?php foreach($availableSizes as $size) { ?>
                 <?php $sizeVarName = "size".str_replace(".","", $size); ?>
                 case "<?php echo $size ?>":
-                    <?php echo $sizeVarName ?>.style.backgroundColor = "var(--accent-color)"
+                    <?php echo $sizeVarName ?>.style.backgroundColor = "var(--icon-bg)"
                     formSize.value = "<?php echo $size ?>"
                     break;
 
@@ -614,6 +677,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
     <style>
+
+a{
+    text-decoration: none;
+}
+
 #imageCarousel {
     display: block;
     align-items: center;
@@ -653,6 +721,8 @@ document.addEventListener("DOMContentLoaded", function() {
     cursor: pointer;
     z-index: 100;
 }
+
+
 
 #prevBtn { left: 10px; }
 #nextBtn { right: 10px; }
@@ -761,6 +831,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     #mainInfoDetails{
         padding-left: 20px;
+        margin-left: 20px;
     }
 
     #addToBasket{
@@ -779,14 +850,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
     .similarProductItem{
         width: 30%;
-        margin-left: 3%;
+        margin-left: 2.5%;
         height: 650px;
+        vertical-align: top;
     }
 
     #imageCarousel {
         margin: auto;
         padding-top:50px;
         padding-bottom:50px;
+        
     }
 
     #mainTitle {
@@ -795,7 +868,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     .product-image{
         min-height: 500px;
-        margin-left: 20px;
+        
+        object-fit:cover;
+       
+        border-radius: 25px;
+        vertical-align: middle;
 
     }
     
@@ -851,6 +928,7 @@ document.addEventListener("DOMContentLoaded", function() {
         grid-template-rows: auto ;
         gap: 10px;
         padding-bottom: 100px;
+        
     }
 
     
@@ -923,6 +1001,8 @@ document.addEventListener("DOMContentLoaded", function() {
         grid-template-rows: 50% auto  ;
         display: grid;
 
+    
+
     }
 
     .reviewPreview {
@@ -936,13 +1016,26 @@ document.addEventListener("DOMContentLoaded", function() {
     .reviewText {
         font-size: 16px;
     }
+
+    #addToBasketOutOfStock{
+
+        
+
+        width: 80%;
+        margin-left: 10%;
+
+        height: 45px;
+
+}
+
 }
 
         
         #mainInfoDetails{
 
             grid-column-start: 2;
-            grid-column-start: 3;
+            padding-top:20px;
+
         }
 
         #mainInfoDetails > * {
@@ -991,12 +1084,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
         }
 
+        #similarProductsContainer > a:link{
+            color: var(--text-color);
+        }
+
         #similarProductsContainer > a:visited {
-            color: inherit;
+            color: var(--text-color);
+
         }
 
         #similarProductsContainer > a:hover {
-            color: inherit;
+            color: var(--text-color);
         }
 
 
@@ -1013,7 +1111,8 @@ document.addEventListener("DOMContentLoaded", function() {
             height: auto;
             display: grid;
 
-            
+            padding-left:20px;
+            padding-right:20px;
 
             
 
@@ -1082,7 +1181,7 @@ document.addEventListener("DOMContentLoaded", function() {
             background-color: var(--card-bg);
             border-style: solid;
             border-width: 1px;
-            border-color: azure;
+            border-color: var(--border-color);
             padding: 5px;
             cursor: pointer;
 
@@ -1203,9 +1302,21 @@ document.addEventListener("DOMContentLoaded", function() {
         .similarProductTitle {
             margin-top: 25px;
             margin-left: 25px;
+            width: 80%;
             margin-bottom: 0;
             font-weight: bold;
+            
+            
+            
         }
+
+        .similarProductTitle:visited {
+            color:var(--text-color);
+            
+        }
+
+
+
     </style>
 
 </body>
