@@ -1,10 +1,10 @@
 <?php
 
-
 $db_host = 'localhost';  
 $db_name = 'cs2team1_db';
-$username = 'root';
-$password = '851875';
+$username = 'cs2team1';
+$password = 'SqDC8zgJHEVQBIo';
+
 
 try {
     // Establish a database connection
