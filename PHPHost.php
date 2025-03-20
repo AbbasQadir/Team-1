@@ -3,8 +3,8 @@
 
 $db_host = 'localhost';  
 $db_name = 'cs2team1_db';
-$username = 'cs2team1';
-$password = 'SqDC8zgJHEVQBIo';
+$username = 'root';
+$password = '851875';
 
 try {
     // Establish a database connection
@@ -16,6 +16,22 @@ try {
     error_log("Database connection error: " . $ex->getMessage());
     die("An error occurred while connecting to the database. Please try again later.");
 }
+
+function isProductInStock($db, $productID){
+
+    $productQuantity = getDBResult($db, "SELECT quantity FROM product_item WHERE product_id=:productID", ":productID", $productID);
+    
+    if($productQuantity[0]["quantity"] > 0){
+        return true;
+    }else{
+        return false;
+    }
+
+}
+
+
+
+function getHumanVariationName(){}
 
 function getSymbolLetterForSize($size){
    
@@ -61,14 +77,13 @@ function getNameFromVariationOptionID($db, $id){
 
 }
 
-function isProductInStock($db, $productID){
+function getShortNameFromVariationOptionID($db, $id){
+    $result = getDBResult($db, "SELECT * FROM variation_option WHERE variation_option_id=:value", ":value", $id);
 
-    $productQuantity = getDBResult($db, "SELECT quantity FROM product_item WHERE product_id=:productID", ":productID", $productID);
-    
-    if($productQuantity[0]["quantity"] > 0){
-        return true;
+    if(isset($result[0]["variation_short_name"])){
+        return $result[0]["variation_short_name"];
     }else{
-        return false;
+        return getNameFromVariationOptionID($db, $id);
     }
 
 }
