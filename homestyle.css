@@ -1093,3 +1093,144 @@ body {
 }
 
 
+
+.dropdown-menu a, 
+.dropdown-menu a:hover {
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light theme dropdown styles */
+[data-theme="light"] .dropdown-menu a,
+[data-theme="light"] nav .dropdown-menu a,
+[data-theme="light"] .Products .dropdown-menu a,
+[data-theme="light"] #navbar .dropdown-menu a,
+[data-theme="light"] .dropdown-item {
+    color: #000 !important;
+}
+
+[data-theme="light"] .dropdown-menu a:hover,
+[data-theme="light"] nav .dropdown-menu a:hover,
+[data-theme="light"] .Products .dropdown-menu a:hover,
+[data-theme="light"] #navbar .dropdown-menu a:hover,
+[data-theme="light"] .dropdown-item:hover {
+    background-color: var(--icon-bg) !important;
+    color: #fff !important;
+}
+
+/* Dark theme dropdown styles */
+[data-theme="dark"] .dropdown-menu a,
+[data-theme="dark"] nav .dropdown-menu a,
+[data-theme="dark"] .Products .dropdown-menu a,
+[data-theme="dark"] #navbar .dropdown-menu a,
+[data-theme="dark"] .dropdown-item {
+    color: #fff !important;
+}
+
+[data-theme="dark"] .dropdown-menu a:hover,
+[data-theme="dark"] nav .dropdown-menu a:hover,
+[data-theme="dark"] .Products .dropdown-menu a:hover,
+[data-theme="dark"] #navbar .dropdown-menu a:hover,
+[data-theme="dark"] .dropdown-item:hover {
+    background-color: var(--icon-bg) !important;
+    color: var(--bg-color) !important;
+    text-align: left !important;
+}
+[data-theme="dark"] .site-dropdown a:hover {
+    background-color: var(--icon-bg) !important;
+    color: var(--bg-color) !important;
+    text-align: left !important;
+  }
+  /* Base Dropdown Styling */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--card-bg);
+    box-shadow: 0 2px 4px var(--shadow);
+    padding: 10px 0;
+    z-index: 1000;
+    min-width: 180px;
+    border-radius: 5px;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* Dropdown Items Styling */
+.dropdown-menu a {
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    text-align: left;
+    width: 100%;
+}
+
+/* Light Theme Dropdown Styles */
+[data-theme="light"] .dropdown-menu {
+    background-color: var(--card-bg);
+}
+
+[data-theme="light"] .dropdown-menu a {
+    color: var(--text-color) !important;
+}
+
+[data-theme="light"] .dropdown-menu a:hover {
+    background-color: var(--icon-bg) !important;
+    color: white !important;
+}
+
+/* Dark Theme Dropdown Styles */
+[data-theme="dark"] .dropdown-menu {
+    background-color: var(--card-bg);
+}
+
+[data-theme="dark"] .dropdown-menu a {
+    color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .dropdown-menu a:hover {
+    background-color: var(--icon-bg) !important;
+    color: var(--bg-color) !important;
+}
+
+/* Mobile Menu Dropdown Styling */
+.mobile-menu .dropdown-menu {
+    position: relative;
+    box-shadow: none;
+    width: 100%;
+    background-color: var(--custom-color);
+}
+
+.mobile-menu .dropdown:hover .dropdown-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Ensure consistent styling across all dropdown instances */
+nav .dropdown-menu a,
+.Products .dropdown-menu a,
+#navbar .dropdown-menu a,
+.dropdown-item {
+    /* Inherit the same properties as .dropdown-menu a */
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    text-align: left;
+}
