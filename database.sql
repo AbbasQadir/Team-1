@@ -153,3 +153,29 @@ create table users_review(
     foreign key (user_id) references users(user_id),
     foreign key (order_prod_id) references order_prod(order_prod_id)
 );
+
+create table returns (
+    return_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_prod_id INT NOT NULL,
+    user_id INT NOT NULL,
+    product_item_id INT NOT NULL,
+    quantity_returned INT NOT NULL,
+    return_reason VARCHAR(255) NOT NULL,
+    return_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_prod_id) REFERENCES order_prod(order_prod_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (product_item_id) REFERENCES product_item(product_item_id)
+);
+
+create table web_review (
+    web_review_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    orders_id INT NOT NULL,
+    review_text VARCHAR(5000),
+    rating INT CHECK (rating BETWEEN 1 AND 5),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (orders_id) REFERENCES orders(orders_id) ON DELETE CASCADE
+);
+
+
