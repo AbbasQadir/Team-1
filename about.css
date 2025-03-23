@@ -1,107 +1,105 @@
-:root {
-            --bg-color: #0d1b2a;
-            --text-color: #e0e1dd;
-            --secondary-text: #778da9;
-            --card-bg: #1b263b;
-            --icon-bg: #415a77;
-            --border-color: #415a77;
-            --shadow: rgba(0, 0, 0, 0.3);
-        }
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    line-height: 1.6;
+}
 
-        
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color, #e0e1dd); 
-            color: var(--text-color, #1b263b); 
-            font-family: 'Poppins', Arial, sans-serif;
-            text-align: center;
-            line-height: 1.6;
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        }
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
 
-        h1, h2, h3 {
-            font-weight: bold;
-        }
+.about-section {
+    background-color: #ffffff;
+    padding: 40px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+}
 
-    
-        .title {
-            font-size: 50px;
-            font-weight: bold;
-            margin-top: 30px;
-        }
+#title {
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 20px;
+}
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+.about-image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 20px auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-       
-        .top-image {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            display: block;
-            margin: 0 auto;
-        }
+#intro-text {
+    text-align: center;
+    font-size: 18px;
+    color: #555;
+    max-width: 800px;
+    margin: 0 auto;
+    margin-top: 20px;
+}
 
-      
-        #intro-text {
-            font-size: 18px;
-            font-weight: 500;
-            max-width: 900px;
-            margin: 20px auto;
-            line-height: 1.8;
-        }
+.details-section {
+    background-color: #ffffff;
+    padding: 40px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+}
 
-        
-        .details-section {
-            padding: 40px 20px;
-            margin: 40px auto;
-            max-width: 1200px;
-        }
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
 
-      
-        .details-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+.details-grid div {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: #333;
+    text-align: center;
+}
 
-     
-        .details-grid div {
-            background: var(--card-bg, #ffffff);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px var(--shadow, rgba(0, 0, 0, 0.1)); 
-            text-align: center;
-        }
+.details-grid div h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
 
-       
-        .details-grid div ul {
-            padding-left: 20px;
-            text-align: left;
-        }
+.details-grid div p, .details-grid div ul {
+    color: #555;
+    font-size: 16px;
+    text-align: left;
+}
 
-        .details-grid div ul li {
-            margin-bottom: 10px;
-        }
+.details-grid div ul {
+    padding-left: 20px;
+    margin-top: 10px;
+}
 
-        
-        .footer {
-            text-align: center;
-            background-color:#0056b3;
-            color: white;
-            padding: 20px 0;
-            font-size: 16px;
-        }
+.details-grid div ul li {
+    margin-bottom: 10px;
+}
 
-       
-        @media (max-width: 768px) {
-            .details-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+.footer {
+    text-align: center;
+    background-color: #0056b3;
+    color: white;
+    padding: 20px 0;
+    font-size: 16px;
+}
+
+ul {
+    list-style: square;
+}
+
+@media (max-width: 768px) {
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+}

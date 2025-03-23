@@ -17,8 +17,6 @@ try {
         SELECT 
             b.product_id, 
             b.quantity, 
-            b.Colour,
-            b.Size,
             pi.price, 
             pi.product_item_id,  
             p.product_name,     
@@ -179,12 +177,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $order_status_id = $statusRow ? $statusRow['order_status_id'] : 1;
 
         //adds to orders table in DB
-    	$randomID = random_int(20000, 5000000);
-       $insertOrderQuery = "INSERT INTO orders (orders_id, user_id, address_id, order_status_id, shipping_method_id, payment_method_id, order_price, order_date) 
-                             VALUES (:orderID, :user_id, :address_id, :order_status_id, :shipping_method_id, :payment_method_id, :order_price, NOW())";
+        $insertOrderQuery = "INSERT INTO orders (user_id, address_id, order_status_id, shipping_method_id, payment_method_id, order_price, order_date) 
+                             VALUES (:user_id, :address_id, :order_status_id, :shipping_method_id, :payment_method_id, :order_price, NOW())";
         $insertOrderStmt = $db->prepare($insertOrderQuery);
         $insertOrderStmt->execute([
-            ':orderID' => $randomID,
             ':user_id' => $user_id,
             ':address_id' => $address_id,
             ':order_status_id' => $order_status_id,
@@ -196,55 +192,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         //adds all basket items to order and changes stock level 
         foreach ($basketItems as $item) {
-            
-        
-        	if(isset($item["Colour"]) && isset($item["Size"]) ){
-                $insertOrderProdQuery = "INSERT INTO order_prod (orders_id, product_item_id, Colour, Size, quantity) 
-                                     VALUES (:order_id, :product_item_id, :Colour, :size ,:quantity)";
-                $insertOrderProdStmt = $db->prepare($insertOrderProdQuery);
-                $insertOrderProdStmt->execute([
-                    ':order_id' => $order_id,
-                    ':product_item_id' => $item['product_item_id'],
-                    ':quantity' => $item['quantity'],
-                    ':Colour' => $item['Colour'],
-                    ':size' => $item['Size']
-                ]);
-
-            }else if(isset($item["Colour"])){
-                $insertOrderProdQuery = "INSERT INTO order_prod (orders_id, product_item_id, Colour, quantity) 
-                VALUES (:order_id, :product_item_id, :Colour ,:quantity)";
-                $insertOrderProdStmt = $db->prepare($insertOrderProdQuery);
-
-                $insertOrderProdStmt->execute([
-                    ':order_id' => $order_id,
-                    ':product_item_id' => $item['product_item_id'],
-                    ':quantity' => $item['quantity'],
-                    ':Colour' => $item['Colour']
-                ]);
-
-            }else if(isset($item["Size"])){
-                $insertOrderProdQuery = "INSERT INTO order_prod (orders_id, product_item_id, Size, quantity) 
-                VALUES (:order_id, :product_item_id, :size ,:quantity)";
-                $insertOrderProdStmt = $db->prepare($insertOrderProdQuery);
-                
-                $insertOrderProdStmt->execute([
-                    ':order_id' => $order_id,
-                    ':product_item_id' => $item['product_item_id'],
-                    ':quantity' => $item['quantity'],
-                    ':size' => $item['Size']
-                ]);
-                
-            }else{
-                $insertOrderProdQuery = "INSERT INTO order_prod (orders_id, product_item_id, quantity) 
-                                     VALUES (:order_id, :product_item_id ,:quantity)";
-                $insertOrderProdStmt = $db->prepare($insertOrderProdQuery);
-
-                $insertOrderProdStmt->execute([
-                    ':order_id' => $order_id,
-                    ':product_item_id' => $item['product_item_id'],
-                    ':quantity' => $item['quantity']
-                ]);
-            }
+            $insertOrderProdQuery = "INSERT INTO order_prod (orders_id, product_item_id, quantity) 
+                                     VALUES (:order_id, :product_item_id, :quantity)";
+            $insertOrderProdStmt = $db->prepare($insertOrderProdQuery);
+            $insertOrderProdStmt->execute([
+                ':order_id' => $order_id,
+                ':product_item_id' => $item['product_item_id'],
+                ':quantity' => $item['quantity']
+            ]);
 
             $updateStockQuery = "UPDATE product_item 
                                  SET quantity = quantity - :quantity 
@@ -600,16 +555,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             justify-content: space-between;
             gap: 15px;
         }
-
-		#productVariationsColourIcon{
-            display: inline-block;
-            background-Color:red;
-            width: 15px;
-            height:15px;
-            border-radius: 7.5px;
-
-        }
-
     </style>
 </head>
 
@@ -618,7 +563,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <div class="success-message">
             <h2>Order Placed Successfully!</h2>
             <p>Your order has been placed and is pending. Thank you for your purchase!</p>
-            <p>We value your feedback! <a href="web_review.php?order_id=<?php echo $order_id; ?>" class="review-link">Please tell us about your shopping experience</a></p>
             <p>You will be redirected to the home page shortly.</p>
         </div>
         <script>
@@ -779,22 +723,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                             <div class="product-details">
                                 <div class="product-title"><?php echo htmlspecialchars($item['product_name']); ?></div>
-                            	<div id='productVariationsContainer'>
-
-                                	<?php if(isset($item["Colour"]) ) { ?>
-                                    	<div id="productVariationsColourIcon" style="background-color: <?php echo htmlspecialchars(getNameFromVariationOptionID($db, $item["Colour"])); ?>;"></div>
-                                    	<?php echo htmlspecialchars(getNameFromVariationOptionID($db, $item["Colour"]))  ?>
-                                	<?php } ?>
-
-
-
-                                	<?php if(isset($item["Size"])) { ?>
-                                    	<!-- <div id="productVariationsSizeIcon"> <?php echo getSymbolLetterForSize(getNameFromVariationOptionID($db, $item["Size"])); ?> </div> -->
-                                    	<?php echo "Size: ".htmlspecialchars(getShortNameFromVariationOptionID($db, $item["Size"]))  ?>
-                                	<?php } ?>
-
-
-                                </div>
                             </div>
 
                             <div class="product-price">
