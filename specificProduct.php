@@ -351,13 +351,10 @@ require_once("navbar.php");
                 <?php } ?>
                 
                 
-                <div id="reviewContainer" >
+                <div id="reviewContainer">
+    <?php if (isset($_SESSION['uid'])) { ?>
+        <a href="#" id="reviewLink">Write a Review</a>
 
-                    <?php if (isset($_SESSION['uid'])){ ?>
-                        <!-- If user is logged in, show the "Write a Review" link -->
-                        <a href="reviews.php?id=<?php echo htmlspecialchars($productID); ?>" id="reviewLink">
-                           Write a Review
-                        </a>
 
                         <?php } ?>
 
@@ -503,7 +500,23 @@ require_once("navbar.php");
         </div>
     </div>
 
-       
+       <div class="modal fade" id="reviewNotificationModal" tabindex="-1" aria-labelledby="reviewNotificationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" style="color: black;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="reviewNotificationModalLabel">Review Notification</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p id="reviewNotificationMessage"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
             <?php include 'footer.php'; ?>
@@ -671,6 +684,27 @@ document.addEventListener("DOMContentLoaded", function() {
             <?php } ?>
         }
     }
+var canReview = <?php echo json_encode($canReview); ?>;
+var alreadyReviewed = <?php echo json_encode($alreadyReviewed); ?>;
+
+
+var reviewNotificationModal = new bootstrap.Modal(document.getElementById("reviewNotificationModal"), { backdrop: "static" });
+
+document.getElementById("reviewLink").addEventListener("click", function(e) {
+    e.preventDefault();
+    var messageEl = document.getElementById("reviewNotificationMessage");
+    if (!canReview) {
+        messageEl.innerText = "You haven't purchased this product yet. You can only review products you've bought.";
+        reviewNotificationModal.show();
+    } else if (alreadyReviewed) {
+        messageEl.innerText = "You have already submitted a review for this product.";
+        reviewNotificationModal.show();
+    } else {
+        window.location.href = "reviews.php?id=<?php echo htmlspecialchars($productID); ?>";
+    }
+});
+
+
 
 </script>
 
@@ -778,7 +812,7 @@ a{
     transform: scale(1.02);
 }
 
-/* Review Header (User ID + Star Rating) */
+
 .reviewHeader {
     display: flex;
     justify-content: space-between;
@@ -789,26 +823,53 @@ a{
 }
 
 
-/* User ID */
-.reviewUser {
-    color: #333;
+
+.reviewPreview {
+    background: linear-gradient(145deg, var(--card-bg), var(--icon-bg));
+    border-radius: 15px;
+    box-shadow: 0 6px 15px var(--shadow);
+    padding: 30px;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 1000px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    color: var(--text-color);
+    text-align: center;
 }
 
-/* Star Rating */
+.reviewPreview:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px var(--shadow);
+}
+
+
+.reviewHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.reviewUser {
+    color: var(--text-color);
+}
+
 .reviewRating {
-    color: gold;
+    color: var(--text-color);
     font-size: 20px;
 }
 
-/* Review Text */
 .reviewText {
     font-size: 18px;
-    color: #555;
+    color: var(--text-color);
     font-style: italic;
     margin-bottom: 15px;
 }
 
-/* Separator Line */
 .reviewSeparator {
     border: none;
     height: 1px;
@@ -816,6 +877,20 @@ a{
     margin-top: 15px;
     width: 100%;
 }
+#reviewPreviewContainer {
+    background-color: var(--bg-color);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    padding: 40px;
+    width: 100%;
+    max-width: 100%;
+    margin: 30px auto;
+    box-shadow: 0px 4px 12px var(--shadow);
+}
+
+
+
+
 
 /* Responsive Design */
 @media (min-width: 1000px) {
@@ -1190,21 +1265,23 @@ a{
 
      
         #addToBasket {
-            
-            background-color: #084298;
-            
-            
+    background-color: var(--icon-bg);
+    color: var(--text-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
+    
+}
 
-			cursor: pointer;
+#addToBasket:hover {
+    background-color: var(--secondary-text);
+    color: var(--bg-color);
+}
 
-            color: white;
-            border: none;
-            border-radius: 15px;
-            
-
-            
-
-        }
         
 
         #addToBasketOutOfStock{
@@ -1231,23 +1308,23 @@ a{
         
     }
 
-    #reviewLink {
+#reviewLink {
+    display: block;
+    text-decoration: none;
+    font-size: 1em;
+    color: var(--text-color);
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: var(--icon-bg);
+    transition: background-color 0.3s ease;
+    
+}
 
-        display: block;
-        text-decoration: none;
-        font-size: 18px;
-        color: #084298;
-        font-weight: bold;
-        padding: 10px;
-        border-radius: 8px;
-        background-color: #e6f0ff;
-        transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    #reviewLink:hover {
-        background-color: #084298;
-        color: white;
-    }
+#reviewLink:hover {
+    background-color: var(--secondary-text);
+    color: var(--bg-color);
+}
 
         #similarProductsContainer {
             width: 100%;
