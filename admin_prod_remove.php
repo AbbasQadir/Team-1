@@ -56,10 +56,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['pro
     }
 }
 
-// filter for categories:
-$f_category = (isset($_GET['category']) && $_GET['category'] !== "")
-    ? intval($_GET['category'])
-    : 0;
+// get categories for the drop down filter box
+$catStmt = $db->prepare("SELECT product_category_id, category_name FROM product_category");
+$catStmt->execute();
+$categories = $catStmt->fetchAll(PDO::FETCH_ASSOC);
+
+$filterConditions = [];
+$filterParams = [];
+
+if (isset($_GET['search']) && !empty(trim($_GET['search']))) {
+    $search = trim($_GET['search']);
+    $filterConditions[] = "product.product_name LIKE ?";
+    $filterParams[] = "%" . $search . "%";
+}
+
+if (isset($_GET['category']) && !empty($_GET['category'])) {
+    $categoryId = $_GET['category'];
+    $filterConditions[] = "product.product_category_id = ?";
+    $filterParams[] = $categoryId;
+}
 
 $query = "
     SELECT
@@ -84,25 +99,16 @@ $query = "
         ) AS price
          FROM product
          LEFT JOIN product_category ON product.product_category_id = product_category.product_category_id
-
 ";
-if ($f_category > 0) {
-    $query .= " WHERE product.product_category_id = :cat";
-    $stmt = $db->prepare($query);
-    $stmt->execute([':cat' => $f_category]);
 
-} else {
-    $stmt = $db->prepare($query);
-    $stmt->execute();
+if (count($filterConditions) > 0) {
+    $query .= " WHERE " . implode(" AND ", $filterConditions);
 }
+
+$stmt = $db->prepare($query);
+$stmt->execute($filterParams);
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// get categories for the drop down filter box
-$catStmt = $db->prepare("SELECT product_category_id, category_name FROM product_category");
-$catStmt->execute();
-$categories = $catStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
 <!DOCTYPE html>
 <html>
 
@@ -110,6 +116,8 @@ $categories = $catStmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Product Management (Remove Product)</title>
+
+    <link rel="stylesheet" href="admin-dashboard.css">
 </head>
 
 <body>
@@ -120,17 +128,18 @@ $categories = $catStmt->fetchAll(PDO::FETCH_ASSOC);
         echo "<div class='error'>{$error}</div>"; ?>
 
     <!-- category filter-->
-    <form class="filter-form" method="GET">
-        <label for="category">Category:</label>
-        <select name="category" id="category">
-            <option value="">ALL categories</option>
+    <form class="filter-form" method="GET" action="">
+        <input type="text" name="search" placeholder="Search product name"
+            value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+        <select name="category">
+            <option value="">All Categories</option>
             <?php foreach ($categories as $cat): ?>
-                <option value="<?php echo $cat['product_category_id']; ?>" <?= (isset($_GET['category']) && $_GET['category'] == $cat['product_category_id']) ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($cat['category_name']) ?>
+                <option value="<?php echo $cat['product_category_id']; ?>" <?php echo (isset($_GET['category']) && $_GET['category'] == $cat['product_category_id']) ? 'selected' : ''; ?>>
+                    <?php echo htmlspecialchars($cat['category_name']); ?>
                 </option>
             <?php endforeach; ?>
         </select>
-        <button type="submit">Apply Filter</button>
+        <button type="submit">Filter</button>
     </form>
 
     <!-- table header-->
@@ -157,12 +166,16 @@ $categories = $catStmt->fetchAll(PDO::FETCH_ASSOC);
                         <img src="default-image.jpg" alt="Default Image" class="product-image">
                     <?php endif; ?>
                 </div>
-                <div class="card-cell col-id"><?= $product['product_id'] ?></div>
-                <div class="card-cell col-name"><?= htmlspecialchars($product['product_name']) ?></div>
-                <div class="card-cell col-price">£<?= number_format($product['price'], 2) ?></div>
-                <div class="card-cell col-category"><?= htmlspecialchars($product['category_name'] ?? 'N/A') ?></div>
-                <div class="card-cell col-quantity"><?= $product['quantity'] ?></div>
-                <div class="card-cell col-status"><?= ucfirst($product['active']) ?></div>
+
+                <div class="card-cell col-id" data-label="Product ID"><?= $product['product_id'] ?></div>
+                <div class="card-cell col-name" data-label="Product Name"><?= htmlspecialchars($product['product_name']) ?>
+                </div>
+                <div class="card-cell col-price" data-label="Price" data-label="Price">
+                    £<?= number_format($product['price'], 2) ?></div>
+                <div class="card-cell col-category" data-label="Category">
+                    <?= htmlspecialchars($product['category_name'] ?? 'N/A') ?></div>
+                <div class="card-cell col-quantity" data-label="Quantity"><?= $product['quantity'] ?></div>
+                <div class="card-cell col-status" data-label="Status"><?= ucfirst($product['active']) ?></div>
                 <div class="card-cell col-actions">
                     <form method="POST">
                         <input type="hidden" name="product_id" value="<?= $product['product_id'] ?>">
@@ -189,10 +202,10 @@ $categories = $catStmt->fetchAll(PDO::FETCH_ASSOC);
 <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: #E0E1DD;
+        background: var(--bg-color);
         margin: 0;
         padding: 20px;
-        color: #0D1B2A;
+
     }
 
     h2 {
@@ -200,7 +213,7 @@ $categories = $catStmt->fetchAll(PDO::FETCH_ASSOC);
         font-size: 36px;
         font-weight: bold;
         margin-bottom: 25px;
-        color: #1B263B;
+        color: var(--text-color);
     }
 
     .message,
@@ -241,31 +254,30 @@ $categories = $catStmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     .filter-form {
-        max-width: 1000px;
-        margin: 0 auto 20px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
+        margin-bottom: 20px;
+        text-align: center;
     }
 
-    .filter-form select,
-    .filter-form button {
-        padding: 8px 12px;
-        font-size: 1em;
+    .filter-form input[type="text"],
+    .filter-form select {
+        padding: 8px;
+        width: 200px;
         border: 1px solid #ccc;
-        border-radius: 4px;
+        border-radius: 3px;
+        margin-right: 10px;
     }
 
     .filter-form button {
-        background: #415A77;
+        padding: 8px 15px;
+        background-color: #415A77;
         color: #E0E1DD;
         border: none;
+        border-radius: 3px;
         cursor: pointer;
     }
 
     .filter-form button:hover {
-        background: #778DA9;
+        background-color: #778DA9;
         color: #0D1B2A;
     }
 
@@ -277,10 +289,10 @@ $categories = $catStmt->fetchAll(PDO::FETCH_ASSOC);
     .card-row {
         display: flex;
         align-items: center;
-        border: 1px solid #ddd;
+        /*border: 1px solid var(--border-color);*/
         padding: 10px;
         margin-bottom: 10px;
-        background: #fff;
+        background: var(--card-bg);
         border-radius: 4px;
     }
 
@@ -349,5 +361,55 @@ $categories = $catStmt->fetchAll(PDO::FETCH_ASSOC);
     .remove-btn:hover {
         background: #778DA9;
         color: #0D1B2A;
+    }
+
+    @media all and (max-width: 767px) {
+        .card-row {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .header-card {
+            display: none;
+        }
+
+        .card-cell {
+            display: flex;
+            padding: 10px 0;
+            text-align: left;
+            width: 100%;
+        }
+
+        .card-cell:before {
+            content: attr(data-label);
+            flex-basis: 40%;
+            font-weight: bold;
+            text-align: right;
+            padding-right: 10px;
+        }
+
+        .col-image {
+            flex: 1;
+        }
+
+        .col-id,
+        .col-name,
+        .col-price,
+        .col-category,
+        .col-quantity,
+        .col-status {
+            flex: 1;
+        }
+
+        .col-actions {
+            flex: 1;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .product-image {
+            width: 60%;
+            margin: 0 auto;
+        }
     }
 </style>
