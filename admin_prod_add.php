@@ -126,9 +126,9 @@ include 'sidebar.php';
             <input type="text" name="product_name" required>
 
             <label for="product_discription">Description</label>
-            <input type="text" name="product_discription" required>
-
-
+           	<textarea type="text" name="product_discription" required rows="5" ></textarea>
+<br>
+            <label for="product_image">Images</label>
             <label class="custum-file-upload" for="product_image">
                 <div class="icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -226,7 +226,9 @@ include 'sidebar.php';
 
     .signup-container {
         display: flex;
-        margin: 0 250px 40px 250px;
+    	max-width:1000px;
+        margin: 40px auto;
+   margin-bottom:40px;
         border-radius: 10px;
         background: var(--card-bg);
         padding: 20px;
@@ -249,7 +251,8 @@ include 'sidebar.php';
     }
 
     .signup-form-container input,
-    .signup-form-container select {
+    .signup-form-container select, 
+    .signup-form-container textarea{
         margin-bottom: 15px;
         padding: 10px;
         border: 1px solid var(--border-color);
