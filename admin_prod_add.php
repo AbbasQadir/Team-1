@@ -42,6 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $product_quantity = $_POST['product_quantity'];
     $product_category_id = $_POST['product_category_id'];
 
+
+
     $product_image = '';
     $product_image_2 = '';
     $product_image_3 = '';
@@ -105,6 +107,7 @@ include 'sidebar.php';
 ?>
 <html>
 <title>Product Management</title>
+<link rel="stylesheet" href="admin-dashboard.css">
 <br>
 <h1 class="title">Product Management</h1>
 <?php if (!empty($message)): ?>
@@ -171,10 +174,10 @@ include 'sidebar.php';
                 onchange="displayFileNameCustom(this, 'upload-text-3')" style="display:none;">
             <br>
             <label for="product_price">Price</label>
-            <input type="number" name="product_price" required>
+            <input type="number" name="product_price" min="0.00" step="0.01" required>
 
             <label for="product_quantity">Quantity</label>
-            <input type="number" name="product_quantity" required>
+            <input type="number" name="product_quantity" min="1" step="1" required>
 
             <label for="product_category_id">Category</label>
             <select name="product_category_id" required>
@@ -205,9 +208,9 @@ include 'sidebar.php';
     }
 
     body {
-        font-family: Arial, sans-serif;
-        background-color: #E0E1DD;
-        color: #0D1B2A;
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
         line-height: 1.6;
         scroll-behavior: smooth;
     }
@@ -217,16 +220,15 @@ include 'sidebar.php';
         font-size: 36px;
         font-weight: bold;
         margin-bottom: 15px;
-        color: #1B263B;
+        color: var(--text-color);
     }
 
 
     .signup-container {
         display: flex;
-        max-width: 1000px;
-        margin: 40px auto;
+        margin: 0 250px 40px 250px;
         border-radius: 10px;
-        background: #f4f4f4;
+        background: var(--card-bg);
         padding: 20px;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }
@@ -250,7 +252,7 @@ include 'sidebar.php';
     .signup-form-container select {
         margin-bottom: 15px;
         padding: 10px;
-        border: 1px solid #ccc;
+        border: 1px solid var(--border-color);
         border-radius: 5px;
         width: 100%;
     }
@@ -304,8 +306,8 @@ include 'sidebar.php';
         box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
     }
 
-    .message {
-        margin: 0 auto;
+    .message { 
+    	margin: 0 250px 40px 250px;
         max-width: 1000px;
         text-align: center;
         padding: 12px;
@@ -317,8 +319,7 @@ include 'sidebar.php';
     }
 
     .error {
-        margin: 0 auto;
-        max-width: 1000px;
+        margin: 0 250px 40px 250px;
         text-align: center;
         padding: 12px;
         margin-bottom: 20px;
