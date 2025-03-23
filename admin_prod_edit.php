@@ -139,7 +139,8 @@ include 'sidebar.php';
     }
 
     .message {
-        margin: 0 150px 40 px 150px;
+        margin: 0 auto;
+        max-width: 1000px;
         text-align: center;
         padding: 12px;
         margin-bottom: 20px;
@@ -178,7 +179,8 @@ include 'sidebar.php';
     }
 
     .card-container {
-        margin: auto 150px 40px 150px;
+        max-width: 1000px;
+        margin: 0 auto;
     }
 
     .card-row {
@@ -211,7 +213,7 @@ include 'sidebar.php';
     }
 
     .col-description {
-        flex: 3;
+        flex: 2;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -237,19 +239,22 @@ include 'sidebar.php';
     }
 
 
-
     .edit-btn {
-        background: #415A77;
-        color: white;
-        padding: 8px 12px;
+        width: 100%;
+        height: 35px;
+        padding: 10px;
         border: none;
-        border-radius: 5px;
+        border-radius: 4px;
         cursor: pointer;
-        text-decoration: none;
+        font-size: 0.9em;
+        background: #415A77;
+        color: #E0E1DD;
+        transition: background 0.3s ease, color 0.3s ease;
     }
 
     .edit-btn:hover {
         background: #778DA9;
+        color: #0D1B2A;
     }
 
 
@@ -281,7 +286,6 @@ include 'sidebar.php';
             font-weight: bold;
             text-align: right;
             padding-right: 10px;
-            color: #E0E1DD;
         }
 
         .col-image {
