@@ -1,0 +1,95 @@
+body {
+	display: flex;
+	flex-direction: column;
+    height: 100vh;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* main {
+	align-self: center;
+	height: 100%:
+    width: 100%;
+	padding: 50px 0;
+} */
+
+form {
+	align-self: center;
+}
+
+
+.contact-container {
+   margin: 50px 100px;
+   background-color: var(--card-bg);
+   border-radius: 10px;
+   padding: 20px 30px;
+}
+
+
+
+.contact-container h2 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.contact-form-container{
+	justify-content: center;	
+	align-items: center;
+}
+
+.contact-form-container p{
+  color: var(--secondary-text);
+}
+
+.contact-form-container input, textarea, select {
+  margin-bottom: 20px;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-form-container input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 8px var(--shadow);
+}
+
+.input-field {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+textarea.input-field {
+    resize: none;
+}
+
+.submit-button {
+    background: var(--icon-bg);
+  	color: var(--text-color);
+  	border: none;
+  	cursor: pointer;
+  	font-size: 16px;
+  	font-weight: bold;
+  	padding: 12px;
+  	transition: background 0.3s ease, transform 0.2s ease;
+  	border-radius: 5px;
+	width:98.7%;
+  margin: 10px 0;
+}
+.submit-button:hover {
+    background: var(--accent-hover);
+  	transform: translateY(-2px);
+  	color: var(--bg-color);
+}
+.description {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
