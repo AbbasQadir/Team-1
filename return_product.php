@@ -1,11 +1,12 @@
 <?php
 session_start();
-include 'navbar.php';
+
 
 if (!isset($_SESSION['user'])) {
     header("Location: login.php");
     exit();
 }
+
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -164,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 ?>
-
+<?php include 'navbar.php'; ?>
 
 <!DOCTYPE html>
 <html>
