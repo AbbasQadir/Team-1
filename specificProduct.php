@@ -1,3 +1,31 @@
+<?php
+session_start();
+require_once("PHPHost.php");
+
+$productID = $_GET["id"];
+
+if (isset($_SESSION['uid'])) {
+    $userId = $_SESSION['uid'];
+    $purchaseQuery = "SELECT COUNT(*) FROM orders o 
+                      JOIN order_prod op ON o.orders_id = op.orders_id 
+                      WHERE o.user_id = :user_id AND op.product_item_id = :productID";
+    $stmt = $db->prepare($purchaseQuery);
+    $stmt->execute([':user_id' => $userId, ':productID' => $productID]);
+    $purchaseCount = $stmt->fetchColumn();
+
+    $reviewQuery = "SELECT COUNT(*) FROM users_review 
+                    WHERE user_id = :user_id AND order_prod_id = :productID";
+    $stmt2 = $db->prepare($reviewQuery);
+    $stmt2->execute([':user_id' => $userId, ':productID' => $productID]);
+    $reviewCount = $stmt2->fetchColumn();
+
+    $canReview = ($purchaseCount > 0);
+    $alreadyReviewed = ($reviewCount > 0);
+} else {
+    $canReview = false;
+    $alreadyReviewed = false;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,16 +41,55 @@
 <body>
 <?php 
 //session_start();
-    
-    
-    
     require_once("PHPHost.php");
+
+
+
+    function sortVariationSizes($availableSizes){
+        sort($availableSizes);
+        $temp = array();
+
+        $extraSmallPosition = array_search("extraSmall", $availableSizes);
+        if ($extraSmallPosition !== false) {
+            $temp[] = $availableSizes[$extraSmallPosition];
+            array_splice($availableSizes,$extraSmallPosition, 1 );
+        }
+
+        $smallPosition = array_search("small", $availableSizes);
+        if ($smallPosition !== false) {
+            $temp[] = $availableSizes[$smallPosition];
+            array_splice($availableSizes,$smallPosition, 1 );
+        }
+
+        $mediumPosition = array_search("medium", $availableSizes);
+        if ($mediumPosition !== false) {
+            $temp[] = $availableSizes[$mediumPosition];
+            array_splice($availableSizes,$mediumPosition, 1 );
+        }
+
+        $largePosition = array_search("large", $availableSizes);
+        if ($largePosition !== false) {
+            $temp[] = $availableSizes[$largePosition];
+            array_splice($availableSizes,$largePosition, 1 );
+        }
+
+        $extraLargePosition = array_search("extraLarge", $availableSizes);
+        if ($extraLargePosition !== false) {
+            $temp[] = $availableSizes[$extraLargePosition];
+            array_splice($availableSizes,$extraLargePosition, 1 );
+        }
+
+        $output = array_merge($temp, $availableSizes);
+        return $output;
+    }
+         
     
     $productID = $_GET["id"];
 
     // Fetch product details
     $item = getDBResult($db, "SELECT * FROM product WHERE product_id=:productID", ":productID", $productID)[0];
 
+    //get list of variations
     $productConfigs =  getDBResult($db, "SELECT * FROM product_configuration INNER JOIN variation_option ON product_configuration.variation_option_id = variation_option.variation_option_id WHERE product_item_id=:itemID", ":itemID", $productID);
     
     $AvailableConfigs;
@@ -31,90 +98,162 @@
     $colourAvaliable = false;
 	$hasAltImages = false;
 
+    $availableColours = array();
+    $availableSizes = array();
+
+
 
     foreach($productConfigs as $config){
-        
-        if(isset($config["variation_value"])){
-            //var_dump($config["variation_value"]);
-            
-            $AvailableConfigs[$config["variation_value"]] = true;
-            
-           
-            $availableSizes = array("extraSmall", "small", "medium", "large", "extraLarge" );
-            if(in_array($config["variation_value"], $availableSizes)){
-                $sizeAvailable = true;
-            }
 
-            $availableColours = array("red", "green", "purple", "yellow");
-            if(in_array($config["variation_value"], $availableColours)) {
-                $colourAvaliable = true;
-            }
+        $AvailableConfigs[$config["variation_value"]] = true;
+
+        if($config["variation_type"] == "Size" ){
+            $availableSizes[] = $config["variation_value"];
+            $sizeAvailable = true;
+        }
+
+
+
+        if($config["variation_type"] == "Colour"){
+            $availableColours[] = $config["variation_value"];
+            $colourAvaliable = true;
         }
 
     }
 
+    $availableSizes = sortVariationSizes($availableSizes);
+
     $reviews = getDBResult($db, "SELECT * FROM users_review WHERE order_prod_id=:productID", ":productID", $productID);
-
-    //$variationOptions =  getDBResult($db, "SELECT * FROM variation WHERE product_category_id=:categoryID", ":categoryID", $item["product_category_id"]);
-
-    
-    
-
-    //foreach($variationOptions as $option){
-        
-        //if($option["variation_name"] == "size"){
-        //    $sizeAvailable = true;
-        //}
-        
-        //if($option["variation_name"] == "colour"){
-        //    $colourAvaliable = true;
-        //}
-
-    //}
 
 
 
      session_start();
     
 
-
+// if cant find picture show placeholder
   if(!file_exists($item["product_image"])){
   	$item["product_image"] = "images/missingImage.png";
   }
 
+
+    function updateQuantity($db, $quantity, $basketID){
+        $newQuantity = $quantity + 1;
+
+        $updateBasket = $db->prepare("UPDATE asad_basket SET quantity = :quantity WHERE basket_id=:basketID");
+        $updateBasket->execute([':basketID' => $basketID, ":quantity" => $newQuantity]);
     
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        if (isset($_SESSION['uid'])) { 
+    }
+
+    function addToBasket($db, $userId, $productID, $colourOption, $sizeOption){
+
+        $quantity = 1;
+
+        if(isProductInStock($db, htmlspecialchars($productID) )){
+           
+            if(!isset($colourOption)) { $colourOption = "";};
+            if(!isset($sizeOption)) { $sizeOption = "";};
+           
+            if($colourOption != "" && $sizeOption != ""){
+           
+                $addToBasket = $db->prepare("INSERT INTO asad_basket (user_id, product_id, colour, size, quantity) VALUES (:user_id, :product_id, :colour_variation_id, :size_variation_id, :quantity)");
+                $addToBasket->execute([':user_id' => $userId, ':product_id' => $productID, ":colour_variation_id" =>  $colourOption, ":size_variation_id" => $sizeOption, ':quantity' => $quantity]);
+           
+            }else if($colourOption != ""){
+
+                $addToBasket = $db->prepare("INSERT INTO asad_basket (user_id, product_id, colour, quantity) VALUES (:user_id, :product_id, :colour_variation_id, :quantity)");
+                $addToBasket->execute([':user_id' => $userId, ':product_id' => $productID, ":colour_variation_id" =>  $colourOption,  ':quantity' => $quantity]);
+            
+            }else if($sizeOption != ""){
+            
+                $addToBasket = $db->prepare("INSERT INTO asad_basket (user_id, product_id, size, quantity) VALUES (:user_id, :product_id, :size_variation_id, :quantity)");
+                $addToBasket->execute([':user_id' => $userId, ':product_id' => $productID, ":size_variation_id" => $sizeOption, ':quantity' => $quantity]);
+
+                
+            
+            }else{
+                $addToBasket = $db->prepare("INSERT INTO asad_basket (user_id, product_id, quantity) VALUES (:user_id, :product_id, :quantity)");
+                $addToBasket->execute([':user_id' => $userId, ':product_id' => $productID,  ':quantity' => $quantity]);
+            }
+           
+        }
+
+    }
+
+    function addOrUpdateVariation($db, $existingBasket, $productID , $colourOption, $sizeOption){
+        //go through the basket 
+
+        $alreadyExists = false;
+
+       foreach($existingBasket as $basketItem){
+
+           if(isset($colourOption)){
+               $colourVariationOptionName = getNameFromVariationOptionID($db, $basketItem["Colour"]);
+           }
+
+           if(isset($sizeOption)){
+               $sizeVariationOptionName = getNameFromVariationOptionID($db, $basketItem["Size"]);
+           }
+
+           if($basketItem["product_id"] == $productID){
+
+            
+                if($colourVariationOptionName == $colourOption &&  $sizeVariationOptionName == $sizeOption){
+                    updateQuantity($db, $basketItem["quantity"] , $basketItem["basket_id"]);
+                    $alreadyExists = true;
+                    break;
+                }
+
+            }
+
+        }
+
+        if(!$alreadyExists){
+            $colourOptionID = getVariationIDFromName($db, $colourOption);
+            $sizeOptionID = getVariationIDFromName($db, $sizeOption);
+            addToBasket($db, $_SESSION['uid'] , $productID, $colourOptionID, $sizeOptionID);
+        }
+
+   }
+    
+    if($_SERVER['REQUEST_METHOD'] === 'POST')  {
+
+        if (isset($_SESSION['uid'])) { // is user logged in
+
+            
+
             $userId = $_SESSION['uid']; 
             $quantity = 1;  
 
-            // Check ifmproduct is already in basket or no
-            $checkBasket = $db->prepare("SELECT quantity FROM asad_basket WHERE user_id = :user_id AND product_id = :product_id");
+            
+            //get everything from the basket 
+            $checkBasket = $db->prepare("SELECT * FROM asad_basket WHERE user_id = :user_id AND product_id = :product_id");
             $checkBasket->execute([':user_id' => $userId, ':product_id' => $productID]);
-            $existingBasket = $checkBasket->fetch(PDO::FETCH_ASSOC);
+            $existingBasket = $checkBasket->fetchAll(PDO::FETCH_ASSOC);
+
+            //get the colour and size that the user submitted 
+            $colourOption = $_POST["colour"];
+            $sizeOption = $_POST["size"];
 
 
-            if(isProductInStock($db, htmlspecialchars($productID) )){
-                if ($existingBasket) {
-                    // fix quantity if the product is already tehre
-                    $newQuantity = $existingBasket['quantity'] + $quantity;
-                    $updateBasket = $db->prepare("UPDATE asad_basket SET quantity = :quantity WHERE user_id = :user_id AND product_id = :product_id");
-                    $updateBasket->execute([':quantity' => $newQuantity, ':user_id' => $userId, ':product_id' => $productID]);
-                } else {
-                    // put new product into  basket
-                    $addToBasket = $db->prepare("INSERT INTO asad_basket (user_id, product_id, quantity) VALUES (:user_id, :product_id, :quantity)");
-                    $addToBasket->execute([':user_id' => $userId, ':product_id' => $productID, ':quantity' => $quantity]);
-                }    
+            //get the corrosponding IDs
+            $colourOptionID = getVariationIDFromName($db, $colourOption);
+            $sizeOptionID = getVariationIDFromName($db, $sizeOption);
 
-                header("Location: Basket.php");
-                exit;
+            // if there is no current item in the basket with the current productID just call addToBasket
+            if(count($existingBasket) <= 0){
+                addToBasket($db, $userId , $productID, $colourOptionID, $sizeOptionID);
             }else{
-                echo "item not in stock";
+                addOrUpdateVariation($db, $existingBasket, $productID , $colourOption, $sizeOption);
             }
+
+           
             
-            
+                    
+           
             
         } 
+
+        header("Location: Basket.php");
     }
 
 require_once("navbar.php");
@@ -163,37 +302,13 @@ require_once("navbar.php");
                 <p>Colour:</p>
                 <table> 
                     <tr>
-                        <?php if(isset($AvailableConfigs["red"])){ ?>
-                            
-                            <td>
-                                <div onclick="selectColour('red')" id="colour-shape-red" class="colour-shape" style="background-color: red;"></div>
-                            </td>
-                        <?php } ?>
 
-                        <?php if(isset($AvailableConfigs["blue"])){ ?>
-                            <td>
-                                <div onclick="selectColour('blue')" class="colour-shape" id="colour-shape-blue" style="background-color: blue;"></div>
-                            </td>
-                        <?php } ?>
-                        
-                        <?php if(isset($AvailableConfigs["green"])){ ?>
-                            <td>
-                                <div onclick="selectColour('green')" class="colour-shape" id="colour-shape-green" style="background-color: green;"></div>
-                            </td>
-                        <?php } ?>
+                    <?php foreach($availableColours as $Colour) { ?>
+                        <td>
+                            <div onclick="selectColour('<?php echo $Colour ?>')" id="colour-shape-<?php echo $Colour ?>" class="colour-shape" style="background-color: <?php echo $Colour ?>;"></div>
+                        </td>
+                    <?php } ?>
 
-                        <?php if(isset($AvailableConfigs["purple"])){ ?>
-                            <td>
-                                <div onclick="selectColour('purple')" class="colour-shape" id="colour-shape-purple" style="background-color: purple;"></div>
-                            </td>
-                        <?php } ?>
-
-                        <?php if(isset($AvailableConfigs["yellow"])){ ?>
-                            <td>
-                                <div onclick="selectColour('yellow')"  class="colour-shape" id="colour-shape-yellow" style="background-color: yellow;"></div>
-                            </td>
-                        <?php } ?>
-                        
                     </tr>
                 </table>
          
@@ -206,28 +321,11 @@ require_once("navbar.php");
             <div id="size-options">
                 <p>Size:</p>
                 <table id="size-option-table">
-
                     <tr>
-                    <?php if(isset($AvailableConfigs["extraSmall"])){ ?>
-                        <td class="size-option">
-                            <div onclick="sizeSelect('XS')"  id="size-option-XS">XS</div>
-                        </td>
-                    <?php } ?>
 
-                    <?php if(isset($AvailableConfigs["small"])){ ?>
-                        <td onclick="sizeSelect('S')" class="size-option" id="size-option-S">S</td>
-                    <?php } ?>
-
-                    <?php if(isset($AvailableConfigs["medium"])){ ?>
-                        <td onclick="sizeSelect('M')" class="size-option" id="size-option-M">M</td>
-                    <?php } ?>
-
-                    <?php if(isset($AvailableConfigs["large"])){ ?>
-                        <td onclick="sizeSelect('L')" class="size-option" id="size-option-L">L</td>
-                    <?php } ?>
-
-                    <?php if(isset($AvailableConfigs["extraLarge"])){ ?>
-                        <td onclick="sizeSelect('XL')" class="size-option" id="size-option-XL">XL</td>
+                    <?php foreach($availableSizes as $Size) { ?>
+                        <?php $sizeVarName = str_replace(".","", $Size); ?>
+                            <td onclick="sizeSelect('<?php echo $Size ?>')" class="size-option" id="size-option-<?php echo $sizeVarName ?>"><?php echo getVaraitionShortName($Size, $productConfigs); ?></td>
                     <?php } ?>
 
                     </tr>
@@ -236,31 +334,27 @@ require_once("navbar.php");
             </div>
             <?php } ?>    	
 
+           
+
             
-            <form method="POST" >
+            <form method="POST" id="mainForm" >
                 <label for="quantity" style="display:none;">Quantity:</label>
                 <input type="number" name="quantity" id="quantity" min="1" value="1" style="display:none;">
 
-                <?php if(isProductInStock($db, htmlspecialchars($productID) )){ ?>
-                    
-                    <?php if(isset($_SESSION["uid"])){ ?>
-                        <button type="submit" id="addToBasket">Add to Basket</button>
-                    <?php }else{ ?>
-                        <button type="button" id="addToBasket">Add to Basket</button>
-                    <?php } ?>
+                <input id="colourFormText" type="text" name="colour" id="quantity"   style="display:none;">
+                <input id="colourFormSize" type="text" name="size" id="quantity"  style="display:none;">
 
+                <?php if(isProductInStock($db, htmlspecialchars($productID) )){ ?>
+                        <button type="button" id="addToBasket">Add to Basket</button>
                 <?php }else{ ?>
                     <button type="button" id="addToBasketOutOfStock">Out of Stock</button>
                 <?php } ?>
                 
                 
-                <div id="reviewContainer" >
+                <div id="reviewContainer">
+    <?php if (isset($_SESSION['uid'])) { ?>
+        <a href="#" id="reviewLink">Write a Review</a>
 
-                    <?php if (isset($_SESSION['uid'])){ ?>
-                        <!-- If user is logged in, show the "Write a Review" link -->
-                        <a href="reviews.php?id=<?php echo htmlspecialchars($productID); ?>" id="reviewLink">
-                           Write a Review
-                        </a>
 
                         <?php } ?>
 
@@ -349,16 +443,18 @@ require_once("navbar.php");
             <div class="similarProductItem">
                 <img class="similarProductImg" src="<?php echo $simmilarResults[0]['product_image'] ?>">
                 <p class="similarProductTitle"><?php echo $simmilarResults[0]["product_name"] ?></p>
-                <p class="similarProductPrice">£<?php echo getProductPrice($db, $simmilarResults[0]['product_id']) ?></p>
+              <p class="similarProductPrice">£<?php echo getProductPrice($db, $simmilarResults[0]['product_id']) ?></p>
+     
             </div>
         </a>
         
         <a href="/specificProduct.php?id=<?php echo $simmilarResults[1]['product_id'] ?>">
             <div class="similarProductItem">
-                <img class="similarProductImg" src="<?php echo $simmilarResults[1]['product_image'] ?>">
-                <p class="similarProductTitle"><?php echo $simmilarResults[1]["product_name"] ?></p>
-                <p class="similarProductPrice">£<?php echo getProductPrice($db, $simmilarResults[1]['product_id']) ?></p>
-            </div>
+                    <img class="similarProductImg" src="<?php echo $simmilarResults[1]['product_image'] ?>">
+                    <p class="similarProductTitle"><?php echo $simmilarResults[1]["product_name"] ?></p>
+                    <p class="similarProductPrice">£<?php echo getProductPrice($db, $simmilarResults[1]['product_id']) ?></p>
+            
+                    </div>
         </a>
 
         <a href="/specificProduct.php?id=<?php echo $simmilarResults[2]['product_id'] ?>">
@@ -366,9 +462,28 @@ require_once("navbar.php");
                 <img class="similarProductImg" src="<?php echo $simmilarResults[2]['product_image'] ?>">
                 <p class="similarProductTitle"><?php echo $simmilarResults[2]["product_name"] ?></p>
                 <p class="similarProductPrice">£<?php echo getProductPrice($db, $simmilarResults[2]['product_id']) ?></p>
-            </div>
+          
+                    </div>
         </a>
     </div>
+
+    <div class="modal fade" id="variationModal" tabindex="-1" aria-labelledby="varationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="color: black;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Please Select a product configuration</h5>
+                    <button type="button" class="btn-close" id="closeBtn" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="vairationModal-subtitle">Please select a Size and/or colour to continue</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelBtn">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     
     <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -388,7 +503,23 @@ require_once("navbar.php");
         </div>
     </div>
 
-       
+       <div class="modal fade" id="reviewNotificationModal" tabindex="-1" aria-labelledby="reviewNotificationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" style="color: black;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="reviewNotificationModalLabel">Review Notification</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p id="reviewNotificationMessage"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
             <?php include 'footer.php'; ?>
@@ -396,25 +527,72 @@ require_once("navbar.php");
             <script>
 
 
+var isLoggedIn = <?php if(isset($_SESSION["uid"])) { echo 'true'; } else { echo 'false'; } ?>
 
-document.getElementById("addToBasket").onclick = () => {
+var ColourRequired = <?php if($colourAvaliable == true) { echo 'true'; } else { echo 'false'; } ?>
+
+var SizeRequired = <?php if($sizeAvailable == true) { echo 'true'; } else { echo 'false'; } ?>
+
+
+function canSubmitFormVariation(){
+
+    var formSize = document.getElementById("colourFormSize")
+    var formColour = document.getElementById("colourFormText")
+
+    
+    if(ColourRequired && formColour.value == ""){
+        return false
+    }
+
+    if(SizeRequired && formSize.value == ""){
+        return false
+    }
+
+    return true
+
+}
+
+
+document.getElementById("addToBasket").onclick = (e) => {
+
+    
+
     var loginModal = new bootstrap.Modal(document.getElementById("loginModal"), { backdrop: "static" });
-            
-          
-            
-            <?php if(!isset($_SESSION["uid"])) { ?>
-                loginModal.show();
-            <?php } ?>
-            
-            
+    var variationModal = new bootstrap.Modal(document.getElementById("variationModal"), { backdrop: "static" });
 
-            document.getElementById("cancelBtn").addEventListener("click", function () {
-                //window.history.back(); 
-            });
+    if(isLoggedIn){
         
-            document.getElementById("closeBtn").addEventListener("click", function () {
-                //window.history.back();
-            });
+        if(canSubmitFormVariation() == false){
+
+            if(ColourRequired == false && SizeRequired == true){
+                document.getElementById("vairationModal-subtitle").innerHTML = "Please Select a size To continue"
+            }
+
+            if(ColourRequired == true && SizeRequired == false){
+                document.getElementById("vairationModal-subtitle").innerHTML = "Please Select a Colour To continue"
+            }
+
+            if(ColourRequired == true && SizeRequired == true){
+                document.getElementById("vairationModal-subtitle").innerHTML = "Please Select a size and colour To continue"
+            }           
+
+            variationModal.show();
+        }else{
+            document.getElementById("mainForm").submit()
+        }
+        
+    }else{
+        loginModal.show();
+    }
+
+
+    document.getElementById("cancelBtn").addEventListener("click", function () {
+                //window.history.back(); 
+    });
+        
+    document.getElementById("closeBtn").addEventListener("click", function () {
+       //window.history.back();
+    });
 }
 
       
@@ -440,37 +618,51 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 
+<?php
+
+    function getVaraitionShortName($variationName ,  $productConfigs){
+        foreach($productConfigs as $config){
+            if($config["variation_value"] == $variationName && $config["variation_short_name"] != "" ){
+                return $config["variation_short_name"];
+            }
+        }
+
+        return $variationName;
+    }
+
+?>
+
+
+    let selectedSize = "none"
+    let selectedColour = "none"
+
+
+
     function sizeSelect(size){
 
-        var XS = document.getElementById("size-option-XS")
-        var S = document.getElementById("size-option-S")
-        var M = document.getElementById("size-option-M")
-        var L = document.getElementById("size-option-L")
-        var XL = document.getElementById("size-option-XL")
 
-        if(XS =! null) {XS.style.backgroundColor = "var(--card-bg)" }
-        if(S =! null) { S.style.backgroundColor = "var(--card-bg)" }
-        if(M =! null) { M.style.backgroundColor = "var(--card-bg)" }
-        if(L =! null) { L.style.backgroundColor = "var(--card-bg)" }
-        if(XL =! null) { XL.style.backgroundColor = "var(--card-bg)" }
+        
+        <?php foreach($availableSizes as $size) { ?>
+            <?php $sizeVarName = "size".str_replace(".","", $size); ?>
+            <?php $sizeIdName = str_replace(".","", $size); ?>
+            var <?php echo $sizeVarName ?> = document.getElementById("size-option-<?php echo $sizeIdName ?>")
+            if(<?php echo $sizeVarName ?> != null){ <?php echo $sizeVarName ?>.style.backgroundColor = "var(--card-bg)" }
+        <?php } ?>
+
+        var formSize = document.getElementById("colourFormSize")
 
 
         switch(size){
-            case "XS":
-                XS.style.backgroundColor = "var(--accent-color)"
-                break;
-            case "S":
-                S.style.backgroundColor = "var(--accent-color)"
-                break;
-            case "M":
-                M.style.backgroundColor = "var(--accent-color)"
-                break;
-            case "L":
-                L.style.backgroundColor = "var(--accent-color)"
-                break;
-            case "XL":
-               XL.style.backgroundColor = "var(--accent-color)"
-                break;
+
+            <?php foreach($availableSizes as $size) { ?>
+                <?php $sizeVarName = "size".str_replace(".","", $size); ?>
+                case "<?php echo $size ?>":
+                    <?php echo $sizeVarName ?>.style.backgroundColor = "var(--icon-bg)"
+                    formSize.value = "<?php echo $size ?>"
+                    break;
+
+            <?php } ?>
+
         }
 
         //alert(size)
@@ -478,42 +670,55 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function selectColour(colour){
 
-        var redCircle = document.getElementById("colour-shape-red")
-        var purpleCircle = document.getElementById("colour-shape-purple")
-        var greenCircle = document.getElementById("colour-shape-green")
-        var blueCircle = document.getElementById("colour-shape-blue")
-        var yellowCircle = document.getElementById("colour-shape-yellow")
+        <?php foreach($availableColours as $color) { ?>
+            var <?php echo $color ?>Circle = document.getElementById("colour-shape-<?php echo $color ?>")
+            if(<?php echo $color ?>Circle != null){ <?php echo $color ?>Circle.style.borderWidth = "0px" }
+        <?php } ?>
 
-        if(redCircle != null){ redCircle.style.borderWidth = "0px" }
-        if(purpleCircle != null){ purpleCircle.style.borderWidth = "0px" }
-        if(greenCircle != null){ greenCircle.style.borderWidth = "0px" }
-        if(blueCircle != null){ blueCircle.style.borderWidth = "0px" }
-        if(yellowCircle != null){ yellowCircle.style.borderWidth = "0px" }
-        
+        var formColour = document.getElementById("colourFormText")
+
         switch(colour){
-            case "red":
-                redCircle.style.borderWidth = "5px"
-                break;
-            case "purple":
-                purpleCircle.style.borderWidth = "5px"
-                break;
-            case "green":
-                greenCircle.style.borderWidth = "5px"
-                break;
-            case "blue":
-                blueCircle.style.borderWidth = "5px"
-                break;
-            case "yellow":
-                yellowCircle.style.borderWidth = "5px"
-                break;
+
+            <?php foreach($availableColours as $color) { ?>
+                case "<?php echo $color ?>":
+                    <?php echo $color ?>Circle.style.borderWidth = "5px"
+                    formColour.value = "<?php echo $color ?>"
+                    break;
+            <?php } ?>
         }
     }
+var canReview = <?php echo json_encode($canReview); ?>;
+var alreadyReviewed = <?php echo json_encode($alreadyReviewed); ?>;
+
+
+var reviewNotificationModal = new bootstrap.Modal(document.getElementById("reviewNotificationModal"), { backdrop: "static" });
+
+document.getElementById("reviewLink").addEventListener("click", function(e) {
+    e.preventDefault();
+    var messageEl = document.getElementById("reviewNotificationMessage");
+    if (!canReview) {
+        messageEl.innerText = "You haven't purchased this product yet. You can only review products you've bought.";
+        reviewNotificationModal.show();
+    } else if (alreadyReviewed) {
+        messageEl.innerText = "You have already submitted a review for this product.";
+        reviewNotificationModal.show();
+    } else {
+        window.location.href = "reviews.php?id=<?php echo htmlspecialchars($productID); ?>";
+    }
+});
+
+
 
 </script>
 
 
 
     <style>
+
+a{
+    text-decoration: none;
+}
+
 #imageCarousel {
     display: block;
     align-items: center;
@@ -553,6 +758,8 @@ document.addEventListener("DOMContentLoaded", function() {
     cursor: pointer;
     z-index: 100;
 }
+
+
 
 #prevBtn { left: 10px; }
 #nextBtn { right: 10px; }
@@ -608,7 +815,38 @@ document.addEventListener("DOMContentLoaded", function() {
     transform: scale(1.02);
 }
 
-/* Review Header (User ID + Star Rating) */
+
+.reviewHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 18px; <?php echo $color ?>
+    margin-bottom: 10px;
+}
+
+
+
+.reviewPreview {
+    background: linear-gradient(145deg, var(--card-bg), var(--icon-bg));
+    border-radius: 15px;
+    box-shadow: 0 6px 15px var(--shadow);
+    padding: 30px;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 1000px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    color: var(--text-color);
+    text-align: center;
+}
+
+.reviewPreview:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px var(--shadow);
+}
+
+
 .reviewHeader {
     display: flex;
     justify-content: space-between;
@@ -616,31 +854,25 @@ document.addEventListener("DOMContentLoaded", function() {
     font-weight: bold;
     font-size: 18px;
     margin-bottom: 10px;
+    color: var(--text-color);
 }
 
-
-/* User ID */
 .reviewUser {
-    color: #333;
+    color: var(--text-color);
 }
 
-/* Star Rating */
-.reviewRating {<?php if(!isset($_SESSION["uid"])) { ?>
-                loginModal.show();
-            <?php } ?>
-    color: gold;
+.reviewRating {
+    color: var(--text-color);
     font-size: 20px;
 }
 
-/* Review Text */
 .reviewText {
     font-size: 18px;
-    color: #555;
+    color: var(--text-color);
     font-style: italic;
     margin-bottom: 15px;
 }
 
-/* Separator Line */
 .reviewSeparator {
     border: none;
     height: 1px;
@@ -648,6 +880,20 @@ document.addEventListener("DOMContentLoaded", function() {
     margin-top: 15px;
     width: 100%;
 }
+#reviewPreviewContainer {
+    background-color: var(--bg-color);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    padding: 40px;
+    width: 100%;
+    max-width: 100%;
+    margin: 30px auto;
+    box-shadow: 0px 4px 12px var(--shadow);
+}
+
+
+
+
 
 /* Responsive Design */
 @media (min-width: 1000px) {
@@ -663,6 +909,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     #mainInfoDetails{
         padding-left: 20px;
+        margin-left: 20px;
     }
 
     #addToBasket{
@@ -681,14 +928,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
     .similarProductItem{
         width: 30%;
-        margin-left: 3%;
+        margin-left: 2.5%;
         height: 650px;
+        vertical-align: top;
     }
 
     #imageCarousel {
         margin: auto;
         padding-top:50px;
         padding-bottom:50px;
+        
     }
 
     #mainTitle {
@@ -697,7 +946,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     .product-image{
         min-height: 500px;
-        margin-left: 20px;
+        
+        object-fit:cover;
+       
+        border-radius: 25px;
+        vertical-align: middle;
 
     }
     
@@ -753,6 +1006,7 @@ document.addEventListener("DOMContentLoaded", function() {
         grid-template-rows: auto ;
         gap: 10px;
         padding-bottom: 100px;
+        
     }
 
     
@@ -825,6 +1079,8 @@ document.addEventListener("DOMContentLoaded", function() {
         grid-template-rows: 50% auto  ;
         display: grid;
 
+    
+
     }
 
     .reviewPreview {
@@ -838,13 +1094,26 @@ document.addEventListener("DOMContentLoaded", function() {
     .reviewText {
         font-size: 16px;
     }
+
+    #addToBasketOutOfStock{
+
+        
+
+        width: 80%;
+        margin-left: 10%;
+
+        height: 45px;
+
+}
+
 }
 
         
         #mainInfoDetails{
 
             grid-column-start: 2;
-            grid-column-start: 3;
+            padding-top:20px;
+
         }
 
         #mainInfoDetails > * {
@@ -893,12 +1162,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
         }
 
-        #similarProductsContainer > a:visited {
-            color: inherit;
+        #similarProductsContainer > a:link{
+            color: var(--text-color);
         }
 
-        a:hover {
-            color: inherit;
+        #similarProductsContainer > a:visited {
+            color: var(--text-color);
+
+        }
+
+        #similarProductsContainer > a:hover {
+            color: var(--text-color);
         }
 
 
@@ -915,7 +1189,8 @@ document.addEventListener("DOMContentLoaded", function() {
             height: auto;
             display: grid;
 
-            
+            padding-left:20px;
+            padding-right:20px;
 
             
 
@@ -984,7 +1259,7 @@ document.addEventListener("DOMContentLoaded", function() {
             background-color: var(--card-bg);
             border-style: solid;
             border-width: 1px;
-            border-color: azure;
+            border-color: var(--border-color);
             padding: 5px;
             cursor: pointer;
 
@@ -993,21 +1268,23 @@ document.addEventListener("DOMContentLoaded", function() {
 
      
         #addToBasket {
-            
-            background-color: #084298;
-            
-            
+    background-color: var(--icon-bg);
+    color: var(--text-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
+    
+}
 
-			cursor: pointer;
+#addToBasket:hover {
+    background-color: var(--secondary-text);
+    color: var(--bg-color);
+}
 
-            color: white;
-            border: none;
-            border-radius: 15px;
-            
-
-            
-
-        }
         
 
         #addToBasketOutOfStock{
@@ -1034,23 +1311,23 @@ document.addEventListener("DOMContentLoaded", function() {
         
     }
 
-    #reviewLink {
+#reviewLink {
+    display: block;
+    text-decoration: none;
+    font-size: 1em;
+    color: var(--text-color);
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: var(--icon-bg);
+    transition: background-color 0.3s ease;
+    
+}
 
-        display: block;
-        text-decoration: none;
-        font-size: 18px;
-        color: #084298;
-        font-weight: bold;
-        padding: 10px;
-        border-radius: 8px;
-        background-color: #e6f0ff;
-        transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    #reviewLink:hover {
-        background-color: #084298;
-        color: white;
-    }
+#reviewLink:hover {
+    background-color: var(--secondary-text);
+    color: var(--bg-color);
+}
 
         #similarProductsContainer {
             width: 100%;
@@ -1105,9 +1382,21 @@ document.addEventListener("DOMContentLoaded", function() {
         .similarProductTitle {
             margin-top: 25px;
             margin-left: 25px;
+            width: 80%;
             margin-bottom: 0;
             font-weight: bold;
+            
+            
+            
         }
+
+        .similarProductTitle:visited {
+            color:var(--text-color);
+            
+        }
+
+
+
     </style>
 
 </body>

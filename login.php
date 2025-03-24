@@ -13,7 +13,7 @@ if (isset($_POST['submitted'])) {
             $errorMsg = "Failed to include PHPHost.php: " . htmlspecialchars($ex->getMessage());
         }
 
-        if (!$errorMsg) { // Continue only if there are no previous errors
+        if (!$errorMsg) { 
             try {
                 $stmt = $db->prepare('SELECT user_id, password FROM users WHERE username = ?');
                 $stmt->execute([$_POST['username']]);
@@ -244,7 +244,7 @@ span{
                 
                 
                 
-                <!-- errir modal code -->
+               
 <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -262,7 +262,7 @@ span{
     </div>
 </div>
 
-<!-- more js that will display modal if error exists-->
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var errorMsg = "<?php echo addslashes($errorMsg); ?>";

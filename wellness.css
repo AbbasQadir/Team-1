@@ -1,0 +1,203 @@
+/* Dummy data for demonstration; each product includes historical trend data */
+const mockProducts = [
+    { id: 1, name: 'Yoga Mat', score: 8.2, avgRating: 4.2, history: [7.8, 8.0, 8.2] },
+    { id: 2, name: 'Protein Shake', score: 7.5, avgRating: 3.8, history: [7.2, 7.4, 7.5] },
+    { id: 3, name: 'Fitness Watch', score: 9.1, avgRating: 4.7, history: [8.9, 9.0, 9.1] },
+    { id: 4, name: 'Mindfulness Book', score: 8.8, avgRating: 4.5, history: [8.5, 8.7, 8.8] },
+    { id: 5, name: 'Resistance Bands', score: 6.9, avgRating: 3.2, history: [6.8, 6.9, 6.9] }
+];
+
+/* 1. Populate Analytics Cards */
+function populateDashboard(products) {
+    const totalProducts = products.length;
+    const averageScore = (products.reduce((acc, p) => acc + p.score, 0) / totalProducts).toFixed(1);
+    const trendingUp = products.filter(p => p.score > averageScore).length;
+    const trendingDown = totalProducts - trendingUp;
+
+    document.getElementById('totalProducts').textContent = totalProducts;
+    document.getElementById('averageScore').textContent = averageScore;
+    document.getElementById('trendingUp').textContent = trendingUp;
+    document.getElementById('trendingDown').textContent = trendingDown;
+}
+
+/* 2. Populate Product Table with Action Buttons */
+function populateTable(products) {
+    const tbody = document.getElementById('productTableBody');
+    tbody.innerHTML = '';
+    products.forEach(product => {
+        const row = document.createElement('tr');
+
+        const nameTd = document.createElement('td');
+        nameTd.setAttribute('data-label', 'Product');
+        nameTd.textContent = product.name;
+        row.appendChild(nameTd);
+
+        const scoreTd = document.createElement('td');
+        scoreTd.setAttribute('data-label', 'Wellness Score');
+        scoreTd.textContent = product.score.toFixed(1);
+        row.appendChild(scoreTd);
+
+        const progressTd = document.createElement('td');
+        progressTd.setAttribute('data-label', 'Progress');
+        const progressContainer = document.createElement('div');
+        progressContainer.className = 'progress-container';
+        const progressFill = document.createElement('div');
+        progressFill.className = 'progress-fill';
+        progressFill.style.width = (product.score * 10) + '%';
+        progressContainer.appendChild(progressFill);
+        progressTd.appendChild(progressContainer);
+        row.appendChild(progressTd);
+
+        const actionsTd = document.createElement('td');
+        actionsTd.setAttribute('data-label', 'Actions');
+        const viewBtn = document.createElement('button');
+        viewBtn.className = 'action-btn';
+        viewBtn.textContent = 'View';
+        viewBtn.onclick = () => alert('Viewing details for ' + product.name);
+        const editBtn = document.createElement('button');
+        editBtn.className = 'action-btn';
+        editBtn.textContent = 'Edit';
+        editBtn.onclick = () => alert('Editing ' + product.name);
+        actionsTd.appendChild(viewBtn);
+        actionsTd.appendChild(editBtn);
+        row.appendChild(actionsTd);
+
+        tbody.appendChild(row);
+    });
+}
+
+/* 3. Render Pie Chart for Product Popularity */
+function renderPopularityChart(products) {
+    const ctx = document.getElementById('popularityChart').getContext('2d');
+    const productNames = products.map(p => p.name);
+    const productRatings = products.map(p => p.avgRating);
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: productNames,
+            datasets: [{
+                data: productRatings,
+                backgroundColor: ['#2F80ED','#27AE60','#F2C94C','#EB5757','#9B51E0'],
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: {
+                    callbacks: {
+                        label: context => `${context.label}: ${context.parsed.toFixed(1)} stars`
+                    }
+                }
+            }
+        }
+    });
+}
+
+/* 4. Render Line Chart for Historical Trend */
+function renderTrendChart(products) {
+    const ctx = document.getElementById('trendChart').getContext('2d');
+    // Assume all products have the same number of historical data points
+    const labels = products[0].history.map((_, i) => `T-${products[0].history.length - i}`);
+    const datasets = products.map(product => ({
+        label: product.name,
+        data: product.history,
+        borderColor: getRandomColor(),
+        fill: false,
+        tension: 0.2
+    }));
+    new Chart(ctx, {
+        type: 'line',
+        data: { labels, datasets },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom' } },
+            scales: { y: { beginAtZero: true, max: 10 } }
+        }
+    });
+}
+
+/* Utility: Random Color Generator for Line Chart */
+function getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) color += letters[Math.floor(Math.random() * 16)];
+    return color;
+}
+
+/* 5. Refresh Data, Show Toast, and Check Extreme Scores */
+function refreshScores() {
+    mockProducts.forEach(prod => {
+        const randomChange = (Math.random() * 2 - 1).toFixed(1);
+        prod.score = Math.min(10, Math.max(0, prod.score + parseFloat(randomChange)));
+    });
+    mockProducts.forEach(prod => {
+        const randomRatingChange = (Math.random() * 1 - 0.5).toFixed(1);
+        const newRating = Math.min(5, Math.max(1, prod.avgRating + parseFloat(randomRatingChange)));
+        prod.avgRating = parseFloat(newRating.toFixed(1));
+    });
+    populateDashboard(mockProducts);
+    populateTable(mockProducts);
+    renderPopularityChart(mockProducts);
+    renderTrendChart(mockProducts);
+    showToast("Data updated successfully!");
+    checkExtremeScores();
+}
+
+/* 6. Toast Notification */
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.style.opacity = 1;
+    setTimeout(() => { toast.style.opacity = 0; }, 3000);
+}
+
+/* 7. Search Products */
+function searchProducts() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    const filtered = mockProducts.filter(prod => prod.name.toLowerCase().includes(query));
+    populateTable(filtered);
+}
+
+/* 8. Sort Table Columns */
+function sortTable(columnIndex) {
+    const table = document.getElementById("productTable");
+    const tbody = table.tBodies[0];
+    let rows = Array.from(tbody.rows);
+    const asc = table.getAttribute("data-sort-dir") !== "asc";
+    rows.sort((a, b) => {
+        const aText = a.cells[columnIndex].textContent;
+        const bText = b.cells[columnIndex].textContent;
+        return asc
+            ? aText.localeCompare(bText, undefined, { numeric: true })
+            : bText.localeCompare(aText, undefined, { numeric: true });
+    });
+    rows.forEach(row => tbody.appendChild(row));
+    table.setAttribute("data-sort-dir", asc ? "asc" : "desc");
+}
+
+/* 9. Check for Extreme Scores and Display Notification */
+function checkExtremeScores() {
+    const notifications = document.getElementById('notifications');
+    let alerts = [];
+    mockProducts.forEach(prod => {
+        if (prod.score < 3) alerts.push(`${prod.name} has a very low score!`);
+        if (prod.score > 9) alerts.push(`${prod.name} is performing exceptionally well!`);
+    });
+    if (alerts.length > 0) {
+        notifications.innerHTML = alerts.join("<br>");
+        notifications.style.display = "block";
+    } else {
+        notifications.style.display = "none";
+    }
+}
+
+/* Initialize on Page Load */
+window.onload = function() {
+    populateDashboard(mockProducts);
+    populateTable(mockProducts);
+    renderPopularityChart(mockProducts);
+    renderTrendChart(mockProducts);
+    checkExtremeScores();
+};

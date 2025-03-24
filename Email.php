@@ -1,7 +1,7 @@
 <?php
 
 try {
-    require_once(__DIR__ . '/PHPHost.php');  // Corrected file name to PHPHost.php
+    require_once(__DIR__ . '/PHPHost.php');  
 } catch (Exception $ex) {
     echo "<p style='color:red'>Failed to include PHPHost.php: " . htmlspecialchars($ex->getMessage()) . "</p>";
     exit;
@@ -16,9 +16,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $date = htmlspecialchars(string: $_POST['date']);
     $message = htmlspecialchars(string: $_POST['description']);
 
-    // Step 3: Prepare the <?php
+ 
 try {
-    require_once(__DIR__ . '/PHPHost.php');  // Corrected file name to PHPHost.php
+    require_once(__DIR__ . '/PHPHost.php'); 
 } catch (Exception $ex) {
     echo "<p style='color:red'>Failed to include PHPHost.php: " . htmlspecialchars($ex->getMessage()) . "</p>";
     exit;
@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	];
 
 	error_log("Query: " . $sql);
-    // Step 4: Execute the query
+   
     try {
     $stmt->execute($data);
     echo "Record inserted successfully.";

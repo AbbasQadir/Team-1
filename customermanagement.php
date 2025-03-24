@@ -1,6 +1,4 @@
-<?php 
-
-
+<?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -8,24 +6,22 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-include 'sidebar.php';
+if (!isset($_SESSION['admin_id'])) {
+    header('Location: admin_log.php'); 
+    exit();
+}
 
 try {
-    require_once(__DIR__ . '/PHPHost.php'); 
+    require_once(__DIR__ . '/PHPHost.php');
 } catch (Exception $ex) {
     echo "<p style='color:red'>Failed to include PHPHost.php: " . htmlspecialchars($ex->getMessage()) . "</p>";
     exit;
 }
-
-if (!isset($_SESSION['admin'])) {
-    header('Location: admin_log.php');
-    exit;
-}
+include 'sidebar.php';
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['update_user'])) {
-        // Update user
         $id = $_POST['user_id'];
         $first_name = $_POST['first_name'];
         $last_name = $_POST['last_name'];
@@ -54,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (isset($_POST['add_user'])) {
-        // Add new user
         $username   = $_POST['username'];
         $password   = password_hash($_POST['password'], PASSWORD_DEFAULT);
         $first_name = $_POST['first_name'];
@@ -122,10 +117,12 @@ $totalPages = ceil($totalRows / $limit);
 <head>
     <title>Customer Management</title>
     <link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="admin-dashboard.css">
+
     <style>
         body {
-            background-color: #0D1B2A;
-            color: white;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
@@ -167,7 +164,7 @@ $totalPages = ceil($totalRows / $limit);
             width: 100%;
             border-collapse: collapse;
             margin: 20px auto;
-            background-color: #0D1B2A;
+            background-color: var(--card-bg);
         }
         
         table th, table td {
@@ -244,11 +241,11 @@ $totalPages = ceil($totalRows / $limit);
 <body>
     <h2>Customer Management</h2>
     
-    <!-- Display Messages -->
+ 
     <?php if (isset($message)) echo "<p style='color:green;'>$message</p>"; ?>
     <?php if (isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
 
-    <!-- Search Bar -->
+  
     <div class="search-container">
         <form method="GET" action="">
             <input type="text" name="search" placeholder="Search users..." value="<?php echo htmlspecialchars($search); ?>">
@@ -256,7 +253,7 @@ $totalPages = ceil($totalRows / $limit);
         </form>
     </div>
     
-    <!-- User Table -->
+  
     <div class="table-container">
         <h3>Existing Users</h3>
         <table>
@@ -328,7 +325,6 @@ $totalPages = ceil($totalRows / $limit);
         </div>
     <?php endif; ?>
     
-    <!-- Extra margin between pagination and the Add New User section -->
     <div style="margin-top: 40px;"></div>
     
     <h3>Add New User</h3>

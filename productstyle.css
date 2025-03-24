@@ -82,8 +82,8 @@ form button:hover {
 }
 
 .item img {
-    width: 250px; /* Ensures the image takes the full width of the card */
-    object-fit: cover; /* Ensures the image fills the space without distortion */
+    width: 250px; 
+    object-fit: cover; 
 	box-shadow: 0 5px 1px 0 rgba(0, 0, 0, 0.02);
 	margin-bottom:20px;
 }

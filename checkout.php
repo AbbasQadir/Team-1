@@ -17,6 +17,8 @@ try {
         SELECT 
             b.product_id, 
             b.quantity, 
+            b.Colour,
+            b.Size,
             pi.price, 
             pi.product_item_id,  
             p.product_name,     
@@ -53,11 +55,11 @@ try {
     $shippingStmt->execute();
     $shippingMethods = $shippingStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Set credit card as default payment method (with type_id = 1)
+   
     $defaultPaymentTypeId = 1;
 
 } catch (PDOException $ex) {
-    //error handling for problem with database
+  
     echo "<script>
             document.addEventListener('DOMContentLoaded', function(){
               showCustomMessage('Error fetching details: " . addslashes($ex->getMessage()) . "', 'index.php');
@@ -66,10 +68,9 @@ try {
     exit();
 }
 
-$orderSuccess = false;  //changed to true if order is processed correctly
+$orderSuccess = false;  
 $errorMessage = "";
 
-//process form submission if checkout is pressed
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     try {
         $shipping_method_id = $_POST['shipping_method'];
@@ -177,10 +178,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $order_status_id = $statusRow ? $statusRow['order_status_id'] : 1;
 
         //adds to orders table in DB
-        $insertOrderQuery = "INSERT INTO orders (user_id, address_id, order_status_id, shipping_method_id, payment_method_id, order_price, order_date) 
-                             VALUES (:user_id, :address_id, :order_status_id, :shipping_method_id, :payment_method_id, :order_price, NOW())";
+    	$randomID = random_int(20000, 5000000);
+       $insertOrderQuery = "INSERT INTO orders (orders_id, user_id, address_id, order_status_id, shipping_method_id, payment_method_id, order_price, order_date) 
+                             VALUES (:orderID, :user_id, :address_id, :order_status_id, :shipping_method_id, :payment_method_id, :order_price, NOW())";
         $insertOrderStmt = $db->prepare($insertOrderQuery);
         $insertOrderStmt->execute([
+            ':orderID' => $randomID,
             ':user_id' => $user_id,
             ':address_id' => $address_id,
             ':order_status_id' => $order_status_id,
@@ -192,14 +195,55 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         //adds all basket items to order and changes stock level 
         foreach ($basketItems as $item) {
-            $insertOrderProdQuery = "INSERT INTO order_prod (orders_id, product_item_id, quantity) 
-                                     VALUES (:order_id, :product_item_id, :quantity)";
-            $insertOrderProdStmt = $db->prepare($insertOrderProdQuery);
-            $insertOrderProdStmt->execute([
-                ':order_id' => $order_id,
-                ':product_item_id' => $item['product_item_id'],
-                ':quantity' => $item['quantity']
-            ]);
+            
+        
+        	if(isset($item["Colour"]) && isset($item["Size"]) ){
+                $insertOrderProdQuery = "INSERT INTO order_prod (orders_id, product_item_id, Colour, Size, quantity) 
+                                     VALUES (:order_id, :product_item_id, :Colour, :size ,:quantity)";
+                $insertOrderProdStmt = $db->prepare($insertOrderProdQuery);
+                $insertOrderProdStmt->execute([
+                    ':order_id' => $order_id,
+                    ':product_item_id' => $item['product_item_id'],
+                    ':quantity' => $item['quantity'],
+                    ':Colour' => $item['Colour'],
+                    ':size' => $item['Size']
+                ]);
+
+            }else if(isset($item["Colour"])){
+                $insertOrderProdQuery = "INSERT INTO order_prod (orders_id, product_item_id, Colour, quantity) 
+                VALUES (:order_id, :product_item_id, :Colour ,:quantity)";
+                $insertOrderProdStmt = $db->prepare($insertOrderProdQuery);
+
+                $insertOrderProdStmt->execute([
+                    ':order_id' => $order_id,
+                    ':product_item_id' => $item['product_item_id'],
+                    ':quantity' => $item['quantity'],
+                    ':Colour' => $item['Colour']
+                ]);
+
+            }else if(isset($item["Size"])){
+                $insertOrderProdQuery = "INSERT INTO order_prod (orders_id, product_item_id, Size, quantity) 
+                VALUES (:order_id, :product_item_id, :size ,:quantity)";
+                $insertOrderProdStmt = $db->prepare($insertOrderProdQuery);
+                
+                $insertOrderProdStmt->execute([
+                    ':order_id' => $order_id,
+                    ':product_item_id' => $item['product_item_id'],
+                    ':quantity' => $item['quantity'],
+                    ':size' => $item['Size']
+                ]);
+                
+            }else{
+                $insertOrderProdQuery = "INSERT INTO order_prod (orders_id, product_item_id, quantity) 
+                                     VALUES (:order_id, :product_item_id ,:quantity)";
+                $insertOrderProdStmt = $db->prepare($insertOrderProdQuery);
+
+                $insertOrderProdStmt->execute([
+                    ':order_id' => $order_id,
+                    ':product_item_id' => $item['product_item_id'],
+                    ':quantity' => $item['quantity']
+                ]);
+            }
 
             $updateStockQuery = "UPDATE product_item 
                                  SET quantity = quantity - :quantity 
@@ -220,7 +264,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $orderSuccess = true;
 
     } catch (Exception $ex) {
-        //for if there is a problem with order processing
+     
         $errorMessage = $ex->getMessage();
     } catch (PDOException $ex) {
         $errorMessage = $ex->getMessage();
@@ -555,6 +599,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             justify-content: space-between;
             gap: 15px;
         }
+
+		#productVariationsColourIcon{
+            display: inline-block;
+            background-Color:red;
+            width: 15px;
+            height:15px;
+            border-radius: 7.5px;
+
+        }
+
     </style>
 </head>
 
@@ -563,6 +617,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <div class="success-message">
             <h2>Order Placed Successfully!</h2>
             <p>Your order has been placed and is pending. Thank you for your purchase!</p>
+            <p>We value your feedback! <a href="web_review.php?order_id=<?php echo $order_id; ?>" class="review-link">Please tell us about your shopping experience</a></p>
             <p>You will be redirected to the home page shortly.</p>
         </div>
         <script>
@@ -585,7 +640,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <div class="checkout-layout">
                 <div class="checkout-details">
                     <form id="checkoutForm" method="POST" action="">
-                        <!--step 1-->
+                    
                         <div class="step active" id="step-1">
                             <h2>SHIPPING DETAILS</h2>
 
@@ -628,7 +683,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 SHIPPING</button>
                         </div>
 
-                        <!--step 2-->
+                     
                         <div class="step" id="step-2">
                             <h2>SHIPPING METHOD</h2>
 
@@ -652,7 +707,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             <button type="button" class="checkout-btn" onclick="nextStep(3)">CONTINUE TO PAYMENT</button>
                         </div>
 
-                        <!--step 3-->
+                
                         <div class="step" id="step-3">
                             <h2>PAYMENT DETAILS</h2>
 
@@ -692,12 +747,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 onclick="if(validatePayment()) { nextStep(4); }">REVIEW ORDER</button>
                         </div>
 
-                        <!--step 4-->
+                       
                         <div class="step" id="step-4">
                             <h2>REVIEW YOUR ORDER</h2>
 
                             <div id="review-details">
-                                <!--filled by JavaScript-->
+                            
                             </div>
 
                             <button type="button" class="checkout-btn" onclick="nextStep(3)">BACK</button>
@@ -709,7 +764,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <div class="order-summary">
                     <h2>YOUR ORDER</h2>
 
-                    <!--product item-->
+                
                     <?php foreach ($basketItems as $item):
                         $subtotal = $item['quantity'] * $item['price'];
                         ?>
@@ -723,6 +778,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                             <div class="product-details">
                                 <div class="product-title"><?php echo htmlspecialchars($item['product_name']); ?></div>
+                            	<div id='productVariationsContainer'>
+
+                                	<?php if(isset($item["Colour"]) ) { ?>
+                                    	<div id="productVariationsColourIcon" style="background-color: <?php echo htmlspecialchars(getNameFromVariationOptionID($db, $item["Colour"])); ?>;"></div>
+                                    	<?php echo htmlspecialchars(getNameFromVariationOptionID($db, $item["Colour"]))  ?>
+                                	<?php } ?>
+
+
+
+                                	<?php if(isset($item["Size"])) { ?>
+                                    	<!-- <div id="productVariationsSizeIcon"> <?php echo getSymbolLetterForSize(getNameFromVariationOptionID($db, $item["Size"])); ?> </div> -->
+                                    	<?php echo "Size: ".htmlspecialchars(getShortNameFromVariationOptionID($db, $item["Size"]))  ?>
+                                	<?php } ?>
+
+
+                                </div>
                             </div>
 
                             <div class="product-price">
@@ -791,7 +862,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             function validateAddressAndNext() {
                 const country = document.getElementById('country').value.trim().toLowerCase();
 
-                //what is required
+         
                 const requiredFields = ['line1', 'street', 'city', 'postal_code', 'country'];
                 for (const field of requiredFields) {
                     if (!document.getElementById(field).value.trim()) {
@@ -803,7 +874,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 nextStep(2);
             }
 
-            //payment details parameters
+    
             function validatePayment() {
                 const cardNumber = document.getElementById("card_number").value.trim();
                 const expiration = document.getElementById("expiration_date").value.trim();
@@ -915,7 +986,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 });
             });
 
-            //always start with first shipping method selected
+          
             window.addEventListener('DOMContentLoaded', function () {
                 const firstShippingOption = document.querySelector('input[name="shipping_method"]');
                 if (firstShippingOption) {

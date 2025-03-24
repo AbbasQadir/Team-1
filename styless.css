@@ -1,5 +1,4 @@
-   
-    body, h1, p, label {
+body, h1, p, label {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
@@ -16,7 +15,7 @@
         text-align: center;
         margin-bottom: 20px;
         font-size: 2.5rem;
-        color: black;
+        color: var(--text-color);
     }
 
     
@@ -25,13 +24,14 @@
         display: flex;
         flex-wrap: wrap;
         gap: 30px;
-        justify-content: left;
+        justify-content: flex-start;
+    	align-items: center;
     }
 
     
     .item {
         position: relative;
-        background: white;
+        background: var(--card-bg);
         padding: 0;
         width: 250px;
         /* height: 400px; */
@@ -43,9 +43,9 @@
         box-shadow: 0 5px 15px #08429846;
     }
 
-    .item a {
+     .item a {
         text-decoration: none;
-        color: black;
+        color: var(--text-color);
     }
 
 
@@ -107,8 +107,8 @@
 
 
     .dropdown-button {
-        background-color: white;
-        color: black;
+        background-color: var(--card-bg);
+        color: var(--text-color);
         padding: 10px 15px;
         border: 1px solid #084298;
         cursor: pointer;
@@ -131,7 +131,7 @@
     .drop-content {
         display: none;
         position: absolute;
-        background-color: white;
+        background-color: var(--card-bg);
         min-width: 210px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         z-index: 1;
@@ -141,7 +141,7 @@
 
 
     .drop-content a {
-        color: black;
+        color: var(--text-color);
         padding: 10px 15px;
         text-decoration: none;
         display: block;
@@ -191,8 +191,8 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 	.disclaimer{
-		background-color: #e4eaf4;
-    	color:#031a3b;
+		background-color: var(--card-bg);
+    	color:var(--text-color);
     	font-size:25px;
     	text-align: center;
     	padding: 60px 0 60px 0;

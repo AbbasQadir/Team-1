@@ -50,7 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $insertQuery->execute([$username, $hashed_password, $first_name, $last_name, $email, $number]);
             echo "New user registered successfully!";
         }
-
+		
+		$user_id = $db->lastInsertId();
+		$_SESSION["uid"] = $user_id;
         $_SESSION["user"] = $username;
         header("Location: index.php");
         exit();
@@ -70,120 +72,223 @@ include 'navbar.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mind & Motion</title>
-    <style>
-   
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  
+  <style>
+  
+  :root {
+ --bg-color: #0d1b2a;
+ --text-color: #e0e1dd;
+ --secondary-text: #778da9;
+ --card-bg: #1b263b;
+ --icon-bg: #415a77;
+ --border-color: #415a77;
+ --shadow: rgba(0, 0, 0, 0.3);
+ --accent-color: #778da9;
+ --accent-hover: #a8b2c8;
+}
 
-        body {
-            font-family: 'Merriweather', serif;
-            line-height: 1.6;
-            scroll-behavior: smooth;
-        }
+[data-theme="light"] {
+ --bg-color: #e0e1dd;
+ --text-color: #1b263b;
+ --secondary-text: #415a77;
+ --card-bg: #f1f3f5;
+ --icon-bg: #a8b2c8;
+ --border-color: #a8b2c8;
+ --shadow: rgba(0, 0, 0, 0.1);
+ --accent-color: #415a77;
+ --accent-hover: #778da9;
+}
 
+* {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+ font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
 
-        h2 {
-            flex-grow: 1;
-            text-align: center;
-            margin: 0;
-        }  
+body {
+ font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+ background-color: var(--bg-color);
+ color: var(--text-color);
+ font-size: 18px;
+ line-height: 1.6;
+ transition: background 0.3s ease, color 0.3s ease;
+}
 
-        .signup-container {
-            display: flex;
-            max-width: 1000px;
-            margin: 40px auto;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
+h2, h3, h4 {
+ color: var(--text-color);
+ text-shadow: 2px 2px 5px var(--shadow);
+}
 
-        .signup-image {
-            flex: 1;
-            background: url('fitness.png') no-repeat center/cover;
-            filter: grayscale(30%);
-            transition: filter 0.5s;
-        }
+h2 {
+ flex-grow: 1;
+ text-align: center;
+ margin: 0;
+ font-size: 2em;
+ font-weight: bold;
+}
 
-        .signup-image:hover {
-            filter: none;
-        }
+h3 {
+ text-align: center;
+ margin: 30px 0 20px;
+ font-size: 1.8em;
+}
 
-        .signup-form-container {
-            flex: 1;
-            padding: 40px;
-        }
-
-        .signup-form-container form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .signup-form-container label {
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .signup-form-container input,
-        .signup-form-container select {
-            margin-bottom: 15px;
-            padding: 10px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 100%;
-        }
-
-        .signup-form-container input[type="submit"] {
-            background: #0A369D;
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.3s;
-        }
-
-        .signup-form-container input[type="submit"]:hover {
-            background: #084298;
-            transform: scale(1.05);
-        }
-
-        .more-details {
-            margin: 40px auto;
-            max-width: 1000px;
-            text-align: center;
-        }
-
-        .more-details h3 {
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: #0A369D;
-        }
-
-        .benefits, .feedback {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-        }
-
-        .benefits div, .feedback div {
-            flex: 1;
-            margin: 10px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            background: #f9f9f9;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .benefits div:hover, .feedback div:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
+h4 {
+ font-size: 1.4em;
+ margin-bottom: 10px;
+}
 
 
-    </style>
+.signup-container {
+ display: flex;
+ max-width: 1000px;
+ margin: 40px auto;
+ border-radius: 12px;
+ overflow: hidden;
+ box-shadow: 0 4px 16px var(--shadow);
+ background: var(--card-bg);
+}
+
+
+.signup-image {
+ flex: 1;
+ background: url('fitness.png') no-repeat center/cover;
+ filter: grayscale(40%);
+ transition: filter 0.5s;
+}
+
+.signup-image:hover {
+ filter: none;
+}
+
+.signup-form-container {
+ flex: 1;
+ padding: 40px;
+}
+
+.signup-form-container form {
+ display: flex;
+ flex-direction: column;
+}
+
+.signup-form-container p {
+ margin-bottom: 20px;
+ color: var(--secondary-text);
+}
+
+.signup-form-container label {
+ margin-bottom: 5px;
+ font-weight: bold;
+ color: var(--text-color);
+}
+
+.signup-form-container input {
+ margin-bottom: 15px;
+ padding: 12px;
+ font-size: 14px;
+ border: 1px solid var(--border-color);
+ border-radius: 5px;
+ background-color: var(--bg-color);
+ color: var(--text-color);
+ width: 100%;
+ transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.signup-form-container input:focus {
+ outline: none;
+ border-color: var(--accent-color);
+ box-shadow: 0 0 8px var(--shadow);
+}
+
+.signup-form-container input[type="submit"] {
+ background: var(--icon-bg);
+ color: var(--text-color);
+ border: none;
+ cursor: pointer;
+ font-size: 16px;
+ font-weight: bold;
+ padding: 12px;
+ transition: background 0.3s ease, transform 0.2s ease;
+ border-radius: 5px;
+}
+
+.signup-form-container input[type="submit"]:hover {
+ background: var(--accent-hover);
+ color: var(--bg-color);
+ transform: translateY(-2px);
+}
+
+.signup-form-container p:last-child {
+ text-align: center;
+ margin-top: 15px;
+}
+
+.signup-form-container p a {
+ color: var(--text-color);
+ text-decoration: none;
+ font-weight: bold;
+ transition: color 0.3s ease;
+}
+
+.signup-form-container p a:hover {
+text-decoration: underline;
+}
+
+
+.more-details {
+ margin: 40px auto;
+ max-width: 1000px;
+ padding: 30px;
+ background-color: var(--card-bg);
+ border-radius: 10px;
+ box-shadow: 0 4px 15px var(--shadow);
+}
+
+.benefits, .feedback {
+ display: flex;
+ flex-wrap: wrap;
+ justify-content: space-between;
+ margin-top: 20px;
+}
+
+.benefits div, .feedback div {
+ flex: 1;
+ margin: 10px;
+ padding: 20px;
+ border-radius: 8px;
+ background: var(--bg-color);
+ box-shadow: 0 2px 8px var(--shadow);
+ transition: transform 0.3s ease;
+}
+
+.benefits div:hover, .feedback div:hover {
+ transform: translateY(-5px);
+ box-shadow: 0 6px 20px var(--shadow);
+}
+
+@media (max-width: 768px) {
+ .signup-container {
+  flex-direction: column;
+ }
+ 
+ .signup-image {
+  height: 250px;
+ }
+ 
+ .signup-form-container {
+  padding: 20px;
+ }
+ 
+ .benefits, .feedback {
+  flex-direction: column;
+ }
+ 
+ .benefits div, .feedback div {
+  margin: 10px 0;
+ }
+}
+</style>
 </head>
 <body>
     

@@ -1,0 +1,419 @@
+:root {
+    --bg-color: #0d1b2a;
+    --text-color: #e0e1dd;
+    --secondary-text: #778da9;
+    --card-bg: #1b263b;
+    --icon-bg: #415a77;
+    --border-color: #415a77;
+    --shadow: rgba(0, 0, 0, 0.3);
+    --accent-color: #778da9;
+    --accent-hover: #a8b2c8;
+    --custom-color: #1b263b;
+}
+
+[data-theme="light"] {
+    --bg-color: #e0e1dd;
+    --text-color: #1b263b;
+    --secondary-text: #415a77;
+    --card-bg: #f1f3f5;
+    --icon-bg: #a8b2c8;
+    --border-color: #a8b2c8;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --accent-color: #415a77;
+    --accent-hover: #778da9;
+    --custom-color: #f4f4f4;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Base Container for the Reviews Page */
+.container {
+    margin: 60px;
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+/* Left side (form area) */
+.leftSide {
+    flex: 1;
+    padding-right: 30px;
+    min-width: 350px;
+}
+
+/* Form group styling */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input,
+textarea,
+select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: none;
+    height: 120px;
+}
+
+/* Star rating styling */
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: start;
+    gap: 5px;
+    font-size: 2.5rem;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    cursor: pointer;
+    font-size: 3rem;
+    color: #ccc;
+    transition: color 0.3s ease-in-out, transform 0.2s ease;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #DAA520;
+    text-shadow: 0.5px 0.5px 0.5px black;
+    transform: scale(1.1);
+}
+
+.star-rating input:checked ~ label {
+    color: #DAA520;
+}
+.rightSide {
+    /* Remove any container-like properties */
+    flex: 0 0 auto;    /* or use a fixed width if you prefer: flex: 0 0 400px; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* No background, box-shadow, or borders */
+    transition: none;
+    cursor: pointer;   /* Optional if you still want a pointer on hover */
+}
+
+/* Image with no container behind it */
+.rightSide img {
+    /* Make it bigger or a fixed size if desired */
+    max-width: 400px;  /* Adjust as needed for your design */
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 20px;  /* Curved edges; remove if you want square corners */
+    transition: none;
+}
+
+.basket-image {
+    max-width: 200px; 
+    height: auto;
+    object-fit: contain; 
+}
+
+/* Recent Reviews section */
+#recentReviews {
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 30px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Button styles */
+.btn {
+    background-color: var(--icon-bg);
+    color: var(--text-color);
+    font-size: 1.1em;
+    font-weight: bold;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: block;
+    width: 200px;
+    margin: 15px auto;
+}
+
+.btn:hover {
+    background-color: var(--secondary-text);
+    color: var(--bg-color);
+}
+
+/* Select2 styling remains unchanged */
+.select2-container--default .select2-selection--single {
+    height: 45px !important; 
+    border: 2px solid #ccc !important;
+    border-radius: 5px !important;
+    background-color: white !important;
+    display: flex !important;
+    align-items: center !important; 
+    padding: 0px 40px 0px 14px !important; 
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    padding-left: 0px !important; 
+    font-size: 16px !important;
+    font-family: 'Merriweather', serif !important;
+    color: black !important;
+    line-height: 45px !important; 
+    height: 100% !important; 
+    display: block !important; 
+    text-align: left !important; 
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important; 
+}
+
+.select2-container--default .select2-selection__clear {
+    position: absolute !important;
+    right: 35px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    font-size: 16px !important;
+    cursor: pointer !important;
+    color: #999 !important;
+}
+
+.select2-container .select2-selection__arrow {
+    position: absolute !important;
+    top: 50% !important;
+    right: 10px !important;
+    transform: translateY(-50%) !important;
+    width: 20px !important;
+    height: 20px !important;
+}
+
+.select2-dropdown {
+    border: 2px solid #ccc !important;
+    border-radius: 5px !important;
+    font-size: 16px !important;
+}
+
+.select2-results__option {
+    padding: 10px !important;
+    font-size: 16px !important;
+    text-align: left !important; 
+}
+
+.select2-results__option--highlighted {
+    background-color: #0256CE !important;
+    color: white !important;
+}
+
+.select2-container {
+    width: 100% !important;
+}
+
+/* Media Query for mobile devices */
+@media (max-width: 768px) {
+    .container {
+        margin: 20px;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    .leftSide {
+        width: 100%;
+        padding-right: 0;
+        min-width: 100%;
+    }
+    
+    .rightSide {
+        width: 100%;
+     
+        height: auto;
+    }
+    
+    .rightSide img {
+        width: 100%;
+        height: auto;
+     
+        object-fit: contain; 
+    }
+    
+    .form-group,
+    label,
+    input,
+    textarea,
+    select {
+        font-size: 14px;
+    }
+    
+    .select2-container--default .select2-selection--single {
+        height: 40px !important;
+        line-height: 40px !important;
+        padding: 0 35px 0 12px !important;
+    }
+    
+    .btn {
+        font-size: 1rem;
+        padding: 10px 16px;
+        width: 180px;
+    }
+}
+
+
+@media (max-width: 480px) {
+    .container {
+        margin: 10px;
+        padding: 10px;
+    }
+    .leftSide,
+    .rightSide {
+        width: 100%;
+    }
+    .form-group,
+    label,
+    input,
+    textarea,
+    select {
+        font-size: 12px;
+    }
+    .btn {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+        width: 150px;
+    }
+}
+
+
+
+/* Media Query for mobile devices */
+@media (max-width: 768px) {
+    .container {
+        margin: 20px;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    .leftSide {
+        width: 100%;
+        padding-right: 0;
+        min-width: 100%;
+    }
+    
+    .rightSide {
+        width: 100%;
+        height: auto;
+    }
+    
+    .rightSide img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+    
+    .form-group, label, input, textarea, select {\n        font-size: 14px;\n    }\n    
+    \n    .select2-container--default .select2-selection--single {\n        height: 40px !important;\n        line-height: 40px !important;\n        padding: 0 35px 0 12px !important;\n    }\n    
+    \n    .btn {\n        font-size: 1rem;\n        padding: 10px 16px;\n        width: 180px;\n    }\n}
+
+
+@media (max-width: 480px) {
+    .container {\n        margin: 10px;\n        padding: 10px;\n    }\n    .leftSide, .rightSide {\n        width: 100%;\n    }\n    .form-group, label, input, textarea, select {\n        font-size: 12px;\n    }\n    .btn {\n        font-size: 0.9rem;\n        padding: 8px 12px;\n        width: 150px;\n    }\n}
+  </style>
+</head>
+<body>
+
+<h1 class="basket-title">Your Basket</h1>
+
+<?php if (count($basketItems) > 0): ?>
+    <form method="POST" action="Basket.php" class="basket-form">
+        <!-- Desktop Table Layout -->
+        <div class="basket-table-wrapper">
+            <table class="basket-table">
+                <thead>
+                    <tr>
+                        <th class="basket-header">Product Name</th>
+                        <th class="basket-header">Product Picture</th>
+                        <th class="basket-header">Quantity</th>
+                        <th class="basket-header">Price per Item</th>
+                        <th class="basket-header">Total Price</th>
+                        <th class="basket-header">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($basketItems as $item): ?>
+                        <tr class="basket-row">
+                            <td class="basket-cell">
+                                <?php echo htmlspecialchars($item['product_name']); ?><br>
+                                <div id="productVariationsContainer">
+                                    <?php if(isset($item["Colour"])) { ?>
+                                        <div id="productVariationsColourIcon" style="background-color: <?php echo htmlspecialchars(getNameFromVariationOptionID($db, $item["Colour"])); ?>;"></div>
+                                        <?php echo htmlspecialchars(getNameFromVariationOptionID($db, $item["Colour"])) . "<br>"; ?>
+                                    <?php } ?>
+                                    <?php if(isset($item["Size"])) { ?>
+                                        <?php echo "Size: " . htmlspecialchars(getShortNameFromVariationOptionID($db, $item["Size"])); ?>
+                                    <?php } ?>
+                                </div>
+                            </td>
+                            <td class="basket-cell">
+                                <img src="<?php echo htmlspecialchars($item['product_image']); ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>" class="basket-image">
+                            </td>
+                            <td class="basket-cell">
+                                <input type="number" name="quantities[<?php echo $item['basket_id']; ?>]" value="<?php echo $item['quantity']; ?>" min="1" required class="basket-quantity">
+                            </td>
+                            <td class="basket-cell">&pound;<?php echo number_format($item['price'], 2); ?></td>
+                            <td class="basket-cell">&pound;<?php echo number_format($item['total_price'], 2); ?></td>
+                            <td class="basket-cell">
+                                <a href="Basket.php?remove=<?php echo $item['basket_id']; ?>" class="basket-remove-btn">Remove</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <!-- End Desktop Table Layout -->
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <form method="POST" action="Basket.php" class="basket-form" style="display:inline;">
+                <button type="submit" name="update_quantity" class="basket-update-btn">Update Basket</button>
+            </form>
+            <a href="previous_orders.php" class="basket-previous-orders-btn">Previous Orders</a>
+            <a href="checkout.php" class="basket-checkout-btn">Checkout</a>
+        </div>
+    </form>
+<?php else: ?>
+    <p class="basket-empty" style="text-align:center;">Your basket is empty.</p>
+<?php endif; ?>
+
+</body>
+</html>
+<?php include 'footer.php'; ?>

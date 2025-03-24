@@ -91,11 +91,16 @@ try {
                             </li>
                         <?php endforeach; ?>
                     </tbody>
+                        <div class="return-button-container" style="margin: 20px 0">
+    <a href="return_select.php" class="button-details" >Return Items</a>
                 </ul> 
             <?php else: ?>
                 <p>You do not have any previous orders with us.</p>
             <?php endif; ?>
         </div>
+            
+</div>
+
     </body>
 </html>
 <?php include 'footer.php'; ?>

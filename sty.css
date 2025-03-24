@@ -14,7 +14,6 @@ h2 {
 h3 {
     font-size: 26px;
     margin: 20px;
-    margin-left: 45px;
     text-align: left;
 }
 
@@ -27,13 +26,14 @@ h3 {
         margin-bottom: 25px;
     }
     .table-header {
-        background-color: #446494;
+        background-color: #1b263b;
+        color: #E0E1DD;
         font-size: 14px;
         text-transform: uppercase;
         letter-spacing: 0.03em;
     }
     .table-row {
-        background-color: #ffffff;
+        background-color: #778da9;
         box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
     }
     .col-1 {
@@ -76,7 +76,7 @@ h3 {
             display: flex;
             padding: 10px 0;
             &:before {
-                color: #6C7A89;
+                color: #0d1b2a;
                 padding-right: 10px;
                 content: attr(data-label);
                 flex-basis: 50%;
@@ -86,8 +86,8 @@ h3 {
     }
 }
 .button-details {
-    background-color: #084298;
-    color: white;
+    background-color: #415A77;
+    color: #E0E1DD;
     border: none;
     padding: 10px 15px;
     border-radius: 4px;
@@ -99,8 +99,8 @@ h3 {
 }
 
 .button-details:hover {
-    background-color: #b8c5d4;
-    color: #084298;
+    background-color: #1b263b;
+    color: #E0E1DD;
     box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
 
 }
@@ -125,7 +125,7 @@ h3 {
 
 .item-card {
     display: flex;
-    background-color: #08429830;
+    background-color: #778DA9;
     margin-bottom: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -146,18 +146,18 @@ h3 {
 .product-details h3 {
     margin: 0;
     font-size: 18px;
-    color: black;
+    color: #0d1b2a;
 }
 
 .product-details p {
     margin: 8px 0;
     font-size: 14px;
-    color: black;
+    color: #0d1b2a;
 }
 
 .payment {
     flex: 1;
-    background-color: #08429830;
+    background-color: #778DA9;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -189,7 +189,7 @@ h3 {
 
 .btn {
     background-color: #0A369D;
-    color: white;
+    color: #E0E1DD;
     padding: 10px 20px;
     text-align: center;
     border: none;
@@ -199,14 +199,15 @@ h3 {
 }
 
 .btn:hover {
-   background-color: #b8c5d4;
-    color: #084298;
+   background-color: #778DA9;
+    color: #0d1b2a;
     box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
 }
 /* order details css*/
 .order-info {
 	text-align:center;
-    background-color: #08429830;
+    background-color: var(--card-bg);
+    color: var(--text-color);
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
@@ -215,7 +216,7 @@ h3 {
 
 .order-info h3 {
 	text-align:center;
-    color: black;
+    color: var(--text-color);
     font-size: 22px;
 }
 
@@ -233,7 +234,7 @@ h3 {
 .products-cards {
     display: flex;
     align-items: center;
-    background-color: #08429830;
+    background-color: var(--card-bg);;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
@@ -254,18 +255,18 @@ h3 {
 .details h4 {
     margin: 0 0 5px;
     font-size: 18px;
-    color: black;
+    color: var(--text-color);
 }
 
 .details p {
     margin: 5px 0;
     font-size: 16px;
-    color: black;
+    color: var(--text-color);
 }
 
 .back-button {
-    background-color: #084298;
-    color: white;
+    background-color: #415A77;
+    color: #E0E1DD;
     border: none;
     padding: 10px 15px;
     border-radius: 4px;
@@ -277,7 +278,7 @@ h3 {
 }
 
 .back-button:hover {
-    background-color: #b8c5d4;
-    color: #084298;
+    background-color: #1b263b;
+    color: #E0E1DD;
     box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
 }

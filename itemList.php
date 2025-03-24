@@ -5,7 +5,7 @@
             $catagoryObject = getDBResult($db, "SELECT * FROM product_category WHERE category_name=:category", ":category", $category);
             $catagoryID = $catagoryObject[0]["product_category_id"];
 
-            $items = getDBResult($db, "SELECT * FROM product WHERE product_category_id=:categoryid", ":categoryid", $catagoryID);
+            $items = getDBResult($db, "SELECT * FROM product WHERE product_category_id=:categoryid AND active='yes'", ":categoryid", $catagoryID);
 
             //get the price of each item and then add the price to array that has the rest of the item data
             for($i = 0; $i < count($items); $i++){
@@ -50,16 +50,31 @@
             
 
             ?>
+           
 
             <a href="specificProduct.php?id=<?php echo $item["product_id"]; ?>"> 
-                <div class="item">
-                    <img src=<?php echo $item["product_image"]; ?>  alt="product">
+                 <div class="item">
+                    <img style="display:block; margin:auto" src=<?php echo $item["product_image"]; ?>  alt="product">
                     
                     <a href="specificProduct.php?id=<?php echo $item["product_id"]; ?>" class="product-name"><?php echo $item["product_name"]; ?></a>
                     <br><br>
                     <a href="specificProduct.php?id=<?php echo $item["product_id"]; ?>" class="product-price">£<?php echo getProductPrice($db, $item["product_id"]); ?></a>
-                </div>
+               
             </a>
+            <h5 id="stockAvailable">
+                    <?php 
+                        $stock = getProductQuantity($db, $item["product_id"]);
+
+                        if ($stock > 10) {
+                            echo '<span style="color: green;">In Stock</span>';
+                        } elseif ($stock > 0) {
+                            echo '<span style="color: orange;">Low Stock</span>';
+                        } else {
+                            echo '<span style="color: red;">Out of Stock</span>';
+                        }
+                    ?>
+                </h5>
+             </div>
     
         <?php } ?> 
 

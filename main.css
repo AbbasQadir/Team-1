@@ -16,20 +16,20 @@ body {
 
 /* Buttons */
 .btn {
-    background-color: #0256CE; /* Button background color */
-    color: white; /* Text color */
-    font-size: 1.1em; /* Text size */
-    font-weight: bold; /* Bold text */
-    padding: 10px 15px; /* Padding for inner spacing */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effects */
+    background-color: #0256CE;
+    color: white; 
+    font-size: 1.1em; 
+    font-weight: bold; 
+    padding: 10px 15px; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: background-color 0.3s ease, transform 0.2s ease; 
 }
 
 .btn:hover {
-    background-color: #2A4D69; /* Darker blue on hover */
-    transform: scale(1.05); /* Slight enlargement on hover */
+    background-color: #2A4D69; 
+    transform: scale(1.05); 
 }
 
 

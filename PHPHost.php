@@ -1,5 +1,6 @@
 <?php
 
+
 $db_host = 'localhost';  
 $db_name = 'cs2team1_db';
 $username = 'cs2team1';
@@ -9,11 +10,79 @@ try {
     // Establish a database connection
     $db = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8", $username, $password);
 
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // Enable detailed errors
-    $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false); // Use native prepared statements
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); 
+    $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false); 
 } catch (PDOException $ex) {
     error_log("Database connection error: " . $ex->getMessage());
     die("An error occurred while connecting to the database. Please try again later.");
+}
+
+function getSymbolLetterForSize($size){
+   
+    //var_dump($size);
+    switch($size){
+        case "extraSmall":
+            return "XS";
+            break;
+        case "small":
+            return "S";
+            break;
+        case "medium":
+          return "M";
+            break;
+        case "large":
+           return "L";
+            break;
+        case "extraLarge":
+           return "XL";
+            break;
+    }
+}
+
+function getShortNameFromVariationOptionID($db, $id){
+    $result = getDBResult($db, "SELECT * FROM variation_option WHERE variation_option_id=:value", ":value", $id);
+
+    if(isset($result[0]["variation_short_name"])){
+        return $result[0]["variation_short_name"];
+    }else{
+        return getNameFromVariationOptionID($db, $id);
+    }
+
+}
+
+
+function getVariationIDFromName($db, $name){
+    $result = getDBResult($db, "SELECT variation_option_id FROM variation_option WHERE variation_value=:value", ":value", $name);
+
+    if(isset($result[0]["variation_option_id"])){
+        return $result[0]["variation_option_id"];
+    }else{
+        return "";
+    }
+
+}
+
+function getNameFromVariationOptionID($db, $id){
+    $result = getDBResult($db, "SELECT * FROM variation_option WHERE variation_option_id=:value", ":value", $id);
+
+    if(isset($result[0]["variation_value"])){
+        return $result[0]["variation_value"];
+    }else{
+        return "";
+    }
+
+}
+
+function isProductInStock($db, $productID){
+
+    $productQuantity = getDBResult($db, "SELECT quantity FROM product_item WHERE product_id=:productID", ":productID", $productID);
+    
+    if($productQuantity[0]["quantity"] > 0){
+        return true;
+    }else{
+        return false;
+    }
+
 }
 
 function getDBResult($db, $query, $tag, $tagValue) {
@@ -24,8 +93,15 @@ function getDBResult($db, $query, $tag, $tagValue) {
 }
 
 function getProductPrice($db, $productId) {
-    $rawPrice = getDBResult($db, "SELECT price FROM product_item WHERE product_item_id=:itemId", ":itemId", $productId);
+    $rawPrice = getDBResult($db, "SELECT price FROM product_item WHERE product_id=:itemId", ":itemId", $productId);
     return $rawPrice[0]["price"] ?? null;
+}
+
+function getProductQuantity($db, $productID) {
+    $result = getDBResult($db, "SELECT quantity FROM product_item WHERE product_id = :itemId", ":itemId", $productID);
+    
+   
+    return ($result && isset($result[0]['quantity'])) ? $result[0]['quantity'] : 0;
 }
 
 function getCatagoryFromId($db, $catagoryId) {
@@ -60,10 +136,10 @@ function searchProducts($db, $query) {
         exit;
     }
 
-    $sql = "SELECT * FROM product WHERE product_name LIKE ? OR product_discription LIKE ?";
+    $sql = "SELECT * FROM product INNER JOIN product_category ON product.product_category_id=product_category.product_category_id WHERE (product_name LIKE ? OR product_discription LIKE ? OR product_category.category_name  LIKE ? ) AND active='yes' " ;
     $result = $db->prepare($sql);
     $searchTerm = "%$query%";
-    $result->execute([$searchTerm, $searchTerm]);
+    $result->execute([$searchTerm, $searchTerm, $searchTerm]);
 
     return $result->fetchAll(PDO::FETCH_ASSOC);
 }
